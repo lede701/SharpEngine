@@ -48,6 +48,8 @@
 			this.Controls.Add(this.gameField);
 			this.Name = "GameMain";
 			this.Text = "GameMain";
+			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameMain_FormClosed);
+			this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameMain_Paint);
 			((System.ComponentModel.ISupportInitialize)(this.gameField)).EndInit();
 			this.ResumeLayout(false);
 
