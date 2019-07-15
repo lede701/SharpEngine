@@ -55,6 +55,12 @@
     <Compile Include="Library\Forms\GameMain.Designer.cs">
       <DependentUpon>GameMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\Math\BoxCollider.cs" />
+    <Compile Include="Library\Math\CircleCollider.cs" />
+    <Compile Include="Library\Math\ColliderType.cs" />
+    <Compile Include="Library\Math\ICollider.cs" />
+    <Compile Include="Library\Math\PlaneCollider.cs" />
+    <Compile Include="Library\Math\Transform.cs" />
     <Compile Include="Library\Math\Vector2D.cs" />
     <Compile Include="Library\Objects\GObject.cs" />
     <Compile Include="Library\Objects\Layer.cs" />

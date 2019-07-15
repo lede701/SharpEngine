@@ -67,8 +67,11 @@ namespace SharpEngine.Library.Forms
 			while(_isRunning)
 			{
 				Stopwatch timer = Stopwatch.StartNew();
-				ProcessUpdates(1.0f);
-				Render();
+				lock (_lock)
+				{
+					ProcessUpdates(1.0f);
+					Render();
+				}
 				timer.Stop();
 				float elapsed = timer.ElapsedMilliseconds;
 				if(elapsed < frameTime)
@@ -76,6 +79,7 @@ namespace SharpEngine.Library.Forms
 					int sleetTime = (int)(frameTime - elapsed);
 					ThreadManager.Sleep(sleetTime, _updateNode);
 				}
+
 			}
 		}
 
@@ -87,13 +91,10 @@ namespace SharpEngine.Library.Forms
 		public void Render()
 		{
 			// Backbuffer rendering
-			lock(_lock)
-			{
-				Graphics g = Graphics.FromImage(_field);
-				g.FillRectangle(Brushes.Black, 0, 0, _field.Width, _field.Height);
-				_scManager.Render(g);
-				Invalidate();
-			}
+			Graphics g = Graphics.FromImage(_field);
+			g.FillRectangle(Brushes.Black, 0, 0, _field.Width, _field.Height);
+			_scManager.Render(g);
+			Invalidate();
 		}
 
 		private void GameMain_FormClosed(object sender, FormClosedEventArgs e)

@@ -9,9 +9,35 @@ using System.Threading.Tasks;
 
 namespace SharpEngine.Library.Objects
 {
-	public class SimpleBall : GObject
+	public class SimpleBall : UObject
 	{
 		private String _key;
+		private IController _controller;
+		public IController Controller
+		{
+			get
+			{
+				return _controller;
+			}
+			set
+			{
+				_controller = value;
+			}
+		}
+
+		private ICollider _collider;
+		public ICollider Collider
+		{
+			get
+			{
+				return _collider;
+			}
+			set
+			{
+				_collider = value;
+			}
+		}
+
 		public String Key
 		{
 			get
@@ -20,45 +46,95 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		private Transform _transform;
+		public Transform Transform
+		{
+			get
+			{
+				return _transform;
+			}
+		}
+
+		public Vector2D Position
+		{
+			get
+			{
+				return _transform.Position;
+			}
+		}
+
+		public Vector2D Velocity
+		{
+			get
+			{
+				return Transform.Velocity;
+			}
+		}
+
+		public float Rotation
+		{
+			get
+			{
+				return Transform.Rotation;
+			}
+		}
+
 		private int _radius;
-		private Vector2D _position;
-		private Vector2D _velocity;
 		private Rectangle _boundary;
-		private bool _isResting;
+		private bool _isMoving;
 
 		public SimpleBall(int radius, Vector2D position, Rectangle boundary)
 		{
+			// Create a new tranform object
+			_transform = new Transform(position, new Vector2D { X = 0.0f, Y = 0.0f });
 			_radius = radius;
 			_key = Guid.NewGuid().ToString();
-			_position = position;
+			// TODO: move to the collider for testing instead
 			_boundary = boundary;
-			_velocity = new Vector2D { X = 4.0f, Y = 4.0f };
-			_isResting = false;
+			_isMoving = true;
 		}
 
 		public void Render(Graphics g)
 		{
-			g.FillEllipse(Brushes.Red, _position.X, _position.Y, _radius, _radius);
+			g.FillEllipse(Brushes.Red, Position.X, Position.Y, _radius, _radius);
 		}
 
 		public void Update(float deltaTime)
 		{
-			if(!_isResting)
+			if(_isMoving)
 			{
-				_position.X += _velocity.X * deltaTime * KeyboardController.Instance.GetValue(Input.Right);
-				_position.X -= _velocity.X * deltaTime * KeyboardController.Instance.GetValue(Input.Left);
-				_position.Y += _velocity.Y * deltaTime * KeyboardController.Instance.GetValue(Input.Down);
-				_position.Y -= _velocity.Y * deltaTime * KeyboardController.Instance.GetValue(Input.Up);
 
-				if (_position.X < _boundary.X || _position.X > _boundary.Width)
+				if(_controller != null)
 				{
-					_position.X = _position.X < _boundary.X ? _boundary.X : _boundary.Width;
+					Position.X += Velocity.X * deltaTime * Controller.GetValue(Input.Right);
+					Position.X -= Velocity.X * deltaTime * Controller.GetValue(Input.Left);
+					Position.Y += Velocity.Y * deltaTime * Controller.GetValue(Input.Down);
+					Position.Y -= Velocity.Y * deltaTime * Controller.GetValue(Input.Up);
 				}
-				if (_position.Y < _boundary.Y || _position.Y > _boundary.Height)
+				else
 				{
-					_position.Y = _position.Y < _boundary.Y ? _boundary.Y : _boundary.Height;
-					
+					Position.X += Velocity.X * deltaTime;
+					Position.Y += Velocity.Y * deltaTime;
 				}
+
+				if (Position.X < _boundary.X || Position.X > _boundary.Width)
+				{
+					Position.X = Position.X < _boundary.X ? _boundary.X : _boundary.Width;
+				}
+				if (Position.Y < _boundary.Y || Position.Y > _boundary.Height)
+				{
+					Position.Y = Position.Y < _boundary.Y ? _boundary.Y : _boundary.Height;
+					Velocity.Y *= -0.6f;
+					if (System.Math.Abs(Velocity.Y) < 0.2f)
+					{
+						_isMoving = false;
+					}
+				}else if(Controller == null)
+				{
+					// Apply gravity to the object
+					Velocity.Y += 0.2f;
+				}
+
 			}
 		}
 	}
