@@ -46,14 +46,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Library\Controller\IController.cs" />
+    <Compile Include="Library\Controller\Input.cs" />
+    <Compile Include="Library\Controller\KeyboardController.cs" />
     <Compile Include="Library\Forms\GameMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Library\Forms\GameMain.Designer.cs">
       <DependentUpon>GameMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\Math\Vector2D.cs" />
     <Compile Include="Library\Objects\GObject.cs" />
+    <Compile Include="Library\Objects\Layer.cs" />
+    <Compile Include="Library\Objects\Scene.cs" />
     <Compile Include="Library\Objects\SceneManager.cs" />
+    <Compile Include="Library\Objects\SimpleBall.cs" />
+    <Compile Include="Library\Objects\UObject.cs" />
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
     <Compile Include="Program.cs" />

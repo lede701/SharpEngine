@@ -23,17 +23,12 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
-		private Dictionary<int, Dictionary<String, GObject>> _scene;
+		private Stack<Scene> _scenes;
 
-		public SceneManager(int maxLayers = 10)
+		public SceneManager()
 		{
 			// Create new scene
-			_scene = new Dictionary<int, Dictionary<string, GObject>>();
-			// Create scene layers
-			for(int i=0; i<maxLayers;++i)
-			{
-				_scene[i] = new Dictionary<string, GObject>();
-			}
+			_scenes = new Stack<Scene>();
 		}
 
 		public void Add(GObject obj)
@@ -41,35 +36,33 @@ namespace SharpEngine.Library.Objects
 			Add(obj, 0);
 		}
 
+		public void Add(Scene scene)
+		{
+			_scenes.Push(scene);
+		}
+
 		public void Add(GObject obj, int layer)
 		{
-			if(_scene.ContainsKey(layer))
+			if(_scenes.Count > 0)
 			{
-				_scene[layer][obj.Key] = obj;
+				_scenes.Peek().Add(obj, layer);
 			}
 		}
 
 		public void Update(float deltaTime)
 		{
-			foreach(Dictionary<String, GObject> layer in _scene.Values)
+			if(_scenes.Count > 0)
 			{
-				foreach(GObject obj in layer.Values)
-				{
-					obj.Update(deltaTime);
-				}
+				_scenes.Peek().Update(deltaTime);
 			}
 		}
 
 		public void Render(Graphics g)
 		{
-			foreach (Dictionary<String, GObject> layer in _scene.Values)
+			if(_scenes.Count > 0)
 			{
-				foreach (GObject obj in layer.Values)
-				{
-					obj.Render(g);
-				}
+				_scenes.Peek().Render(g);
 			}
-
 		}
 	}
 }

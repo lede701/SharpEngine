@@ -50,6 +50,8 @@
 			this.Text = "GameMain";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameMain_FormClosed);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.GameMain_Paint);
+			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.OnKeyDown);
+			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.OnKeyUp);
 			((System.ComponentModel.ISupportInitialize)(this.gameField)).EndInit();
 			this.ResumeLayout(false);
 
