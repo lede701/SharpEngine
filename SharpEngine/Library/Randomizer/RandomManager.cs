@@ -28,6 +28,16 @@ namespace SharpEngine.Library.Randomizer
 			_rnd = new Random(Guid.NewGuid().GetHashCode());
 		}
 
+		public int Next(int low, int high)
+		{
+			return _rnd.Next(low, high);
+		}
+
+		public int Next(int high)
+		{
+			return Next(0, high);
+		}
+
 		public static Random Random
 		{
 			get

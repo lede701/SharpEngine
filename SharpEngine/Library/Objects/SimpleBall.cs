@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.Controller;
+using SharpEngine.Library.Events;
 using SharpEngine.Library.Math;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace SharpEngine.Library.Objects
 			set
 			{
 				_controller = value;
+				// Connect collider to event handlers
 			}
 		}
 
@@ -35,6 +37,7 @@ namespace SharpEngine.Library.Objects
 			set
 			{
 				_collider = value;
+				_collider.Owner = this;
 			}
 		}
 
@@ -92,11 +95,38 @@ namespace SharpEngine.Library.Objects
 			// TODO: move to the collider for testing instead
 			_boundary = boundary;
 			_isMoving = true;
+			Collider = new CircleCollider
+			{
+				Radius = radius,
+				Position = position
+			};
+			Collider.CollisionEvent += OnCollisionHandler;
+		}
+
+		private void OnCollisionHandler(object sender, EventArgs e)
+		{
+			UObject who = ((CollisionEventArgs)e).Who;
+			PlaneCollider cldr = who.Collider as PlaneCollider;
+			if (cldr != null)
+			{
+				Position.Y = cldr.Tupal - _radius;
+				Velocity.Y *= -0.6f;
+			}
+			if(System.Math.Abs(Velocity.Y) < 1.05f)
+			{
+				_isMoving = false;
+			}
 		}
 
 		public void Render(Graphics g)
 		{
-			g.FillEllipse(Brushes.Red, Position.X, Position.Y, _radius, _radius);
+			if (_isMoving)
+			{
+				g.FillEllipse(Brushes.Red, Position.X, Position.Y, _radius, _radius);
+			}else
+			{
+				g.FillEllipse(Brushes.Green, Position.X, Position.Y, _radius, _radius);
+			}
 		}
 
 		public void Update(float deltaTime)
@@ -120,6 +150,7 @@ namespace SharpEngine.Library.Objects
 				if (Position.X < _boundary.X || Position.X > _boundary.Width)
 				{
 					Position.X = Position.X < _boundary.X ? _boundary.X : _boundary.Width;
+					Velocity.X *= -0.5f;
 				}
 				if (Position.Y < _boundary.Y || Position.Y > _boundary.Height)
 				{
@@ -132,7 +163,7 @@ namespace SharpEngine.Library.Objects
 				}else if(Controller == null)
 				{
 					// Apply gravity to the object
-					Velocity.Y += 0.2f;
+					Velocity.Y += 0.4f;
 				}
 
 			}

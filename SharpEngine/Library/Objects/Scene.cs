@@ -10,6 +10,8 @@ namespace SharpEngine.Library.Objects
 	public class Scene : GObject
 	{
 		private Dictionary<int, Layer> _gameScene;
+		private List<GObject> _gameObjects;
+
 		public int DefaultLayer = 5;
 		public Dictionary<int, Layer> GameScene
 		{
@@ -27,6 +29,41 @@ namespace SharpEngine.Library.Objects
 				return _key;
 			}
 		}
+
+		public int Count
+		{
+			get
+			{
+				return _gameObjects.Count;
+			}
+		}
+
+		public List<GObject> GameObjects
+		{
+			get
+			{
+				return _gameObjects;
+			}
+		}
+
+		public List<UObject> UserObjects
+		{
+			get
+			{
+				List<UObject> list = new List<UObject>();
+				foreach(GObject obj in _gameObjects)
+				{
+					UObject uobj = (UObject)obj;
+					if(uobj != null)
+					{
+						list.Add(uobj);
+					}
+				}
+
+				return list;
+			}
+		}
+
 		public Scene()
 		{
 			// Create unique key for scene
@@ -39,6 +76,7 @@ namespace SharpEngine.Library.Objects
 		{
 			// Create new scene object
 			_gameScene = new Dictionary<int, Layer>();
+			_gameObjects = new List<GObject>();
 			// Create 15 layers for the scene
 			for(int i=0; i<15; ++i)
 			{
@@ -73,6 +111,7 @@ namespace SharpEngine.Library.Objects
 			if (_gameScene.ContainsKey(layer))
 			{
 				_gameScene[layer].Add(obj);
+				_gameObjects.Add(obj);
 			}else
 			{
 				// Report invalid key for layer
@@ -93,6 +132,7 @@ namespace SharpEngine.Library.Objects
 			{
 				// Call the layer objects remove method
 				bRetVal = _gameScene[layer].Remove(obj);
+				_gameObjects.Remove(obj);
 			}
 
 			return bRetVal;

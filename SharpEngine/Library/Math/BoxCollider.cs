@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEngine.Library.Objects;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,19 @@ namespace SharpEngine.Library.Math
 {
 	public class BoxCollider : ICollider
 	{
+		private UObject _owner;
+		public UObject Owner
+		{
+			get
+			{
+				return _owner;
+			}
+			set
+			{
+				_owner = value;
+			}
+		}
+
 		public Collider2DType Type
 		{
 			get
@@ -24,6 +38,8 @@ namespace SharpEngine.Library.Math
 				return min;
 			}
 		}
+
+		public event EventHandler CollisionEvent;
 
 		public bool Hit(ICollider other)
 		{
@@ -42,6 +58,11 @@ namespace SharpEngine.Library.Math
 			}
 
 			return bRetVal;
+		}
+
+		public bool Hit(UObject obj)
+		{
+			return Hit(obj.Collider);
 		}
 
 		private bool HitBox(BoxCollider other)

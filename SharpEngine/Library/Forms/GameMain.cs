@@ -1,5 +1,6 @@
 ﻿using SharpEngine.Library.Controller;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.Threading;
 using System;
 using System.Collections.Generic;
@@ -46,18 +47,31 @@ namespace SharpEngine.Library.Forms
 			// Instantiatre scene manager
 			_scManager = SceneManager.Instance;
 
+			controller = KeyboardController.Instance;
+			SetupScene();
 			// Start update thread for game loop
 			_updateNode = ThreadManager.CreateThread(GameLoop);
 			_updateNode.Start();
+		}
 
+		public virtual void SetupScene()
+		{
+			_scManager.Clear();
 			// Create a test scene
 			Scene gameScene = new Scene();
 			_scManager.Add(gameScene);
 			// Create a test object for the scene
-			SimpleBall ball = new SimpleBall(25, new Math.Vector2D { X = 100, Y = 100 }, new Rectangle { X = 2, Y = 2, Width = gameField.Width - 27, Height = gameField.Height - 27 });
-			_scManager.Add(ball);
+			SimpleGround ground = new SimpleGround(gameField.Height - 50, Math.Collider2DType.PlaneY);
+			_scManager.Add(ground, 6);
+			AddBall();
+		}
 
-			controller = KeyboardController.Instance;
+		private void AddBall()
+		{
+			RandomManager rm = RandomManager.Instance;
+			SimpleBall ball = new SimpleBall(25, new Math.Vector2D { X = rm.Next(25, gameField.Width), Y = rm.Next(10, 100) }, new Rectangle { X = 2, Y = 2, Width = gameField.Width - 27, Height = gameField.Height - 27 });
+			ball.Velocity.X = rm.Next(0, 4);
+			_scManager.Add(ball, 2);
 		}
 
 		public void GameLoop()
@@ -71,6 +85,7 @@ namespace SharpEngine.Library.Forms
 				{
 					ProcessUpdates(1.0f);
 					Render();
+					Physics();
 				}
 				timer.Stop();
 				float elapsed = timer.ElapsedMilliseconds;
@@ -95,6 +110,26 @@ namespace SharpEngine.Library.Forms
 			g.FillRectangle(Brushes.Black, 0, 0, _field.Width, _field.Height);
 			_scManager.Render(g);
 			Invalidate();
+		}
+
+		public void Physics()
+		{
+			// Check for physics collisions
+			if (_scManager.Scene != null)
+			{
+				List<UObject> items = _scManager.Scene.UserObjects;
+				int cnt = items.Count;
+				for (int i = 0; i < cnt; ++i)
+				{
+					if (i + 1 < cnt)
+					{
+						for (int j = i + 1; j < cnt; ++j)
+						{
+							items[i].Collider.Hit(items[j]);
+						}
+					}
+				}
+			}// End if Scene is not null
 		}
 
 		private void GameMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -133,6 +168,12 @@ namespace SharpEngine.Library.Forms
 				case Keys.Escape:
 				case Keys.Q:
 					Close();
+					break;
+				case Keys.R:
+					SetupScene();
+					break;
+				case Keys.Add:
+					AddBall();
 					break;
 			}
 		}

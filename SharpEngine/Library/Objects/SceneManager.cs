@@ -25,10 +25,23 @@ namespace SharpEngine.Library.Objects
 
 		private Stack<Scene> _scenes;
 
+		public Scene Scene
+		{
+			get
+			{
+				Scene sc = null;
+				if(_scenes.Count > 0)
+				{
+					sc = _scenes.Peek();
+				}
+				return sc;
+			}
+		}
+
 		public SceneManager()
 		{
 			// Create new scene
-			_scenes = new Stack<Scene>();
+			Clear();
 		}
 
 		public void Add(GObject obj)
@@ -63,6 +76,11 @@ namespace SharpEngine.Library.Objects
 			{
 				_scenes.Peek().Render(g);
 			}
+		}
+
+		public void Clear()
+		{
+			_scenes = new Stack<Scene>();
 		}
 	}
 }
