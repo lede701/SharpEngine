@@ -10,6 +10,19 @@ namespace SharpEngine.Library.Math
 {
 	public class PlaneCollider : ICollider
 	{
+		#region ICollider parameters
+		private bool _isActive;
+		public bool IsActive
+		{
+			get
+			{
+				return _isActive;
+			}
+			set
+			{
+				_isActive = value;
+			}
+		}
 		private UObject _owner;
 		public UObject Owner
 		{
@@ -31,8 +44,6 @@ namespace SharpEngine.Library.Math
 			}
 		}
 
-		public event EventHandler CollisionEvent;
-
 		private Collider2DType _type;
 		public Collider2DType Type
 		{
@@ -41,6 +52,10 @@ namespace SharpEngine.Library.Math
 				return _type;
 			}
 		}
+
+		#endregion
+
+		public event EventHandler CollisionEvent;
 
 		public PlaneCollider()
 		{

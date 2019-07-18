@@ -103,29 +103,51 @@ namespace SharpEngine.Library.Objects
 			Collider.CollisionEvent += OnCollisionHandler;
 		}
 
+		private float _lastVelocity;
 		private void OnCollisionHandler(object sender, EventArgs e)
 		{
 			UObject who = ((CollisionEventArgs)e).Who;
-			PlaneCollider cldr = who.Collider as PlaneCollider;
-			if (cldr != null)
+			switch(who.Collider.Type)
 			{
-				Position.Y = cldr.Tupal - _radius;
-				Velocity.Y *= -0.6f;
-			}
-			if(System.Math.Abs(Velocity.Y) < 1.05f)
-			{
-				_isMoving = false;
+				case Collider2DType.PlaneY:
+					{
+						PlaneCollider cldr = who.Collider as PlaneCollider;
+						Position.Y = cldr.Tupal - _radius;
+						Velocity.Y *= -0.8f;
+						float diffVel = _lastVelocity - System.Math.Abs(Velocity.Y);
+						if (System.Math.Abs(diffVel) < 0.05f)
+						{
+							_isMoving = false;
+						}
+						_lastVelocity = System.Math.Abs(Velocity.Y);
+					}
+					break;
+				case Collider2DType.Circle:
+					{
+						// Need to get collision point
+					}
+					break;
+
 			}
 		}
 
 		public void Render(Graphics g)
 		{
+			// Updated to use Radius and cetner point
+			Rectangle rect = new Rectangle
+			{
+				X = (int)Position.X - _radius,
+				Y = (int)Position.Y - _radius,
+				Width = (int)_radius * 2,
+				Height = (int)_radius * 2
+			};
+
 			if (_isMoving)
 			{
-				g.FillEllipse(Brushes.Red, Position.X, Position.Y, _radius, _radius);
+				g.FillEllipse(Brushes.Red, rect);
 			}else
 			{
-				g.FillEllipse(Brushes.Green, Position.X, Position.Y, _radius, _radius);
+				g.FillEllipse(Brushes.Green, rect);
 			}
 		}
 

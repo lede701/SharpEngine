@@ -9,6 +9,18 @@ namespace SharpEngine.Library.Math
 {
 	public class BoxCollider : ICollider
 	{
+		private bool _isActive;
+		public bool IsActive
+		{
+			get
+			{
+				return _isActive;
+			}
+			set
+			{
+				_isActive = value;
+			}
+		}
 		private UObject _owner;
 		public UObject Owner
 		{

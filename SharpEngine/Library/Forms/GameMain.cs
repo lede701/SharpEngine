@@ -23,6 +23,8 @@ namespace SharpEngine.Library.Forms
 
 		private Object _lock;
 		private ThreadManager.ThreadNode _updateNode;
+		private ThreadManager.ThreadNode _physicsNode;
+		private ThreadManager.ThreadNode _spawner;
 		private IController controller;
 
 		private bool[] _keyPressed;
@@ -52,26 +54,48 @@ namespace SharpEngine.Library.Forms
 			// Start update thread for game loop
 			_updateNode = ThreadManager.CreateThread(GameLoop);
 			_updateNode.Start();
+
+			_physicsNode = ThreadManager.CreateThread(PhysicsLoop);
+			_physicsNode.Start();
+
+			_spawner = ThreadManager.CreateThread(SpawnBall);
+			_spawner.Start();
+		}
+
+		private void SpawnBall()
+		{
+			for(int i=0; i<100; ++i)
+			{
+				AddBall();
+				ThreadManager.Sleep(100, _spawner);
+			}
 		}
 
 		public virtual void SetupScene()
 		{
-			_scManager.Clear();
-			// Create a test scene
-			Scene gameScene = new Scene();
-			_scManager.Add(gameScene);
-			// Create a test object for the scene
-			SimpleGround ground = new SimpleGround(gameField.Height - 50, Math.Collider2DType.PlaneY);
-			_scManager.Add(ground, 6);
+			lock (_lock)
+			{
+				_scManager.Clear();
+				// Create a test scene
+				Scene gameScene = new Scene();
+				_scManager.Add(gameScene);
+				// Create a test object for the scene
+				SimpleGround ground = new SimpleGround(gameField.Height - 50, Math.Collider2DType.PlaneY);
+				_scManager.Add(ground, 6);
+			}
 			AddBall();
 		}
 
 		private void AddBall()
 		{
-			RandomManager rm = RandomManager.Instance;
-			SimpleBall ball = new SimpleBall(25, new Math.Vector2D { X = rm.Next(25, gameField.Width), Y = rm.Next(10, 100) }, new Rectangle { X = 2, Y = 2, Width = gameField.Width - 27, Height = gameField.Height - 27 });
-			ball.Velocity.X = rm.Next(0, 4);
-			_scManager.Add(ball, 2);
+			lock (_lock)
+			{
+				RandomManager rm = RandomManager.Instance;
+				int radius = 10;
+				SimpleBall ball = new SimpleBall(radius, new Math.Vector2D { X = rm.Next(25, gameField.Width), Y = rm.Next(10, 100) }, new Rectangle { X = 2, Y = 2, Width = gameField.Width - radius, Height = gameField.Height - radius });
+				ball.Velocity.X = 5 - rm.Next(0, 10);
+				_scManager.Add(ball, 2);
+			}
 		}
 
 		public void GameLoop()
@@ -85,11 +109,28 @@ namespace SharpEngine.Library.Forms
 				{
 					ProcessUpdates(1.0f);
 					Render();
-					Physics();
 				}
 				timer.Stop();
 				float elapsed = timer.ElapsedMilliseconds;
 				if(elapsed < frameTime)
+				{
+					int sleetTime = (int)(frameTime - elapsed);
+					ThreadManager.Sleep(sleetTime, _updateNode);
+				}
+
+			}
+		}
+
+		public void PhysicsLoop()
+		{
+			float frameTime = 1000.0f / 60.0f;
+			while (_isRunning)
+			{
+				Stopwatch timer = Stopwatch.StartNew();
+				Physics();
+				timer.Stop();
+				float elapsed = timer.ElapsedMilliseconds;
+				if (elapsed < frameTime)
 				{
 					int sleetTime = (int)(frameTime - elapsed);
 					ThreadManager.Sleep(sleetTime, _updateNode);
@@ -117,7 +158,11 @@ namespace SharpEngine.Library.Forms
 			// Check for physics collisions
 			if (_scManager.Scene != null)
 			{
-				List<UObject> items = _scManager.Scene.UserObjects;
+				List<UObject> items;
+				lock (_lock)
+				{
+					items = _scManager.Scene.UserObjects;
+				}
 				int cnt = items.Count;
 				for (int i = 0; i < cnt; ++i)
 				{
@@ -140,7 +185,10 @@ namespace SharpEngine.Library.Forms
 				controller = null;
 			}
 			_isRunning = false;
+			// Shutodwn all threads
 			ThreadManager.MasterThread.IsRunning = false;
+			// Kill all long running threads
+			ThreadManager.Close();
 		}
 
 		private void GameMain_Paint(object sender, PaintEventArgs e)

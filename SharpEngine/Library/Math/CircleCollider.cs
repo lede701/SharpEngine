@@ -10,6 +10,18 @@ namespace SharpEngine.Library.Math
 {
 	public class CircleCollider : ICollider
 	{
+		private bool _isActive;
+		public bool IsActive
+		{
+			get
+			{
+				return _isActive;
+			}
+			set
+			{
+				_isActive = value;
+			}
+		}
 		public float Radius;
 		public Vector2D Position;
 
@@ -85,6 +97,7 @@ namespace SharpEngine.Library.Math
 					break;
 				case Collider2DType.PlaneY:
 					{
+						// This is actually using Diameter and should be changed
 						bRetVal = Position.Y + Radius > other.Tupal;
 					}
 					break;

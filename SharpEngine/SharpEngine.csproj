@@ -57,6 +57,7 @@
     <Compile Include="Library\Forms\GameMain.Designer.cs">
       <DependentUpon>GameMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\GraphicsSystem\Sprite.cs" />
     <Compile Include="Library\Math\BoxCollider.cs" />
     <Compile Include="Library\Math\CircleCollider.cs" />
     <Compile Include="Library\Math\ColliderType.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Library\Objects\SimpleBall.cs" />
     <Compile Include="Library\Objects\SimpleGround.cs" />
     <Compile Include="Library\Objects\UObject.cs" />
+    <Compile Include="Library\Objects\USpriteObject.cs" />
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
     <Compile Include="Program.cs" />
@@ -100,6 +102,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Media\Hero\fighter.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

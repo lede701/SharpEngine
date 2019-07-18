@@ -9,6 +9,7 @@ namespace SharpEngine.Library.Math
 {
 	public interface ICollider
 	{
+		bool IsActive { get; set; }
 		UObject Owner { get; set; }
 		Collider2DType Type { get; }
 		bool Hit(ICollider other);

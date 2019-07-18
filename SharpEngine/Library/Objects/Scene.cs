@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEngine.Library.Threading;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -88,6 +89,7 @@ namespace SharpEngine.Library.Objects
 		{
 			foreach(Layer layer in _gameScene.Values)
 			{
+				// Render each object in layer
 				layer.Render(g);
 			}
 		}
@@ -96,6 +98,7 @@ namespace SharpEngine.Library.Objects
 		{
 			foreach (Layer layer in _gameScene.Values)
 			{
+				// Update each object in layer
 				layer.Update(deltaTime);
 			}
 		}
