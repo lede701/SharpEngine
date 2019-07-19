@@ -1,4 +1,6 @@
 ﻿using SharpEngine.Library.Controller;
+using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.Threading;
@@ -66,8 +68,8 @@ namespace SharpEngine.Library.Forms
 		{
 			for(int i=0; i<100; ++i)
 			{
-				AddBall();
-				ThreadManager.Sleep(100, _spawner);
+				//AddBall();
+				//ThreadManager.Sleep(100, _spawner);
 			}
 		}
 
@@ -82,8 +84,29 @@ namespace SharpEngine.Library.Forms
 				// Create a test object for the scene
 				SimpleGround ground = new SimpleGround(gameField.Height - 50, Math.Collider2DType.PlaneY);
 				_scManager.Add(ground, 6);
+				String fileName = Application.ExecutablePath;
+				Stack<String> pathParts = new Stack<String>(fileName.Split('\\').ToList());
+				// Remove the development paths for now
+				pathParts.Pop();
+				pathParts.Pop();
+				pathParts.Pop();
+
+				// Put path back together as a string
+				fileName = String.Join("\\", pathParts.Reverse().ToArray());
+				fileName = String.Format("{0}\\Media\\Hero\\fighter.png", fileName);
+				
+				Sprite hero = new Sprite(fileName);
+				USpriteObject player = new USpriteObject(hero);
+				player.Position.X = 100;
+				player.Position.Y = 100;
+				CircleCollider playerCollider = new CircleCollider();
+				playerCollider.Position = player.Position;
+				player.Collider = playerCollider;
+				player.Controller = controller;
+
+				_scManager.Add(player);
 			}
-			AddBall();
+			//AddBall();
 		}
 
 		private void AddBall()

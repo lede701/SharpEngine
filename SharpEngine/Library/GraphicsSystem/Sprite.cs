@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,7 +19,10 @@ namespace SharpEngine.Library.GraphicsSystem
 
 		public Sprite(String filename)
 		{
-			SpriteSheet = new Bitmap(filename);
+			if (File.Exists(filename))
+			{
+				SpriteSheet = new Bitmap(filename);
+			}
 			CenterPoint = new Vector2D();
 			Frames = new List<Rectangle>();
 			CurrentFrame = 0;
@@ -39,6 +43,15 @@ namespace SharpEngine.Library.GraphicsSystem
 						// Incrament to next frame and make sure we don't create an invalide index for the list
 						CurrentFrame = (CurrentFrame + 1) % Frames.Count;
 					}
+				}else
+				{
+					rect = new Rectangle
+					{
+						X = 0,
+						Y = 0,
+						Width = SpriteSheet.Width,
+						Height = SpriteSheet.Height
+					};
 				}
 
 				return rect;

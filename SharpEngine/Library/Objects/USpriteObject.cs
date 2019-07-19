@@ -5,22 +5,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpEngine.Library.Controller;
+using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 
 namespace SharpEngine.Library.Objects
 {
 	public class USpriteObject : UObject
 	{
-		private Bitmap _spriteSheet;
-		public Bitmap SpriteSheet
+		private Sprite _sprite;
+		public Sprite Sprite
 		{
 			get
 			{
-				return _spriteSheet;
+				return _sprite;
 			}
 			set
 			{
-				_spriteSheet = value;
+				_sprite = value;
 			}
 		}
 		private IController _controller;
@@ -91,20 +92,37 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
-		public USpriteObject()
+		public USpriteObject(Sprite sprite)
 		{
 			_transform = new Transform();
 			_key = Guid.NewGuid().ToString();
+			Sprite = sprite;
+			
 		}
 
 		public void Render(Graphics g)
 		{
-			
+			g.TranslateTransform(Position.X, Position.Y);
+			Rectangle src = Sprite.Frame;
+			Rectangle dest = new Rectangle
+			{
+				X = src.X,
+				Y = src.Y,
+				Width = (int)((float)src.Width * 0.25f),
+				Height = (int)((float)src.Height * 0.25f)
+			};
+			g.DrawImage(Sprite.SpriteSheet, dest, src, GraphicsUnit.Pixel );
+			g.TranslateTransform(-Position.X, -Position.Y);
 		}
 
 		public void Update(float deltaTime)
 		{
-			
+			if (Controller != null)
+			{
+				Position.X = (Velocity.X * deltaTime * Controller.GetValue(Input.Right)) - (Velocity.X * deltaTime * Controller.GetValue(Input.Left));
+				Position.Y = (Velocity.Y * deltaTime * Controller.GetValue(Input.Down)) - (Velocity.Y * deltaTime * Controller.GetValue(Input.Up));
+			}
+
 		}
 	}
 }
