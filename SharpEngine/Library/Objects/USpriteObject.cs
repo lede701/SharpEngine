@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpEngine.Library.Controller;
+using SharpEngine.Library.Events;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 
@@ -33,7 +34,7 @@ namespace SharpEngine.Library.Objects
 			}
 			set
 			{
-				value = _controller;
+				_controller = value;
 			}
 		}
 
@@ -46,7 +47,50 @@ namespace SharpEngine.Library.Objects
 			}
 			set
 			{
+				// Make sure old collider is remove form the event handler to this object
+				if(_collider != null)
+				{
+					_collider.CollisionEvent -= OnCollision;
+				}
 				_collider = value;
+				// Connect collider to event handler
+				_collider.CollisionEvent += OnCollision;
+			}
+		}
+
+		public virtual void OnCollision(object sender, EventArgs e)
+		{
+			if(e is CollisionEventArgs)
+			{
+				CollisionEventArgs ce = (CollisionEventArgs)e;
+				switch(ce.Who.Collider.Type)
+				{
+					case Collider2DType.PlaneY:
+						{
+							PlaneCollider pc = (PlaneCollider)ce.Who.Collider;
+							if (ce.Location == CollisionEventArgs.HitLocation.Top)
+							{
+								Position.Y = ce.Point.Y;
+							}
+							else
+							{
+								Position.Y = ce.Point.Y - (((CircleCollider)Collider).Radius * 2);
+							}
+						}
+						break;
+					case Collider2DType.PlaneX:
+						{
+							PlaneCollider pc = (PlaneCollider)ce.Who.Collider;
+							if(ce.Location == CollisionEventArgs.HitLocation.Left)
+							{
+								Position.X = pc.Tupal;
+							}else
+							{
+								Position.X = pc.Tupal - (((CircleCollider)Collider).Radius * 2);
+							}
+						}
+						break;
+				}
 			}
 		}
 
@@ -108,19 +152,46 @@ namespace SharpEngine.Library.Objects
 			{
 				X = src.X,
 				Y = src.Y,
-				Width = (int)((float)src.Width * 0.25f),
-				Height = (int)((float)src.Height * 0.25f)
+				Width = (int)((float)src.Width * 0.20f),
+				Height = (int)((float)src.Height * 0.20f)
 			};
 			g.DrawImage(Sprite.SpriteSheet, dest, src, GraphicsUnit.Pixel );
 			g.TranslateTransform(-Position.X, -Position.Y);
+#if DEBUG
+			DebugRender(g);
+#endif
+		}
+
+		public void DebugRender(Graphics g)
+		{
+			if(Collider != null)
+			{
+				switch(Collider.Type)
+				{
+					case Collider2DType.Circle:
+						CircleCollider cc = (CircleCollider)Collider;
+						Brush diag = new SolidBrush(Color.FromArgb(15, 0, 255, 0));
+						Rectangle cldrCircle = new Rectangle
+						{
+							X = (int)cc.Position.X,
+							Y = (int)cc.Position.Y,
+							Width = (int)cc.Radius * 2,
+							Height = (int)cc.Radius * 2
+						};
+						g.DrawEllipse(Pens.LightGreen, cldrCircle);
+						g.FillEllipse(Brushes.LightGreen, cc.Position.X + cc.Radius, cc.Position.Y + cc.Radius, 4, 4);
+						g.FillEllipse(diag, cldrCircle);
+						break;
+				}
+			}
 		}
 
 		public void Update(float deltaTime)
 		{
 			if (Controller != null)
 			{
-				Position.X = (Velocity.X * deltaTime * Controller.GetValue(Input.Right)) - (Velocity.X * deltaTime * Controller.GetValue(Input.Left));
-				Position.Y = (Velocity.Y * deltaTime * Controller.GetValue(Input.Down)) - (Velocity.Y * deltaTime * Controller.GetValue(Input.Up));
+				Position.X += (Velocity.X * deltaTime * Controller.GetValue(Input.Right)) - (Velocity.X * deltaTime * Controller.GetValue(Input.Left));
+				Position.Y += (Velocity.Y * deltaTime * Controller.GetValue(Input.Down)) - (Velocity.Y * deltaTime * Controller.GetValue(Input.Up));
 			}
 
 		}

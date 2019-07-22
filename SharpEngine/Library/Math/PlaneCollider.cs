@@ -127,9 +127,10 @@ namespace SharpEngine.Library.Math
 			switch(Type)
 			{
 				case Collider2DType.PlaneX:
+					bRetVal = other.Position.X < _tupal || other.Position.X + other.Radius > _tupal;
 					break;
 				case Collider2DType.PlaneY:
-					bRetVal = other.Position.Y + other.Radius > _tupal;
+					bRetVal = other.Position.Y + (other.Radius * 2) > _tupal;
 					break;
 			}
 			return bRetVal;

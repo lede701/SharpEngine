@@ -10,7 +10,16 @@ namespace SharpEngine.Library.Events
 {
 	public class CollisionEventArgs : EventArgs
 	{
+		public enum HitLocation
+		{
+			Top,
+			Bottom,
+			Left,
+			Right
+		};
+
 		public UObject Who;
 		public Vector2D Point;
+		public HitLocation Location;
 	}
 }

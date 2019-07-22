@@ -76,7 +76,9 @@ namespace SharpEngine.Library.Math
 			{
 				CollisionEventArgs e = new CollisionEventArgs
 				{
-					Who = obj
+					Who = obj,
+					Point = _hitPoint,
+					Location = _hitLocation
 				};
 				CollisionEvent?.Invoke(this, e);
 			}
@@ -84,7 +86,11 @@ namespace SharpEngine.Library.Math
 			return bRetVal;
 		}
 
-		private bool HitPlane(PlaneCollider other)
+		// Collision object to return when collision occure
+		private Vector2D _hitPoint;
+		private CollisionEventArgs.HitLocation _hitLocation;
+
+		public bool HitPlane(PlaneCollider other)
 		{
 			bool bRetVal = false;
 
@@ -92,13 +98,53 @@ namespace SharpEngine.Library.Math
 			{
 				case Collider2DType.PlaneX:
 					{
+						// Check where in the world space the plane is locatated
+						if(World.Instance.CenterOfWorld.X < other.Tupal)
+						{
+							if (Position.X + (Radius * 2) > other.Tupal)
+							{
+								_hitPoint = new Vector2D
+								{
+									X = other.Tupal,
+									Y = Position.Y
+								};
+								bRetVal = true;
+								// Tell collider if it was on the left or right the collision occured
+								_hitLocation = CollisionEventArgs.HitLocation.Right;
+							}
 
+						}
+						else
+						{
+							if (Position.X < other.Tupal)
+							{
+								_hitPoint = new Vector2D
+								{
+									X = other.Tupal,
+									Y = Position.Y
+								};
+								bRetVal = true;
+								// Tell collider if it was on the left or right the collision occured
+								_hitLocation = CollisionEventArgs.HitLocation.Left;
+							}
+
+						}
 					}
 					break;
 				case Collider2DType.PlaneY:
 					{
 						// This is actually using Diameter and should be changed
-						bRetVal = Position.Y + Radius > other.Tupal;
+						if(Position.Y + (Radius * 2) > other.Tupal || Position.Y < other.Tupal)
+						{
+							_hitPoint = new Vector2D
+							{
+								X = Position.X,
+								Y = other.Tupal
+							};
+							bRetVal = true;
+							// Tell collider if it was on the top or bottom the collision occured
+							_hitLocation = (Position.Y + (Radius * 2) > other.Tupal) ? CollisionEventArgs.HitLocation.Bottom : CollisionEventArgs.HitLocation.Top;
+						}
 					}
 					break;
 			}

@@ -19,37 +19,48 @@ namespace SharpEngine.Library.Forms
 {
 	public partial class GameMain : Form
 	{
+		// Graphics system
 		private Bitmap _field;
-		private bool _isRunning;
-		private SceneManager _scManager;
+		private Graphics _gfx;
 
+		private bool _isRunning;
+
+		public SceneManager SceneManager
+		{
+			get
+			{
+				return SceneManager.Instance;
+			}
+		}
+
+		// Game engine locking objects
 		private Object _lock;
+		private Object _gfxLock;
+		// Game engine dedicated threads
 		private ThreadManager.ThreadNode _updateNode;
 		private ThreadManager.ThreadNode _physicsNode;
-		private ThreadManager.ThreadNode _spawner;
+		// Game engine base controller
 		private IController controller;
 
-		private bool[] _keyPressed;
+		// Scene clear color
+		private Brush _clrColor;
 
 		public GameMain()
 		{
 			InitializeComponent();
-			// TODO: This is messy in Windows so we will need to get direct input
-			_keyPressed = new bool[256];
-			for(int i=0; i<256; ++i)
-			{
-				_keyPressed[i] = false;
-			}
+			_clrColor = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
 
 			// Create backbuffer render frame
 			_field = new Bitmap(gameField.Width, gameField.Height);
+			_gfx = Graphics.FromImage(_field);
+			World.Instance.WorldSize.X = gameField.Width;
+			World.Instance.WorldSize.Y = gameField.Height;
 
 			// Start the running process
 			_isRunning = true;
 			// Create locking object for threading
 			_lock = new Object();
-			// Instantiatre scene manager
-			_scManager = SceneManager.Instance;
+			_gfxLock = new Object();
 
 			controller = KeyboardController.Instance;
 			SetupScene();
@@ -59,31 +70,25 @@ namespace SharpEngine.Library.Forms
 
 			_physicsNode = ThreadManager.CreateThread(PhysicsLoop);
 			_physicsNode.Start();
-
-			_spawner = ThreadManager.CreateThread(SpawnBall);
-			_spawner.Start();
-		}
-
-		private void SpawnBall()
-		{
-			for(int i=0; i<100; ++i)
-			{
-				//AddBall();
-				//ThreadManager.Sleep(100, _spawner);
-			}
 		}
 
 		public virtual void SetupScene()
 		{
 			lock (_lock)
 			{
-				_scManager.Clear();
+				SceneManager.Clear();
 				// Create a test scene
 				Scene gameScene = new Scene();
-				_scManager.Add(gameScene);
-				// Create a test object for the scene
-				SimpleGround ground = new SimpleGround(gameField.Height - 50, Math.Collider2DType.PlaneY);
-				_scManager.Add(ground, 6);
+				SceneManager.Add(gameScene);
+				// Create Ground object
+				SimpleGround ground = new SimpleGround(gameField.Height - 25, Collider2DType.PlaneY);
+				SimpleGround left = new SimpleGround(10, Collider2DType.PlaneX);
+				SimpleGround right = new SimpleGround(gameField.Width - 10, Collider2DType.PlaneX);
+
+				SceneManager.Add(ground, 1);
+				SceneManager.Add(left, 1);
+				SceneManager.Add(right, 1);
+				// Create path to sprite sheet
 				String fileName = Application.ExecutablePath;
 				Stack<String> pathParts = new Stack<String>(fileName.Split('\\').ToList());
 				// Remove the development paths for now
@@ -94,30 +99,24 @@ namespace SharpEngine.Library.Forms
 				// Put path back together as a string
 				fileName = String.Join("\\", pathParts.Reverse().ToArray());
 				fileName = String.Format("{0}\\Media\\Hero\\fighter.png", fileName);
-				
+
+				// Create the Hero sprite
+				float colliderRadius = 42;
 				Sprite hero = new Sprite(fileName);
 				USpriteObject player = new USpriteObject(hero);
-				player.Position.X = 100;
-				player.Position.Y = 100;
+				player.Position.X = (_field.Width / 2) - colliderRadius;
+				player.Position.Y = _field.Height - 150;
+				player.Velocity.X = 10;
+				player.Velocity.Y = 8;
+				// Create collider
 				CircleCollider playerCollider = new CircleCollider();
 				playerCollider.Position = player.Position;
+				playerCollider.Radius = colliderRadius;
 				player.Collider = playerCollider;
+				// Connect keyboard controoler
 				player.Controller = controller;
 
-				_scManager.Add(player);
-			}
-			//AddBall();
-		}
-
-		private void AddBall()
-		{
-			lock (_lock)
-			{
-				RandomManager rm = RandomManager.Instance;
-				int radius = 10;
-				SimpleBall ball = new SimpleBall(radius, new Math.Vector2D { X = rm.Next(25, gameField.Width), Y = rm.Next(10, 100) }, new Rectangle { X = 2, Y = 2, Width = gameField.Width - radius, Height = gameField.Height - radius });
-				ball.Velocity.X = 5 - rm.Next(0, 10);
-				_scManager.Add(ball, 2);
+				SceneManager.Add(player, 5);
 			}
 		}
 
@@ -125,31 +124,36 @@ namespace SharpEngine.Library.Forms
 		{
 			// Calculate how many milliseconds in a frame
 			float frameTime = 1000.0f / 60.0f;
+			float deltaTime = 1.0f;
+			Stopwatch timer = new Stopwatch();
 			while(_isRunning)
 			{
-				Stopwatch timer = Stopwatch.StartNew();
+				timer.Reset();
+				timer.Start();
 				lock (_lock)
 				{
-					ProcessUpdates(1.0f);
+					ProcessUpdates(deltaTime);
 					Render();
 				}
 				timer.Stop();
 				float elapsed = timer.ElapsedMilliseconds;
 				if(elapsed < frameTime)
 				{
-					int sleetTime = (int)(frameTime - elapsed);
-					ThreadManager.Sleep(sleetTime, _updateNode);
+					// Mitigate the elapsed time so delta time doesn't change
+					int sleep = (int)(frameTime - deltaTime);
+					ThreadManager.Sleep(sleep, _updateNode);
 				}
-
 			}
 		}
 
 		public void PhysicsLoop()
 		{
 			float frameTime = 1000.0f / 60.0f;
+			Stopwatch timer = new Stopwatch();
 			while (_isRunning)
 			{
-				Stopwatch timer = Stopwatch.StartNew();
+				timer.Reset();
+				timer.Start();
 				Physics();
 				timer.Stop();
 				float elapsed = timer.ElapsedMilliseconds;
@@ -164,27 +168,29 @@ namespace SharpEngine.Library.Forms
 
 		public void ProcessUpdates(float deltaTime)
 		{
-			_scManager.Update(deltaTime);
+			SceneManager.Update(deltaTime);
 		}
 
 		public void Render()
 		{
 			// Backbuffer rendering
-			Graphics g = Graphics.FromImage(_field);
-			g.FillRectangle(Brushes.Black, 0, 0, _field.Width, _field.Height);
-			_scManager.Render(g);
+			lock (_gfxLock)
+			{
+				_gfx.FillRectangle(_clrColor, 0, 0, _field.Width, _field.Height);
+				SceneManager.Render(_gfx);
+			}
 			Invalidate();
 		}
 
 		public void Physics()
 		{
 			// Check for physics collisions
-			if (_scManager.Scene != null)
+			if (SceneManager.Scene != null)
 			{
 				List<UObject> items;
 				lock (_lock)
 				{
-					items = _scManager.Scene.UserObjects;
+					items = SceneManager.Scene.UserObjects;
 				}
 				int cnt = items.Count;
 				for (int i = 0; i < cnt; ++i)
@@ -212,28 +218,31 @@ namespace SharpEngine.Library.Forms
 			ThreadManager.MasterThread.IsRunning = false;
 			// Kill all long running threads
 			ThreadManager.Close();
+			// After threads are closed dispose of Windows tools
+			if (_gfx != null)
+			{
+				_gfx.Dispose();
+			}
+			if (_field != null)
+			{
+				_field.Dispose();
+			}
 		}
 
 		private void GameMain_Paint(object sender, PaintEventArgs e)
 		{
 			// Transfer backbuffer to display image
-			lock(_lock)
+			lock (_gfxLock)
 			{
 				Graphics g = gameField.CreateGraphics();
 				g.DrawImage(_field, 0, 0, _field.Width, _field.Height);
 			}
 		}
 
-		private void OnKeyDown(object sender, KeyEventArgs e)
-		{
-			// Record key was pressed
-			_keyPressed[e.KeyValue] = true;
-		}
-
 		private void OnKeyUp(object sender, KeyEventArgs e)
 		{
 			// Create a key pressed event
-			_keyPressed[e.KeyValue] = false;
+			//_keyPressed[e.KeyValue] = false;
 			switch(e.KeyCode)
 			{
 				case Keys.Escape:
@@ -242,9 +251,6 @@ namespace SharpEngine.Library.Forms
 					break;
 				case Keys.R:
 					SetupScene();
-					break;
-				case Keys.Add:
-					AddBall();
 					break;
 			}
 		}

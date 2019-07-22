@@ -103,14 +103,30 @@ namespace SharpEngine.Library.Objects
 			{
 				rect.X = 0;
 				rect.Width = 1000;
-				rect.Y = (int)Ground;
-				rect.Height = (int)Ground+20;
-			}else
+				if (Ground > World.Instance.CenterOfWorld.Y)
+				{
+					rect.Y = (int)Ground;
+					rect.Height = (int)(World.Instance.WorldSize.Y - Ground);
+				}
+				else
+				{
+					rect.Y = 0;
+					rect.Height = (int)Ground;
+				}
+			}
+			else
 			{
 				rect.Y = 0;
 				rect.Height = 1000;
-				rect.X = (int)Ground;
-				rect.Width = (int)Ground+20;
+				if(Ground > World.Instance.CenterOfWorld.X)
+				{
+					rect.X = (int)Ground;
+					rect.Width = (int)(World.Instance.WorldSize.X - Ground);
+				}else
+				{
+					rect.X = 0;
+					rect.Width = (int)Ground;
+				}
 			}
 			g.FillRectangle(Brushes.Wheat, rect);
 		}

@@ -73,6 +73,7 @@
     <Compile Include="Library\Objects\SimpleGround.cs" />
     <Compile Include="Library\Objects\UObject.cs" />
     <Compile Include="Library\Objects\USpriteObject.cs" />
+    <Compile Include="Library\Objects\World.cs" />
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
     <Compile Include="Program.cs" />
