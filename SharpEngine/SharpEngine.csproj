@@ -57,6 +57,7 @@
     <Compile Include="Library\Forms\GameMain.Designer.cs">
       <DependentUpon>GameMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Library\GraphicsSystem\GraphicsManager.cs" />
     <Compile Include="Library\GraphicsSystem\Sprite.cs" />
     <Compile Include="Library\Math\BoxCollider.cs" />
     <Compile Include="Library\Math\CircleCollider.cs" />
@@ -71,11 +72,15 @@
     <Compile Include="Library\Objects\SceneManager.cs" />
     <Compile Include="Library\Objects\SimpleBall.cs" />
     <Compile Include="Library\Objects\SimpleGround.cs" />
+    <Compile Include="Library\Objects\SimpleText.cs" />
     <Compile Include="Library\Objects\UObject.cs" />
     <Compile Include="Library\Objects\USpriteObject.cs" />
     <Compile Include="Library\Objects\World.cs" />
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
+    <Compile Include="Library\User\Objects\ShipBlaster.cs" />
+    <Compile Include="Library\User\Objects\SpriteShip.cs" />
+    <Compile Include="Library\User\Objects\SpriteStarField.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Library\Forms\GameMain.resx">

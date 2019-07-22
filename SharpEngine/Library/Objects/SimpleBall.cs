@@ -74,6 +74,13 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public Vector2D Scale
+		{
+			get
+			{
+				return Transform.Scale;
+			}
+		}
 		public float Rotation
 		{
 			get

@@ -4,6 +4,7 @@ using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.Threading;
+using SharpEngine.Library.User.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -45,6 +46,7 @@ namespace SharpEngine.Library.Forms
 		// Scene clear color
 		private Brush _clrColor;
 
+		public SimpleText ObjectCount;
 		public GameMain()
 		{
 			InitializeComponent();
@@ -53,6 +55,7 @@ namespace SharpEngine.Library.Forms
 			// Create backbuffer render frame
 			_field = new Bitmap(gameField.Width, gameField.Height);
 			_gfx = Graphics.FromImage(_field);
+			_gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
 			World.Instance.WorldSize.X = gameField.Width;
 			World.Instance.WorldSize.Y = gameField.Height;
 
@@ -81,6 +84,7 @@ namespace SharpEngine.Library.Forms
 				Scene gameScene = new Scene();
 				SceneManager.Add(gameScene);
 				// Create Ground object
+				/*
 				SimpleGround ground = new SimpleGround(gameField.Height - 25, Collider2DType.PlaneY);
 				SimpleGround left = new SimpleGround(10, Collider2DType.PlaneX);
 				SimpleGround right = new SimpleGround(gameField.Width - 10, Collider2DType.PlaneX);
@@ -88,6 +92,7 @@ namespace SharpEngine.Library.Forms
 				SceneManager.Add(ground, 1);
 				SceneManager.Add(left, 1);
 				SceneManager.Add(right, 1);
+				*/
 				// Create path to sprite sheet
 				String fileName = Application.ExecutablePath;
 				Stack<String> pathParts = new Stack<String>(fileName.Split('\\').ToList());
@@ -103,7 +108,7 @@ namespace SharpEngine.Library.Forms
 				// Create the Hero sprite
 				float colliderRadius = 42;
 				Sprite hero = new Sprite(fileName);
-				USpriteObject player = new USpriteObject(hero);
+				SpriteShip player = new SpriteShip(hero);
 				player.Position.X = (_field.Width / 2) - colliderRadius;
 				player.Position.Y = _field.Height - 150;
 				player.Velocity.X = 10;
@@ -116,14 +121,29 @@ namespace SharpEngine.Library.Forms
 				// Connect keyboard controoler
 				player.Controller = controller;
 
+				// Create star field
+				SpriteStarField fld = new SpriteStarField();
+				SceneManager.Add(fld, 1);
+
 				SceneManager.Add(player, 5);
+
+				ObjectCount = new SimpleText("Hello");
+				ObjectCount.Position.X = World.Instance.WorldSize.X - 180;
+				ObjectCount.Position.Y = 10;
+				ObjectCount.Size = 10.0f;
+#if DEBUG
+				SceneManager.Add(ObjectCount, 6);
+#endif
 			}
 		}
 
 		public void GameLoop()
 		{
+			// Delay so the computer and stuff get settled
+			ThreadManager.Sleep(5000, _updateNode);
 			// Calculate how many milliseconds in a frame
-			float frameTime = 1000.0f / 60.0f;
+			float frameSampleTime = Stopwatch.Frequency / 60.0f;
+			
 			float deltaTime = 1.0f;
 			Stopwatch timer = new Stopwatch();
 			while(_isRunning)
@@ -136,13 +156,17 @@ namespace SharpEngine.Library.Forms
 					Render();
 				}
 				timer.Stop();
-				float elapsed = timer.ElapsedMilliseconds;
-				if(elapsed < frameTime)
+				float elapsed = timer.ElapsedTicks;
+				frameTime = deltaTime;
+				deltaTime = elapsed / frameSampleTime;
+				/*
+				if(elapsed < frameSampleTime)
 				{
 					// Mitigate the elapsed time so delta time doesn't change
-					int sleep = (int)(frameTime - deltaTime);
+					int sleep = (int)(frameSampleTime - elapsed / Stopwatch.Frequency) / 1000;
 					ThreadManager.Sleep(sleep, _updateNode);
 				}
+				//*/
 			}
 		}
 
@@ -171,11 +195,13 @@ namespace SharpEngine.Library.Forms
 			SceneManager.Update(deltaTime);
 		}
 
+		private float frameTime;
 		public void Render()
 		{
 			// Backbuffer rendering
 			lock (_gfxLock)
 			{
+				ObjectCount.Text = String.Format("Game Objects: {0}", SceneManager.Scene.Count);
 				_gfx.FillRectangle(_clrColor, 0, 0, _field.Width, _field.Height);
 				SceneManager.Render(_gfx);
 			}

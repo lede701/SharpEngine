@@ -118,6 +118,13 @@ namespace SharpEngine.Library.Objects
 				return Transform.Velocity;
 			}
 		}
+		public Vector2D Scale
+		{
+			get
+			{
+				return Transform.Scale;
+			}
+		}
 
 		public float Rotation
 		{
@@ -144,7 +151,7 @@ namespace SharpEngine.Library.Objects
 			
 		}
 
-		public void Render(Graphics g)
+		public virtual void Render(Graphics g)
 		{
 			g.TranslateTransform(Position.X, Position.Y);
 			Rectangle src = Sprite.Frame;
@@ -152,8 +159,8 @@ namespace SharpEngine.Library.Objects
 			{
 				X = src.X,
 				Y = src.Y,
-				Width = (int)((float)src.Width * 0.20f),
-				Height = (int)((float)src.Height * 0.20f)
+				Width = (int)((float)src.Width * Scale.X),
+				Height = (int)((float)src.Height * Scale.Y)
 			};
 			g.DrawImage(Sprite.SpriteSheet, dest, src, GraphicsUnit.Pixel );
 			g.TranslateTransform(-Position.X, -Position.Y);
@@ -186,7 +193,7 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
-		public void Update(float deltaTime)
+		public virtual void Update(float deltaTime)
 		{
 			if (Controller != null)
 			{

@@ -54,10 +54,9 @@ namespace SharpEngine.Library.Objects
 				List<UObject> list = new List<UObject>();
 				foreach(GObject obj in _gameObjects)
 				{
-					UObject uobj = (UObject)obj;
-					if(uobj != null)
-					{
-						list.Add(uobj);
+					if(obj is UObject)
+					{ 
+						list.Add((UObject)obj);
 					}
 				}
 

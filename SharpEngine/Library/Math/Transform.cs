@@ -26,6 +26,15 @@ namespace SharpEngine.Library.Math
 			}
 		}
 
+		private Vector2D _scale;
+		public Vector2D Scale
+		{
+			get
+			{
+				return _scale;
+			}
+		}
+
 		private float _rotation;
 		public float Rotation
 		{
@@ -43,6 +52,7 @@ namespace SharpEngine.Library.Math
 		{
 			_position = new Vector2D { X = 0, Y = 0 };
 			_velocity = new Vector2D { X = 0, Y = 0 };
+			_scale = new Vector2D { X = 1.0f, Y = 1.0f };
 			_rotation = 0.0f;
 		}
 
@@ -50,6 +60,7 @@ namespace SharpEngine.Library.Math
 		{
 			_position = position;
 			_velocity = velocity;
+			_scale = new Vector2D { X = 1.0f, Y = 1.0f };
 			_rotation = 0.0f;
 		}
 	}

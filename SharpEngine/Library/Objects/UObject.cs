@@ -15,6 +15,7 @@ namespace SharpEngine.Library.Objects
 		Transform Transform { get; }
 		Vector2D Position { get; }
 		Vector2D Velocity { get; }
+		Vector2D Scale { get; }
 		float Rotation { get; }
 
 	}
