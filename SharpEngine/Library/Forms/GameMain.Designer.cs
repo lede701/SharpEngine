@@ -46,6 +46,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
 			this.ClientSize = new System.Drawing.Size(933, 705);
 			this.Controls.Add(this.gameField);
+			this.MaximizeBox = false;
+			this.MinimizeBox = false;
 			this.Name = "GameMain";
 			this.Text = "GameMain";
 			this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GameMain_FormClosed);

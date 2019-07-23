@@ -2,6 +2,7 @@
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.User.Player;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,6 +14,7 @@ namespace SharpEngine.Library.User.Objects
 {
 	public class SpriteShip : USpriteObject
 	{
+		public PlayerStatistics PlayerStats;
 		private Rectangle _boundary;
 		public SpriteShip(Sprite sprite) : base(sprite)
 		{
@@ -20,16 +22,41 @@ namespace SharpEngine.Library.User.Objects
 			{
 				X = 10,
 				Y = 50,
-				Height = (int)World.Instance.WorldSize.Y - 50,
+				Height = (int)World.Instance.WorldSize.Y - 80,
 				Width = (int)World.Instance.WorldSize.X - 10
 			};
 			Scale.X = Scale.Y = 0.20f;
-			_canFire = true;
+			PlayerStats = new PlayerStatistics();
 		}
 
-		private bool _canFire;
-		private int _nextFire;
 		private bool _canon;
+
+		public override void Render(Graphics g)
+		{
+			base.Render(g);
+			// Render player stats
+			float x = 10;
+			float y = World.Instance.WorldSize.Y - 25;
+			float maxWidth = (World.Instance.WorldSize.X - 20);
+			float wWidth = maxWidth * (PlayerStats.WeaponEnergy / PlayerStats.MaxWeaponEnergy);
+			float sWidth = maxWidth * (PlayerStats.ShieldEnergy / PlayerStats.MaxShieldEnergy);
+			using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 255, 0, 0)))
+			{
+				g.FillRectangle(brush, x, y, wWidth, 5);
+			}
+			using (Pen p = new Pen(Color.FromArgb(120, 255, 0, 0)))
+			{
+				g.DrawRectangle(p, x, y, maxWidth, 5);
+			}
+			using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 60, 177, 255)))
+			{
+				g.FillRectangle(brush, x, y + 7, sWidth, 5);
+			}
+			using (Pen p = new Pen(Color.FromArgb(120, 60, 177, 255)))
+			{
+				g.DrawRectangle(p, x, y+7, maxWidth, 5);
+			}
+		}
 
 		public override void Update(float deltaTime)
 		{
@@ -52,7 +79,7 @@ namespace SharpEngine.Library.User.Objects
 			{
 				Position.Y = _boundary.Y;
 			}
-			if(Controller.Get(Input.Fire) && _canFire)
+			if(Controller.Get(Input.Fire) && PlayerStats.CanFire)
 			{
 				// Spawn blaster object
 				ShipBlaster bolt = new ShipBlaster();
@@ -62,14 +89,10 @@ namespace SharpEngine.Library.User.Objects
 				bolt.Position.Y = Position.Y - 5.0f;
 				bolt.Velocity.Y = -20.0f;
 				SceneManager.Instance.Scene.Add(bolt, 4);
-				_canFire = false;
+				float damage = PlayerStats.Fire;
 			}
-			// Check if it is time to reset fire routines
-			if(_nextFire++ > 8)
-			{
-				_nextFire = 0;
-				_canFire = true;
-			}
+
+			PlayerStats.Update(deltaTime);
 		}
 	}
 }

@@ -10,5 +10,9 @@ namespace SharpEngine.Library.Math
 	{
 		public float X;
 		public float Y;
+		public static float Lerp(float v1, float v2, float t)
+		{
+			return (1.0f - t) * v1 + t * v1;
+		}
 	}
 }

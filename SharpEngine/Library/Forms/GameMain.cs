@@ -23,6 +23,7 @@ namespace SharpEngine.Library.Forms
 		// Graphics system
 		private Bitmap _field;
 		private Graphics _gfx;
+		private GraphicsManager _gm;
 
 		private bool _isRunning;
 
@@ -40,6 +41,7 @@ namespace SharpEngine.Library.Forms
 		// Game engine dedicated threads
 		private ThreadManager.ThreadNode _updateNode;
 		private ThreadManager.ThreadNode _physicsNode;
+		private ThreadManager.ThreadNode _directx;
 		// Game engine base controller
 		private IController controller;
 
@@ -51,6 +53,11 @@ namespace SharpEngine.Library.Forms
 		{
 			InitializeComponent();
 			_clrColor = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
+			gameField.Width = this.Width - 15;
+			gameField.Height = this.Height - 39;
+			gameField.Location = new Point { X = 0, Y = 0 };
+			this.FormBorderStyle = FormBorderStyle.Fixed3D;
+
 
 			// Create backbuffer render frame
 			_field = new Bitmap(gameField.Width, gameField.Height);
@@ -73,6 +80,10 @@ namespace SharpEngine.Library.Forms
 
 			_physicsNode = ThreadManager.CreateThread(PhysicsLoop);
 			_physicsNode.Start();
+		}
+
+		private void InitDevice()
+		{
 		}
 
 		public virtual void SetupScene()
@@ -140,7 +151,7 @@ namespace SharpEngine.Library.Forms
 		public void GameLoop()
 		{
 			// Delay so the computer and stuff get settled
-			ThreadManager.Sleep(5000, _updateNode);
+			ThreadManager.Sleep(2000, _updateNode);
 			// Calculate how many milliseconds in a frame
 			float frameSampleTime = Stopwatch.Frequency / 60.0f;
 			

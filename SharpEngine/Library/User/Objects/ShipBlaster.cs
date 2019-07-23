@@ -1,4 +1,5 @@
-﻿using SharpEngine.Library.Math;
+﻿using SharpEngine.Library.Controller;
+using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SharpEngine.Library.User.Objects
 {
-	public class ShipBlaster : GObject
+	public class ShipBlaster : UObject
 	{
 		private Transform _transform;
 		public Transform Transform
@@ -45,10 +46,52 @@ namespace SharpEngine.Library.User.Objects
 			}
 		}
 
+		private IController _controller;
+		public IController Controller {
+			get
+			{
+				return _controller;
+			}
+			set
+			{
+				_controller = value;
+			}
+		}
+		private CircleCollider _collider;
+		public ICollider Collider {
+			get
+			{
+				return _collider;
+			}
+			set
+			{
+
+			}
+		}
+
+		public Vector2D Scale
+		{
+			get
+			{
+				return Transform.Scale;
+			}
+		}
+
+		public float Rotation
+		{
+			get
+			{
+				return Transform.Rotation;
+			}
+		}
+
 		public ShipBlaster()
 		{
 			_key = Guid.NewGuid().ToString();
 			_transform = new Transform();
+			_collider = new CircleCollider();
+			_collider.Radius = 3.0f;
+			_collider.Position = Position;
 		}
 
 		public void Render(Graphics g)
