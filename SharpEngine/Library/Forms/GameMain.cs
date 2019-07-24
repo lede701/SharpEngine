@@ -106,19 +106,28 @@ namespace SharpEngine.Library.Forms
 				*/
 				// Create path to sprite sheet
 				String fileName = Application.ExecutablePath;
+				String backName = String.Empty;
+				String pathName = String.Empty;
 				Stack<String> pathParts = new Stack<String>(fileName.Split('\\').ToList());
 				// Remove the development paths for now
 				pathParts.Pop();
 				pathParts.Pop();
 				pathParts.Pop();
 
+				pathName = String.Join("\\", pathParts.Reverse().ToArray());
+
 				// Put path back together as a string
-				fileName = String.Join("\\", pathParts.Reverse().ToArray());
-				fileName = String.Format("{0}\\Media\\Hero\\fighter.png", fileName);
+				fileName = String.Format("{0}\\Media\\Hero\\fighter.png", pathName);
+				backName = String.Format("{0}\\Media\\Backgrounds\\nebula01.jpg", pathName);
 
 				// Create the Hero sprite
 				float colliderRadius = 42;
+
+				// Create scene sprites
 				Sprite hero = new Sprite(fileName);
+				Sprite backdrop = new Sprite(backName);
+
+				// Create Hero object
 				SpriteShip player = new SpriteShip(hero);
 				player.Position.X = (_field.Width / 2) - colliderRadius;
 				player.Position.Y = _field.Height - 150;
@@ -133,8 +142,13 @@ namespace SharpEngine.Library.Forms
 				player.Controller = controller;
 
 				// Create star field
+				SpriteBackdrop back = new SpriteBackdrop(backdrop);
 				SpriteStarField fld = new SpriteStarField();
-				SceneManager.Add(fld, 1);
+				back.Collider = new NullCollider();
+				back.Controller = new NullController();
+
+				SceneManager.Add(fld, 2);
+				SceneManager.Add(back, 1);
 
 				SceneManager.Add(player, 5);
 

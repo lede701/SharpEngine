@@ -80,6 +80,13 @@ namespace SharpEngine.Library.Objects
 
 		public void Clear()
 		{
+			if(_scenes != null)
+			{
+				foreach(Scene scene in _scenes)
+				{
+					scene.Dispose();
+				}
+			}
 			_scenes = new Stack<Scene>();
 		}
 	}

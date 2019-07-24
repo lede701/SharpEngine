@@ -139,5 +139,13 @@ namespace SharpEngine.Library.Objects
 
 			return bRetVal;
 		}
+
+		public void Dispose()
+		{
+			foreach(Layer layer in _gameScene.Values)
+			{
+				layer.Dispose();
+			}
+		}
 	}
 }

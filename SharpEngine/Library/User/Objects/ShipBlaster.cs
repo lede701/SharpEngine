@@ -112,5 +112,10 @@ namespace SharpEngine.Library.User.Objects
 				SceneManager.Instance.Scene.Remove(this);
 			}
 		}
+
+		public void Dispose()
+		{
+			// Nothing to dispose just yet
+		}
 	}
 }

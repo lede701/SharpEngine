@@ -13,5 +13,6 @@ namespace SharpEngine.Library.Objects
 
 		void Render(Graphics g);
 		void Update(float deltaTime);
+		void Dispose();
 	}
 }

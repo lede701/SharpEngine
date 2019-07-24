@@ -19,6 +19,10 @@ namespace SharpEngine.Library.Threading
 			{
 				nodeThread.Start();
 			}
+			public virtual void Stop()
+			{
+				nodeThread.Abort();
+			}
 		};
 
 		public class ThreadNodeParam : ThreadNode

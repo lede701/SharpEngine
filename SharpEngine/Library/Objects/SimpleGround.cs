@@ -143,5 +143,10 @@ namespace SharpEngine.Library.Objects
 		{
 			// Ground doesn't move so nothing to update! or does it ;)
 		}
+
+		public void Dispose()
+		{
+			// Nothing to dispose yet
+		}
 	}
 }

@@ -2,6 +2,7 @@
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Randomizer;
+using SharpEngine.Library.Threading;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,6 +14,10 @@ namespace SharpEngine.Library.User.Objects
 {
 	public class SpriteStarField : GObject
 	{
+		private Bitmap _starField;
+		private ThreadManager.ThreadNode _renderer;
+		private bool _invalidate;
+		private Object locked;
 
 		private Transform _transform;
 		public Transform Transform
@@ -96,27 +101,46 @@ namespace SharpEngine.Library.User.Objects
 				};
 				_stars.Add(star);
 			}
+			_starField = new Bitmap((int)World.Instance.WorldSize.X, (int)World.Instance.WorldSize.Y, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+			_starField.MakeTransparent();
+			_renderer = ThreadManager.CreateThread(RenderField);
+			_renderer.Start();
+			locked = new Object();
 		}
 
 		public void Render(Graphics g)
 		{
-			foreach(Star s in _stars)
+			lock (locked)
 			{
-				SolidBrush clr = new SolidBrush(s.clr);
-				g.FillEllipse(clr, s.pos.X, s.pos.Y, s.raidus, s.raidus);
-				// Add debug text for now
-				/*
-				using (Font font = new Font("Arial", 8))
-				{
-					using (SolidBrush brush = new SolidBrush(s.clr))
-					{
-						String diagTxt = String.Format("{0}", s.id);
-						SizeF size = g.MeasureString(diagTxt, font);
-						g.DrawString(diagTxt, font, brush, s.pos.X - (int)(size.Width / 2), s.pos.Y + 8);
-					}
-				}
-				//*/
+				g.DrawImage(_starField, 0, 0, _starField.Width, _starField.Height);
 			}
+		}
+
+		public void RenderField()
+		{
+			while(_renderer.IsRunning)
+			{
+				if (_invalidate)
+				{
+					using (Graphics g = Graphics.FromImage(_starField))
+					{
+						lock (locked)
+						{
+							g.Clear(Color.Transparent);
+							foreach (Star s in _stars)
+							{
+								SolidBrush clr = new SolidBrush(s.clr);
+								g.FillEllipse(clr, s.pos.X, s.pos.Y, s.raidus, s.raidus);
+							}// End foreach
+						}// End lock
+					}// End using
+					_invalidate = false;
+				}
+				else
+				{
+					ThreadManager.Sleep(2, _renderer);
+				}// Endif star field is invalidated
+			}// End whi;e
 		}
 
 		public void Update(float deltaTime)
@@ -130,6 +154,14 @@ namespace SharpEngine.Library.User.Objects
 					s.pos.X = RandomManager.Instance.Next(10, (int)World.Instance.WorldSize.X);
 				}
 			}
+			_invalidate = true;
+		}
+
+		public void Dispose()
+		{
+			_starField.Dispose();
+			_renderer.Stop();
+			ThreadManager.RemoveThread(_renderer);
 		}
 	}
 }

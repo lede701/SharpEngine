@@ -57,5 +57,13 @@ namespace SharpEngine.Library.GraphicsSystem
 				return rect;
 			}
 		}
+
+		public void Dispose()
+		{
+			if(SpriteSheet != null)
+			{
+				SpriteSheet.Dispose();
+			}
+		}
 	}
 }

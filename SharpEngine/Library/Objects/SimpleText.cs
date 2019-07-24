@@ -99,5 +99,13 @@ namespace SharpEngine.Library.Objects
 		{
 			
 		}
+
+		public void Dispose()
+		{
+			if (Font != null)
+			{
+				Font.Dispose();
+			}
+		}
 	}
 }

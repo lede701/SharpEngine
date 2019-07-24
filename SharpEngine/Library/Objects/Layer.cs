@@ -74,5 +74,12 @@ namespace SharpEngine.Library.Objects
 			return bRetVal;
 		}
 
+		public void Dispose()
+		{
+			foreach(GObject obj in _layerObjects.Values)
+			{
+				obj.Dispose();
+			}
+		}
 	}
 }

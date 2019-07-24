@@ -197,5 +197,10 @@ namespace SharpEngine.Library.Objects
 
 			}
 		}
+
+		public void Dispose()
+		{
+			// Nothing to dispose of yet
+		}
 	}
 }
