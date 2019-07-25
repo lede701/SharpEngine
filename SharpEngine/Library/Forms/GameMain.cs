@@ -66,11 +66,18 @@ namespace SharpEngine.Library.Forms
 			World.Instance.WorldSize.X = gameField.Width;
 			World.Instance.WorldSize.Y = gameField.Height;
 
-			// Start the running process
-			_isRunning = true;
 			// Create locking object for threading
 			_lock = new Object();
 			_gfxLock = new Object();
+
+			_gm = new GraphicsManager(this.Handle);
+			_gm.Render();
+
+			ThreadManager.CreateThread(TestLoop).Start();
+
+			/*  TODO: Enable code to start game loop threads
+			// Start the running process
+			_isRunning = true;
 
 			controller = KeyboardController.Instance;
 			SetupScene();
@@ -80,6 +87,7 @@ namespace SharpEngine.Library.Forms
 
 			_physicsNode = ThreadManager.CreateThread(PhysicsLoop);
 			_physicsNode.Start();
+			*/
 		}
 
 		private void InitDevice()
@@ -159,6 +167,15 @@ namespace SharpEngine.Library.Forms
 #if DEBUG
 				SceneManager.Add(ObjectCount, 6);
 #endif
+			}
+		}
+
+		public void TestLoop()
+		{
+			while(_isRunning)
+			{
+				_gm.Render();
+				Invalidate();
 			}
 		}
 
@@ -278,6 +295,8 @@ namespace SharpEngine.Library.Forms
 			{
 				_field.Dispose();
 			}
+
+			GraphicsManager.Instance.Dispose();
 		}
 
 		private void GameMain_Paint(object sender, PaintEventArgs e)
