@@ -55,17 +55,21 @@ namespace SharpEngine.Library.GraphicsSystem
 			d3dDevice = defaultDevice.QueryInterface<SharpDX.Direct3D11.Device>();
 			d3dContext = d3dDevice.ImmediateContext.QueryInterface<SharpDX.Direct3D11.DeviceContext>();
 
-			var dxgi = d3dDevice.QueryInterface<SharpDX.DXGI.Device>();
-
-			SwapChainDescription scd = new SwapChainDescription
+			using (SharpDX.DXGI.Device dxgi = d3dDevice.QueryInterface<SharpDX.DXGI.Device>())
 			{
-				OutputHandle = win.Handle,
-				BufferCount = 1,
-				SampleDescription = new SampleDescription(1,0),
-				Usage = Usage.RenderTargetOutput,
-				SwapEffect = SwapEffect.Discard
-			};
-			
+				SwapChainDescription scd = new SwapChainDescription
+				{
+					OutputHandle = win.Handle,
+					BufferCount = 1,
+					SampleDescription = new SampleDescription(1, 0),
+					Usage = Usage.RenderTargetOutput,
+					SwapEffect = SwapEffect.Discard
+				};
+			}
+
+			// Reference
+			// https://github.com/r2d2rigo/MyFirstDirect2D-SharpDX/blob/master/MyFirstDirect2D/MyViewProvider.cs
+
 
 			/*
 			SwapChainDescription scd = new SwapChainDescription
