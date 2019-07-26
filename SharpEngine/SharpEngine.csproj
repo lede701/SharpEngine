@@ -90,6 +90,12 @@
     <Compile Include="Library\Controller\KeyboardController.cs" />
     <Compile Include="Library\Controller\NullController.cs" />
     <Compile Include="Library\Events\CollisionEventArgs.cs" />
+    <Compile Include="Library\Forms\DxMain.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Library\Forms\DxMain.Designer.cs">
+      <DependentUpon>DxMain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Library\Forms\GameMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -125,6 +131,9 @@
     <Compile Include="Library\User\Player\PlayerStatistics.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Library\Forms\DxMain.resx">
+      <DependentUpon>DxMain.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Library\Forms\GameMain.resx">
       <DependentUpon>GameMain.cs</DependentUpon>
     </EmbeddedResource>

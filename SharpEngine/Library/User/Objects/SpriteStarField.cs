@@ -122,9 +122,9 @@ namespace SharpEngine.Library.User.Objects
 			{
 				if (_invalidate)
 				{
-					using (Graphics g = Graphics.FromImage(_starField))
+					lock (locked)
 					{
-						lock (locked)
+						using (Graphics g = Graphics.FromImage(_starField))
 						{
 							g.Clear(Color.Transparent);
 							foreach (Star s in _stars)
@@ -132,8 +132,8 @@ namespace SharpEngine.Library.User.Objects
 								SolidBrush clr = new SolidBrush(s.clr);
 								g.FillEllipse(clr, s.pos.X, s.pos.Y, s.raidus, s.raidus);
 							}// End foreach
-						}// End lock
-					}// End using
+						}// End using
+					}// End lock
 					_invalidate = false;
 				}
 				else

@@ -70,12 +70,9 @@ namespace SharpEngine.Library.Forms
 			_lock = new Object();
 			_gfxLock = new Object();
 
-			_gm = new GraphicsManager(this.Handle);
+			_gm = new GraphicsManager(this);
 			_gm.Render();
 
-			ThreadManager.CreateThread(TestLoop).Start();
-
-			/*  TODO: Enable code to start game loop threads
 			// Start the running process
 			_isRunning = true;
 
@@ -87,7 +84,6 @@ namespace SharpEngine.Library.Forms
 
 			_physicsNode = ThreadManager.CreateThread(PhysicsLoop);
 			_physicsNode.Start();
-			*/
 		}
 
 		private void InitDevice()
@@ -102,16 +98,6 @@ namespace SharpEngine.Library.Forms
 				// Create a test scene
 				Scene gameScene = new Scene();
 				SceneManager.Add(gameScene);
-				// Create Ground object
-				/*
-				SimpleGround ground = new SimpleGround(gameField.Height - 25, Collider2DType.PlaneY);
-				SimpleGround left = new SimpleGround(10, Collider2DType.PlaneX);
-				SimpleGround right = new SimpleGround(gameField.Width - 10, Collider2DType.PlaneX);
-
-				SceneManager.Add(ground, 1);
-				SceneManager.Add(left, 1);
-				SceneManager.Add(right, 1);
-				*/
 				// Create path to sprite sheet
 				String fileName = Application.ExecutablePath;
 				String backName = String.Empty;
@@ -167,15 +153,6 @@ namespace SharpEngine.Library.Forms
 #if DEBUG
 				SceneManager.Add(ObjectCount, 6);
 #endif
-			}
-		}
-
-		public void TestLoop()
-		{
-			while(_isRunning)
-			{
-				_gm.Render();
-				Invalidate();
 			}
 		}
 
