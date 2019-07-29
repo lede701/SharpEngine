@@ -1,4 +1,5 @@
-﻿using SharpEngine.Library.Threading;
+﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Threading;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -84,7 +85,7 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
 			foreach(Layer layer in _gameScene.Values)
 			{
@@ -132,9 +133,12 @@ namespace SharpEngine.Library.Objects
 			// Check if layer exists in scene
 			if(_gameScene.ContainsKey(layer))
 			{
-				// Call the layer objects remove method
-				bRetVal = _gameScene[layer].Remove(obj);
-				_gameObjects.Remove(obj);
+				lock (SceneManager.Instance.ObjectLock)
+				{
+					// Call the layer objects remove method
+					bRetVal = _gameScene[layer].Remove(obj);
+					_gameObjects.Remove(obj);
+				}
 			}
 
 			return bRetVal;

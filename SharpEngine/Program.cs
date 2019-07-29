@@ -17,7 +17,7 @@ namespace SharpEngine
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new DxMain());
+			Application.Run(new GameMain());
 		}
 	}
 }

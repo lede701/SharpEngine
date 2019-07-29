@@ -16,7 +16,7 @@ namespace SharpEngine.Library.User.Objects
 			Position.Y = Sprite.Frame.Height - (int)World.Instance.WorldSize.Y;
 		}
 
-		public override void Render(Graphics g)
+		public override void Render(IGraphics g)
 		{
 			Rectangle rect = new Rectangle
 			{
@@ -33,7 +33,7 @@ namespace SharpEngine.Library.User.Objects
 				Height = rect.Height
 			};
 
-			g.DrawImage(Sprite.SpriteSheet, dest, rect, GraphicsUnit.Pixel);
+			//g.DrawImage(Sprite.SpriteSheet, dest, rect, GraphicsUnit.Pixel);
 		}
 		public override void Update(float deltaTime)
 		{

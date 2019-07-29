@@ -1,4 +1,5 @@
-﻿using SharpEngine.Library.Math;
+﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -89,10 +90,17 @@ namespace SharpEngine.Library.Objects
 
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
 			Brush brush = Brushes.White;
-			g.DrawString(Text, Font, brush, Position.X, Position.Y);
+			Rectangle area = new Rectangle
+			{
+				X = (int)Position.X,
+				Y = (int)Position.Y,
+				Width = 1000,
+				Height = 50
+			};
+			g.DrawText(Text, Font.Name, Font.Size, Color.White, area);
 		}
 
 		public void Update(float deltaTime)

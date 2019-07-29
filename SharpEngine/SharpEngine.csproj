@@ -103,6 +103,7 @@
       <DependentUpon>GameMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Library\GraphicsSystem\GraphicsManager.cs" />
+    <Compile Include="Library\GraphicsSystem\IGraphics.cs" />
     <Compile Include="Library\GraphicsSystem\Sprite.cs" />
     <Compile Include="Library\Math\BoxCollider.cs" />
     <Compile Include="Library\Math\CircleCollider.cs" />

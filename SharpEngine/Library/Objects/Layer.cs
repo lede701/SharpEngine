@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEngine.Library.GraphicsSystem;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace SharpEngine.Library.Objects
 			_layerObjects = new Dictionary<String, GObject>();
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
 			// Call the render item for each game object
 			foreach (GObject obj in _layerObjects.Values)
@@ -52,8 +53,9 @@ namespace SharpEngine.Library.Objects
 
 		public void Update(float deltaTime)
 		{
+			List<GObject> layerObjects = _layerObjects.Values.ToList<GObject>();
 			// Call update for all game objects
-			foreach(GObject obj in _layerObjects.Values)
+			foreach (GObject obj in layerObjects)
 			{
 				obj.Update(deltaTime);
 			}

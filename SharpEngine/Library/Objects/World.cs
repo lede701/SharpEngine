@@ -1,6 +1,7 @@
 ﻿using SharpEngine.Library.Math;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -39,6 +40,19 @@ namespace SharpEngine.Library.Objects
 			set
 			{
 				_worldSize = value;
+			}
+		}
+
+		private Rectangle _boundary;
+		public Rectangle WorldBoundary
+		{
+			get
+			{
+				return _boundary;
+			}
+			set
+			{
+				_boundary = value;
 			}
 		}
 

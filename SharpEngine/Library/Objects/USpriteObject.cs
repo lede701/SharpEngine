@@ -151,43 +151,49 @@ namespace SharpEngine.Library.Objects
 			
 		}
 
-		public virtual void Render(Graphics g)
+		public virtual void Render(IGraphics g)
 		{
-			g.TranslateTransform(Position.X, Position.Y);
+			// TODO: Write graphics transofrm utility
+			//g.TranslateTransform(Position.X, Position.Y);
+			g.Translate(Position.X, Position.Y);
 			Rectangle src = Sprite.Frame;
 			Rectangle dest = new Rectangle
 			{
-				X = src.X,
-				Y = src.Y,
+				X = 0,
+				Y = 0,
 				Width = (int)((float)src.Width * Scale.X),
 				Height = (int)((float)src.Height * Scale.Y)
 			};
-			g.DrawImage(Sprite.SpriteSheet, dest, src, GraphicsUnit.Pixel );
-			g.TranslateTransform(-Position.X, -Position.Y);
+			// TODO: Write image drawing utility
+			g.DrawImage(Sprite.SpriteSheet, src, dest);
+			//g.DrawImage(Sprite.SpriteSheet, dest, src, GraphicsUnit.Pixel );
+			//g.TranslateTransform(-Position.X, -Position.Y);
 #if DEBUG
-			DebugRender(g);
+			DebugRender(g, dest);
 #endif
+			g.Translate(-Position.X, -Position.Y);
 		}
 
-		public void DebugRender(Graphics g)
+		public void DebugRender(IGraphics g, Rectangle rect)
 		{
-			if(Collider != null)
+			g.DrawRectangle(rect, Color.FromArgb(255, 255, 0, 0));
+
+			if (Collider != null)
 			{
 				switch(Collider.Type)
 				{
 					case Collider2DType.Circle:
 						CircleCollider cc = (CircleCollider)Collider;
-						Brush diag = new SolidBrush(Color.FromArgb(15, 0, 255, 0));
 						Rectangle cldrCircle = new Rectangle
 						{
-							X = (int)cc.Position.X,
-							Y = (int)cc.Position.Y,
+							X = (int)cc.Radius,
+							Y = (int)cc.Radius,
 							Width = (int)cc.Radius * 2,
 							Height = (int)cc.Radius * 2
 						};
-						g.DrawEllipse(Pens.LightGreen, cldrCircle);
-						g.FillEllipse(Brushes.LightGreen, cc.Position.X + cc.Radius, cc.Position.Y + cc.Radius, 4, 4);
-						g.FillEllipse(diag, cldrCircle);
+						g.FillEllipse(cldrCircle, Color.FromArgb(50, 0, 180, 0));
+						g.FillEllipse(cldrCircle.X, cldrCircle.Y, 5, 5, Color.FromArgb(120, 0, 180, 0));
+						g.DrawEllipse(cldrCircle, Color.FromArgb(120, 0, 255, 0));
 						break;
 				}
 			}
@@ -197,6 +203,15 @@ namespace SharpEngine.Library.Objects
 		{
 			if (Controller != null)
 			{
+				if (Controller.Get(Input.Left) || Controller.Get(Input.Right) || Controller.Get(Input.Up) || Controller.Get(Input.Down))
+				{
+					Vector2D upPos = new Vector2D
+					{
+						X = (Velocity.X * deltaTime * Controller.GetValue(Input.Right)) - (Velocity.X * deltaTime * Controller.GetValue(Input.Left)),
+						Y = (Velocity.Y * deltaTime * Controller.GetValue(Input.Down)) - (Velocity.Y * deltaTime * Controller.GetValue(Input.Up))
+					};
+				}
+
 				Position.X += (Velocity.X * deltaTime * Controller.GetValue(Input.Right)) - (Velocity.X * deltaTime * Controller.GetValue(Input.Left));
 				Position.Y += (Velocity.Y * deltaTime * Controller.GetValue(Input.Down)) - (Velocity.Y * deltaTime * Controller.GetValue(Input.Up));
 			}

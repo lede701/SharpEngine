@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.Controller;
+using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using System;
@@ -94,12 +95,15 @@ namespace SharpEngine.Library.User.Objects
 			_collider.Position = Position;
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
+			g.FillEllipse(Position.X, Position.Y, 3.0f, 25.0f, Color.FromArgb(180, 252, 119, 3));
+			/*
 			using (SolidBrush brush = new SolidBrush(Color.FromArgb(180, 252, 119, 3)))
 			{
 				g.FillEllipse(brush, Position.X, Position.Y, 3.0f, 25.0f);
 			}
+			*/
 		}
 
 		public void Update(float deltaTime)
@@ -109,7 +113,7 @@ namespace SharpEngine.Library.User.Objects
 			// Check if bolt needs to be auto destroyed
 			if(Position.Y < -10)
 			{
-				SceneManager.Instance.Scene.Remove(this);
+				SceneManager.Instance.Scene.Remove(this, 4);
 			}
 		}
 

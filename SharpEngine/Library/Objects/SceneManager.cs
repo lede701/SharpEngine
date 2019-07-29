@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEngine.Library.GraphicsSystem;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -38,6 +39,20 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		private Object _objectLock;
+		public Object ObjectLock
+		{
+			get
+			{
+				if(_objectLock == null)
+				{
+					_objectLock = new Object();
+				}
+
+				return _objectLock;
+			}
+		}
+
 		public SceneManager()
 		{
 			// Create new scene
@@ -58,7 +73,10 @@ namespace SharpEngine.Library.Objects
 		{
 			if(_scenes.Count > 0)
 			{
-				_scenes.Peek().Add(obj, layer);
+				lock (ObjectLock)
+				{
+					_scenes.Peek().Add(obj, layer);
+				}
 			}
 		}
 
@@ -70,7 +88,7 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
 			if(_scenes.Count > 0)
 			{

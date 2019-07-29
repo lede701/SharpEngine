@@ -31,7 +31,7 @@ namespace SharpEngine.Library.User.Objects
 
 		private bool _canon;
 
-		public override void Render(Graphics g)
+		public override void Render(IGraphics g)
 		{
 			base.Render(g);
 			// Render player stats
@@ -40,22 +40,21 @@ namespace SharpEngine.Library.User.Objects
 			float maxWidth = (World.Instance.WorldSize.X - 20);
 			float wWidth = maxWidth * (PlayerStats.WeaponEnergy / PlayerStats.MaxWeaponEnergy);
 			float sWidth = maxWidth * (PlayerStats.ShieldEnergy / PlayerStats.MaxShieldEnergy);
-			using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 255, 0, 0)))
+
+			// Draw energy levels
+			g.FillRectangle(x, y, wWidth, 5, Color.FromArgb(120, 255, 0, 0));
+			g.DrawRectangle(x, y, maxWidth, 5, Color.FromArgb(120, 255, 0, 0));
+			// Draw shield levels
+			g.FillRectangle(x, y + 7, sWidth, 5, Color.FromArgb(120, 60, 177, 255));
+			g.DrawRectangle(x, y + 7, maxWidth, 5, Color.FromArgb(120, 60, 177, 255));
+
+			Rectangle rect = new Rectangle
 			{
-				g.FillRectangle(brush, x, y, wWidth, 5);
-			}
-			using (Pen p = new Pen(Color.FromArgb(120, 255, 0, 0)))
-			{
-				g.DrawRectangle(p, x, y, maxWidth, 5);
-			}
-			using (SolidBrush brush = new SolidBrush(Color.FromArgb(120, 60, 177, 255)))
-			{
-				g.FillRectangle(brush, x, y + 7, sWidth, 5);
-			}
-			using (Pen p = new Pen(Color.FromArgb(120, 60, 177, 255)))
-			{
-				g.DrawRectangle(p, x, y+7, maxWidth, 5);
-			}
+				X = (int)Position.X,
+				Y = (int)Position.Y,
+				Width = 400,
+				Height = 50
+			};
 		}
 
 		public override void Update(float deltaTime)
@@ -66,7 +65,7 @@ namespace SharpEngine.Library.User.Objects
 			// Check if sprite has gone beoyond boundary
 			if (Position.X + (radius * 2) > _boundary.Width)
 			{
-				Position.X = _boundary.Width - (radius *2); ;
+				Position.X = _boundary.Width - (radius * 2);
 			}
 			else if (Position.X < _boundary.X)
 			{
@@ -87,7 +86,7 @@ namespace SharpEngine.Library.User.Objects
 				bolt.Position.X = Position.X + (_canon ? offset : Sprite.Frame.Width * Scale.X - offset);
 				_canon = !_canon;
 				bolt.Position.Y = Position.Y - 5.0f;
-				bolt.Velocity.Y = -20.0f;
+				bolt.Velocity.Y = -1.0f;
 				SceneManager.Instance.Scene.Add(bolt, 4);
 				float damage = PlayerStats.Fire;
 			}

@@ -11,7 +11,7 @@ namespace SharpEngine.Library.GraphicsSystem
 {
 	public class Sprite
 	{
-		public Bitmap SpriteSheet;
+		public Object SpriteSheet;
 		public Vector2D CenterPoint;
 		public List<Rectangle> Frames;
 		public int CurrentFrame;
@@ -23,6 +23,14 @@ namespace SharpEngine.Library.GraphicsSystem
 			{
 				SpriteSheet = new Bitmap(filename);
 			}
+			CenterPoint = new Vector2D();
+			Frames = new List<Rectangle>();
+			CurrentFrame = 0;
+		}
+
+		public Sprite(Object spriteSheet)
+		{
+			SpriteSheet = spriteSheet;
 			CenterPoint = new Vector2D();
 			Frames = new List<Rectangle>();
 			CurrentFrame = 0;
@@ -49,8 +57,8 @@ namespace SharpEngine.Library.GraphicsSystem
 					{
 						X = 0,
 						Y = 0,
-						Width = SpriteSheet.Width,
-						Height = SpriteSheet.Height
+						Width = 0,
+						Height = 0
 					};
 				}
 
@@ -60,9 +68,9 @@ namespace SharpEngine.Library.GraphicsSystem
 
 		public void Dispose()
 		{
-			if(SpriteSheet != null)
+			if(SpriteSheet is IDisposable)
 			{
-				SpriteSheet.Dispose();
+				((IDisposable)SpriteSheet).Dispose();
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.Controller;
+using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Randomizer;
@@ -108,11 +109,11 @@ namespace SharpEngine.Library.User.Objects
 			locked = new Object();
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
 			lock (locked)
 			{
-				g.DrawImage(_starField, 0, 0, _starField.Width, _starField.Height);
+				//g.DrawImage(_starField, 0, 0, _starField.Width, _starField.Height);
 			}
 		}
 

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpEngine.Library.Controller;
+using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 
 namespace SharpEngine.Library.Objects
@@ -103,14 +104,14 @@ namespace SharpEngine.Library.Objects
 			// The ground has nothing to worry about so do nothing yet
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
 			Rectangle rect = new Rectangle();
 
 			if(Collider.Type == Collider2DType.PlaneY)
 			{
 				rect.X = 0;
-				rect.Width = 1000;
+				rect.Width = 10000;
 				if (Ground > World.Instance.CenterOfWorld.Y)
 				{
 					rect.Y = (int)Ground;
@@ -125,7 +126,7 @@ namespace SharpEngine.Library.Objects
 			else
 			{
 				rect.Y = 0;
-				rect.Height = 1000;
+				rect.Height = 10000;
 				if(Ground > World.Instance.CenterOfWorld.X)
 				{
 					rect.X = (int)Ground;
@@ -136,7 +137,8 @@ namespace SharpEngine.Library.Objects
 					rect.Width = (int)Ground;
 				}
 			}
-			g.FillRectangle(Brushes.Wheat, rect);
+			// TODO: Write the fill and draw rectangle routines
+			//g.FillRectangle(Brushes.Wheat, rect);
 		}
 
 		public void Update(float deltaTime)

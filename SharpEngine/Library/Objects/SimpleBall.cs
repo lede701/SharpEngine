@@ -1,5 +1,6 @@
 ﻿using SharpEngine.Library.Controller;
 using SharpEngine.Library.Events;
+using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using System;
 using System.Collections.Generic;
@@ -138,7 +139,7 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
-		public void Render(Graphics g)
+		public void Render(IGraphics g)
 		{
 			// Updated to use Radius and cetner point
 			Rectangle rect = new Rectangle
@@ -151,10 +152,10 @@ namespace SharpEngine.Library.Objects
 
 			if (_isMoving)
 			{
-				g.FillEllipse(Brushes.Red, rect);
+				g.FillEllipse(rect.X, rect.Y, rect.Width, rect.Height, Color.Red);
 			}else
 			{
-				g.FillEllipse(Brushes.Green, rect);
+				g.FillEllipse(rect.X, rect.Y, rect.Width, rect.Height, Color.Green);
 			}
 		}
 
@@ -181,9 +182,9 @@ namespace SharpEngine.Library.Objects
 					Position.X = Position.X < _boundary.X ? _boundary.X : _boundary.Width;
 					Velocity.X *= -0.5f;
 				}
-				if (Position.Y < _boundary.Y || Position.Y > _boundary.Height)
+				if (Position.Y < _boundary.Y || Position.Y > _boundary.Height - _radius)
 				{
-					Position.Y = Position.Y < _boundary.Y ? _boundary.Y : _boundary.Height;
+					Position.Y = Position.Y < _boundary.Y ? _boundary.Y : _boundary.Height - _radius;
 					Velocity.Y *= -0.6f;
 					if (System.Math.Abs(Velocity.Y) < 0.2f)
 					{
@@ -192,7 +193,7 @@ namespace SharpEngine.Library.Objects
 				}else if(Controller == null)
 				{
 					// Apply gravity to the object
-					Velocity.Y += 0.4f;
+					Velocity.Y += 0.005f;
 				}
 
 			}

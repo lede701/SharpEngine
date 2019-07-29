@@ -20,9 +20,6 @@ namespace SharpEngine.Library.Forms
 {
 	public partial class GameMain : Form
 	{
-		// Graphics system
-		private Bitmap _field;
-		private Graphics _gfx;
 		private GraphicsManager _gm;
 
 		private bool _isRunning;
@@ -46,44 +43,47 @@ namespace SharpEngine.Library.Forms
 		private IController controller;
 
 		// Scene clear color
-		private Brush _clrColor;
+		private Color _backColor;
 
-		public SimpleText ObjectCount;
+		public SimpleText GameMessage;
+		SpriteShip player;
+
 		public GameMain()
 		{
 			InitializeComponent();
-			_clrColor = new SolidBrush(Color.FromArgb(255, 0, 0, 0));
-			gameField.Width = this.Width - 15;
-			gameField.Height = this.Height - 39;
-			gameField.Location = new Point { X = 0, Y = 0 };
+			_backColor = Color.FromArgb(255, 0, 0, 0);
 			this.FormBorderStyle = FormBorderStyle.Fixed3D;
 
 
 			// Create backbuffer render frame
-			_field = new Bitmap(gameField.Width, gameField.Height);
-			_gfx = Graphics.FromImage(_field);
-			_gfx.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
-			World.Instance.WorldSize.X = gameField.Width;
-			World.Instance.WorldSize.Y = gameField.Height;
+			World.Instance.WorldSize.X = this.ClientSize.Width;
+			World.Instance.WorldSize.Y = this.ClientSize.Height;
+			World.Instance.WorldBoundary = new Rectangle
+			{
+				X = 0,
+				Y = 0,
+				Width = this.ClientSize.Width,
+				Height = this.ClientSize.Height
+			};
 
 			// Create locking object for threading
 			_lock = new Object();
 			_gfxLock = new Object();
 
 			_gm = new GraphicsManager(this);
-			_gm.Render();
+
+			
+			// Load scene
+			SetupScene();
+
+			// Setup game threads
+			_updateNode = ThreadManager.CreateThread(GameLoop);
 
 			// Start the running process
 			_isRunning = true;
 
-			controller = KeyboardController.Instance;
-			SetupScene();
-			// Start update thread for game loop
-			_updateNode = ThreadManager.CreateThread(GameLoop);
 			_updateNode.Start();
 
-			_physicsNode = ThreadManager.CreateThread(PhysicsLoop);
-			_physicsNode.Start();
 		}
 
 		private void InitDevice()
@@ -111,81 +111,65 @@ namespace SharpEngine.Library.Forms
 				pathName = String.Join("\\", pathParts.Reverse().ToArray());
 
 				// Put path back together as a string
-				fileName = String.Format("{0}\\Media\\Hero\\fighter.png", pathName);
+				String heroName = String.Format("{0}\\Media\\Hero\\fighter.png", pathName);
 				backName = String.Format("{0}\\Media\\Backgrounds\\nebula01.jpg", pathName);
 
-				// Create the Hero sprite
-				float colliderRadius = 42;
+				Sprite hero = new Sprite(_gm.LoadImage(heroName));
+				hero.Frames.Add(new Rectangle
+				{
+					X = 0,
+					Y = 0,
+					Width = 405,
+					Height = 488
+				});
+				player = new SpriteShip(hero);
 
-				// Create scene sprites
-				Sprite hero = new Sprite(fileName);
-				Sprite backdrop = new Sprite(backName);
-
-				// Create Hero object
-				SpriteShip player = new SpriteShip(hero);
-				player.Position.X = (_field.Width / 2) - colliderRadius;
-				player.Position.Y = _field.Height - 150;
-				player.Velocity.X = 10;
-				player.Velocity.Y = 8;
-				// Create collider
-				CircleCollider playerCollider = new CircleCollider();
-				playerCollider.Position = player.Position;
-				playerCollider.Radius = colliderRadius;
+				player.Position.X = World.Instance.WorldSize.X / 2;
+				player.Position.Y = World.Instance.WorldSize.Y - 100f;
+				player.Scale.X = 0.25f;
+				player.Scale.Y = 0.25f;
+				player.Velocity.X = 6.0f;
+				player.Velocity.Y = 6.0f;
+				CircleCollider playerCollider = new CircleCollider()
+				{
+					Radius = 40,
+					Position = player.Position
+				};
 				player.Collider = playerCollider;
-				// Connect keyboard controoler
-				player.Controller = controller;
+				player.Controller = KeyboardController.Instance;
 
-				// Create star field
-				SpriteBackdrop back = new SpriteBackdrop(backdrop);
-				SpriteStarField fld = new SpriteStarField();
-				back.Collider = new NullCollider();
-				back.Controller = new NullController();
+				GameMessage = new SimpleText("Hello, World!");
+				GameMessage.Position.X = World.Instance.WorldSize.X - 150f;
+				GameMessage.Position.Y = 10;
 
-				SceneManager.Add(fld, 2);
-				SceneManager.Add(back, 1);
+				SceneManager.Add(player, 4);
+				SceneManager.Add(GameMessage, 8);
 
-				SceneManager.Add(player, 5);
-
-				ObjectCount = new SimpleText("Hello");
-				ObjectCount.Position.X = World.Instance.WorldSize.X - 180;
-				ObjectCount.Position.Y = 10;
-				ObjectCount.Size = 10.0f;
-#if DEBUG
-				SceneManager.Add(ObjectCount, 6);
-#endif
 			}
 		}
 
 		public void GameLoop()
 		{
-			// Delay so the computer and stuff get settled
+			// Pasue this thread while app wamrs up
 			ThreadManager.Sleep(2000, _updateNode);
-			// Calculate how many milliseconds in a frame
 			float frameSampleTime = Stopwatch.Frequency / 60.0f;
-			
 			float deltaTime = 1.0f;
+			long frameCount = 0;
+
 			Stopwatch timer = new Stopwatch();
+
 			while(_isRunning)
 			{
+
 				timer.Reset();
 				timer.Start();
-				lock (_lock)
-				{
-					ProcessUpdates(deltaTime);
-					Render();
-				}
+				ProcessUpdates(deltaTime);
+				Render();
 				timer.Stop();
 				float elapsed = timer.ElapsedTicks;
 				frameTime = deltaTime;
 				deltaTime = elapsed / frameSampleTime;
-				/*
-				if(elapsed < frameSampleTime)
-				{
-					// Mitigate the elapsed time so delta time doesn't change
-					int sleep = (int)(frameSampleTime - elapsed / Stopwatch.Frequency) / 1000;
-					ThreadManager.Sleep(sleep, _updateNode);
-				}
-				//*/
+				frameCount++;
 			}
 		}
 
@@ -205,7 +189,6 @@ namespace SharpEngine.Library.Forms
 					int sleetTime = (int)(frameTime - elapsed);
 					ThreadManager.Sleep(sleetTime, _updateNode);
 				}
-
 			}
 		}
 
@@ -217,12 +200,14 @@ namespace SharpEngine.Library.Forms
 		private float frameTime;
 		public void Render()
 		{
+			GameMessage.Text = String.Format("Position [{0}, {1}]", player.Position.X, player.Position.Y);
 			// Backbuffer rendering
 			lock (_gfxLock)
 			{
-				ObjectCount.Text = String.Format("Game Objects: {0}", SceneManager.Scene.Count);
-				_gfx.FillRectangle(_clrColor, 0, 0, _field.Width, _field.Height);
-				SceneManager.Render(_gfx);
+				_gm.BeginDraw();
+					_gm.Clear();
+					SceneManager.Render(_gm);
+				_gm.EndDraw();
 			}
 			Invalidate();
 		}
@@ -251,39 +236,25 @@ namespace SharpEngine.Library.Forms
 			}// End if Scene is not null
 		}
 
-		private void GameMain_FormClosed(object sender, FormClosedEventArgs e)
+		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
-			if(controller != null)
-			{
-				controller.Dispose();
-				controller = null;
-			}
-			_isRunning = false;
-			// Shutodwn all threads
-			ThreadManager.MasterThread.IsRunning = false;
-			// Kill all long running threads
+			// Shutdown game threads
+			_updateNode.Stop();
 			ThreadManager.Close();
-			// After threads are closed dispose of Windows tools
-			if (_gfx != null)
-			{
-				_gfx.Dispose();
-			}
-			if (_field != null)
-			{
-				_field.Dispose();
-			}
 
-			GraphicsManager.Instance.Dispose();
+			_isRunning = false;
+			_gm.Dispose();
+
+			base.OnClosed(e);
 		}
 
-		private void GameMain_Paint(object sender, PaintEventArgs e)
+		protected override void OnPaint(PaintEventArgs e)
 		{
-			// Transfer backbuffer to display image
 			lock (_gfxLock)
 			{
-				Graphics g = gameField.CreateGraphics();
-				g.DrawImage(_field, 0, 0, _field.Width, _field.Height);
+				_gm.Render();
 			}
+			base.OnPaint(e);
 		}
 
 		private void OnKeyUp(object sender, KeyEventArgs e)

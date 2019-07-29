@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEngine.Library.GraphicsSystem;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace SharpEngine.Library.Objects
 	{
 		String Key { get; }
 
-		void Render(Graphics g);
+		void Render(IGraphics g);
 		void Update(float deltaTime);
 		void Dispose();
 	}
