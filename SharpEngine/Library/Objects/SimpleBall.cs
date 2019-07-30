@@ -42,6 +42,8 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public ObjectType Type { get; set; }
+
 		public String Key
 		{
 			get

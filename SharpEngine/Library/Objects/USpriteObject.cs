@@ -58,6 +58,8 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public ObjectType Type { get; set; }
+
 		public virtual void OnCollision(object sender, EventArgs e)
 		{
 			if(e is CollisionEventArgs)
@@ -143,24 +145,37 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
-		public USpriteObject(Sprite sprite)
+		private bool _debug;
+		public bool Debug
+		{
+			get
+			{
+				return _debug;
+			}
+			set
+			{
+				_debug = value;
+			}
+		}
+
+		public USpriteObject(Sprite sprite, bool debug = true)
 		{
 			_transform = new Transform();
 			_key = Guid.NewGuid().ToString();
 			Sprite = sprite;
-			
+			_debug = debug;
 		}
 
 		public virtual void Render(IGraphics g)
 		{
 			// TODO: Write graphics transofrm utility
 			//g.TranslateTransform(Position.X, Position.Y);
-			g.Translate(Position.X, Position.Y);
+			//g.Translate(Position.X, Position.Y);
 			Rectangle src = Sprite.Frame;
 			Rectangle dest = new Rectangle
 			{
-				X = 0,
-				Y = 0,
+				X = (int)Position.X,
+				Y = (int)Position.Y,
 				Width = (int)((float)src.Width * Scale.X),
 				Height = (int)((float)src.Height * Scale.Y)
 			};
@@ -168,16 +183,16 @@ namespace SharpEngine.Library.Objects
 			g.DrawImage(Sprite.SpriteSheet, src, dest);
 			//g.DrawImage(Sprite.SpriteSheet, dest, src, GraphicsUnit.Pixel );
 			//g.TranslateTransform(-Position.X, -Position.Y);
-#if DEBUG
-			DebugRender(g, dest);
-#endif
-			g.Translate(-Position.X, -Position.Y);
+			if(Debug)
+			{
+				DebugRender(g, dest);
+			}
+			//g.Translate(-Position.X, -Position.Y);
 		}
 
 		public void DebugRender(IGraphics g, Rectangle rect)
 		{
 			g.DrawRectangle(rect, Color.FromArgb(255, 255, 0, 0));
-
 			if (Collider != null)
 			{
 				switch(Collider.Type)
@@ -186,12 +201,12 @@ namespace SharpEngine.Library.Objects
 						CircleCollider cc = (CircleCollider)Collider;
 						Rectangle cldrCircle = new Rectangle
 						{
-							X = (int)cc.Radius,
-							Y = (int)cc.Radius,
+							X = (int)rect.X,
+							Y = (int)rect.Y,
 							Width = (int)cc.Radius * 2,
 							Height = (int)cc.Radius * 2
 						};
-						g.FillEllipse(cldrCircle, Color.FromArgb(50, 0, 180, 0));
+						g.FillEllipse(cldrCircle, Color.FromArgb(25, 0, 180, 0));
 						g.FillEllipse(cldrCircle.X, cldrCircle.Y, 5, 5, Color.FromArgb(120, 0, 180, 0));
 						g.DrawEllipse(cldrCircle, Color.FromArgb(120, 0, 255, 0));
 						break;
@@ -203,15 +218,6 @@ namespace SharpEngine.Library.Objects
 		{
 			if (Controller != null)
 			{
-				if (Controller.Get(Input.Left) || Controller.Get(Input.Right) || Controller.Get(Input.Up) || Controller.Get(Input.Down))
-				{
-					Vector2D upPos = new Vector2D
-					{
-						X = (Velocity.X * deltaTime * Controller.GetValue(Input.Right)) - (Velocity.X * deltaTime * Controller.GetValue(Input.Left)),
-						Y = (Velocity.Y * deltaTime * Controller.GetValue(Input.Down)) - (Velocity.Y * deltaTime * Controller.GetValue(Input.Up))
-					};
-				}
-
 				Position.X += (Velocity.X * deltaTime * Controller.GetValue(Input.Right)) - (Velocity.X * deltaTime * Controller.GetValue(Input.Left));
 				Position.Y += (Velocity.Y * deltaTime * Controller.GetValue(Input.Down)) - (Velocity.Y * deltaTime * Controller.GetValue(Input.Up));
 			}

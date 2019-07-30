@@ -125,7 +125,9 @@
     <Compile Include="Library\Objects\World.cs" />
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
+    <Compile Include="Library\Objects\ObjectType.cs" />
     <Compile Include="Library\User\Objects\ShipBlaster.cs" />
+    <Compile Include="Library\User\Objects\SpriteAsteroid.cs" />
     <Compile Include="Library\User\Objects\SpriteBackdrop.cs" />
     <Compile Include="Library\User\Objects\SpriteShip.cs" />
     <Compile Include="Library\User\Objects\SpriteStarField.cs" />
@@ -165,6 +167,7 @@
   <ItemGroup>
     <Content Include="Media\Backgrounds\nebula01.jpg" />
     <Content Include="Media\Hero\fighter.png" />
+    <Content Include="Media\Spritesheets\asteroid_01.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">

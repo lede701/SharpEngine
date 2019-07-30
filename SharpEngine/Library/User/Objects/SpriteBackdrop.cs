@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;
@@ -14,18 +15,19 @@ namespace SharpEngine.Library.User.Objects
 		public SpriteBackdrop(Sprite sprite) : base(sprite)
 		{
 			Position.Y = Sprite.Frame.Height - (int)World.Instance.WorldSize.Y;
+			Collider = new NullCollider();
 		}
 
 		public override void Render(IGraphics g)
 		{
-			Rectangle rect = new Rectangle
+			RectangleF rect = new RectangleF
 			{
 				X = (int)Position.X,
 				Y = (int)Position.Y,
 				Width = (int)World.Instance.WorldSize.X,
 				Height = (int)World.Instance.WorldSize.Y
 			};
-			Rectangle dest = new Rectangle
+			RectangleF dest = new RectangleF
 			{
 				X = 0,
 				Y = 0,
@@ -33,11 +35,11 @@ namespace SharpEngine.Library.User.Objects
 				Height = rect.Height
 			};
 
-			//g.DrawImage(Sprite.SpriteSheet, dest, rect, GraphicsUnit.Pixel);
+			g.DrawImage(Sprite.SpriteSheet, rect, dest);
 		}
 		public override void Update(float deltaTime)
 		{
-			Position.Y = System.Math.Max(0, Position.Y - 0.5f);
+			Position.Y = System.Math.Max(0, Position.Y - 0.05f);
 		}
 	}
 }

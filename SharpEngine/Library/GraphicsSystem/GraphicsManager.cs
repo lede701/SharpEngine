@@ -78,7 +78,7 @@ namespace SharpEngine.Library.GraphicsSystem
 				BufferCount = 2,
 				Flags = SwapChainFlags.None,
 				IsWindowed = true,
-				ModeDescription = new ModeDescription(win.ClientSize.Width, win.ClientSize.Height, rational, Format.B8G8R8A8_UNorm),
+				ModeDescription = new ModeDescription(win.ClientSize.Width, win.ClientSize.Height, rational, Format.R8G8B8A8_UNorm),
 				OutputHandle = win.Handle,
 				SampleDescription = new SampleDescription(1, 0),
 				SwapEffect = SwapEffect.FlipDiscard,
@@ -92,8 +92,6 @@ namespace SharpEngine.Library.GraphicsSystem
 			*/
             try
             {
-
-
                 // Create our DirectX 11 device object and swap chain
                 SharpDX.Direct3D11.Device.CreateWithSwapChain(
                     SharpDX.Direct3D.DriverType.Hardware,
@@ -188,6 +186,11 @@ namespace SharpEngine.Library.GraphicsSystem
 			DrawEllipse((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height, clr);
 		}
 
+		public void DrawEllipse(System.Drawing.RectangleF rect, System.Drawing.Color clr)
+		{
+			DrawEllipse(rect.X, rect.Y, rect.Width, rect.Height, clr);
+		}
+
 		public void DrawEllipse(float x, float y, float width, float height, System.Drawing.Color clr)
 		{
 			SharpDX.Mathematics.Interop.RawVector2 center = new SharpDX.Mathematics.Interop.RawVector2(x, y);
@@ -203,6 +206,10 @@ namespace SharpEngine.Library.GraphicsSystem
 		{
 			FillEllipse((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height, clr);
 		}
+		public void FillEllipse(System.Drawing.RectangleF rect, System.Drawing.Color clr)
+		{
+			FillEllipse(rect.X, rect.Y, rect.Width, rect.Height, clr);
+		}
 		public void FillEllipse(int x, int y, int width, int height, System.Drawing.Color clr)
 		{
 			FillEllipse((float)x, (float)y, (float)width, (float)height, clr);
@@ -214,6 +221,16 @@ namespace SharpEngine.Library.GraphicsSystem
 			SharpDX.Direct2D1.SolidColorBrush brush = new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget, ToColor(clr));
 			SharpDX.Direct2D1.Ellipse ellipse = new SharpDX.Direct2D1.Ellipse(center, width, height);
 			d2dRenderTarget.FillEllipse(ellipse, brush);
+
+			brush.Dispose();
+		}
+
+		public void DrawLine(float x0, float y0, float x1, float y1, System.Drawing.Color clr)
+		{
+			SharpDX.Mathematics.Interop.RawVector2 p0 = new SharpDX.Mathematics.Interop.RawVector2 { X = x0, Y = y0 };
+			SharpDX.Mathematics.Interop.RawVector2 p1 = new SharpDX.Mathematics.Interop.RawVector2 { X = x1, Y = y1 };
+			SharpDX.Direct2D1.SolidColorBrush brush = new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget, ToColor(clr));
+			d2dRenderTarget.DrawLine(p0, p1, brush);
 
 			brush.Dispose();
 		}
@@ -262,7 +279,27 @@ namespace SharpEngine.Library.GraphicsSystem
 
 		public void DrawImage(Object image, System.Drawing.Rectangle srcRect, System.Drawing.Rectangle destRect)
 		{
-			if(image is SharpDX.Direct2D1.Bitmap)
+			System.Drawing.RectangleF fsrc = new System.Drawing.RectangleF
+			{
+				X = srcRect.X,
+				Y = srcRect.Y,
+				Width = srcRect.Width,
+				Height = srcRect.Height
+			};
+			System.Drawing.RectangleF fdest = new System.Drawing.RectangleF
+			{
+				X = destRect.X,
+				Y = destRect.Y,
+				Width = destRect.Width,
+				Height = destRect.Height
+			};
+
+			DrawImage(image, fsrc, fdest);
+		}
+
+		public void DrawImage(Object image, System.Drawing.RectangleF srcRect, System.Drawing.RectangleF destRect)
+		{
+			if (image is SharpDX.Direct2D1.Bitmap)
 			{
 				SharpDX.Direct2D1.Bitmap bImg = (SharpDX.Direct2D1.Bitmap)image;
 

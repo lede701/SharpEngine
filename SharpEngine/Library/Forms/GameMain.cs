@@ -78,11 +78,13 @@ namespace SharpEngine.Library.Forms
 
 			// Setup game threads
 			_updateNode = ThreadManager.CreateThread(GameLoop);
+			_physicsNode = ThreadManager.CreateThread(PhysicsLoop);
 
 			// Start the running process
 			_isRunning = true;
 
 			_updateNode.Start();
+			_physicsNode.Start();
 
 		}
 
@@ -102,6 +104,7 @@ namespace SharpEngine.Library.Forms
 				String fileName = Application.ExecutablePath;
 				String backName = String.Empty;
 				String pathName = String.Empty;
+				String asteroidName = String.Empty;
 				Stack<String> pathParts = new Stack<String>(fileName.Split('\\').ToList());
 				// Remove the development paths for now
 				pathParts.Pop();
@@ -113,6 +116,9 @@ namespace SharpEngine.Library.Forms
 				// Put path back together as a string
 				String heroName = String.Format("{0}\\Media\\Hero\\fighter.png", pathName);
 				backName = String.Format("{0}\\Media\\Backgrounds\\nebula01.jpg", pathName);
+				asteroidName = String.Format("{0}\\Media\\Spritesheets\\asteroid_01.png", pathName);
+
+				float scale = 0.15f;
 
 				Sprite hero = new Sprite(_gm.LoadImage(heroName));
 				hero.Frames.Add(new Rectangle
@@ -124,40 +130,62 @@ namespace SharpEngine.Library.Forms
 				});
 				player = new SpriteShip(hero);
 
-				player.Position.X = World.Instance.WorldSize.X / 2;
-				player.Position.Y = World.Instance.WorldSize.Y - 100f;
-				player.Scale.X = 0.25f;
-				player.Scale.Y = 0.25f;
-				player.Velocity.X = 6.0f;
-				player.Velocity.Y = 6.0f;
+				player.Position.X = (World.Instance.WorldSize.X / 2) - 12;
+				player.Position.Y = World.Instance.WorldSize.Y - 200f;
+				player.Scale.X = scale;
+				player.Scale.Y = scale;
+				player.Velocity.X = 8.0f;
+				player.Velocity.Y = 8.0f;
 				CircleCollider playerCollider = new CircleCollider()
 				{
-					Radius = 40,
+					Radius = (int)130 * scale,
 					Position = player.Position
 				};
 				player.Collider = playerCollider;
 				player.Controller = KeyboardController.Instance;
+				player.Type = ObjectType.PLAYER;
+
+				// Create game scene backdrop
+				Sprite back = new Sprite(_gm.LoadImage(backName));
+				SharpDX.Direct2D1.Bitmap backBitmap = (SharpDX.Direct2D1.Bitmap)back.SpriteSheet;
+				back.Frames.Add(new Rectangle { X = 0, Y = 0, Width = (int)backBitmap.Size.Width, Height = (int)backBitmap.Size.Height });
+				SpriteBackdrop bdrop = new SpriteBackdrop(back);
+
+				SpriteStarField sfield = new SpriteStarField();
 
 				GameMessage = new SimpleText("Hello, World!");
-				GameMessage.Position.X = World.Instance.WorldSize.X - 150f;
+				GameMessage.Position.X = World.Instance.WorldSize.X - 250f;
 				GameMessage.Position.Y = 10;
 
-				SceneManager.Add(player, 4);
+				SceneManager.Add(player, 5);
 				SceneManager.Add(GameMessage, 8);
+				SceneManager.Add(sfield, 2);
+				SceneManager.Add(bdrop, 1);
+
+				// Temporary add asteroid sprite
+				Sprite spAsteroid = new Sprite(_gm.LoadImage(asteroidName));
+				SpriteAsteroid asteroid = new SpriteAsteroid(spAsteroid);
+				asteroid.Position.X = 300;
+				asteroid.Position.Y = 200;
+				asteroid.Type = ObjectType.ENEMY;
+				player.DebugObject = asteroid;
+				SceneManager.Add(asteroid, 5);
 
 			}
 		}
-
+		private int _currentFrameCnt;
 		public void GameLoop()
 		{
 			// Pasue this thread while app wamrs up
 			ThreadManager.Sleep(2000, _updateNode);
 			float frameSampleTime = Stopwatch.Frequency / 60.0f;
 			float deltaTime = 1.0f;
-			long frameCount = 0;
+			int frameCount = 0;
 
 			Stopwatch timer = new Stopwatch();
-
+			Stopwatch longTimer = new Stopwatch();
+			longTimer.Reset();
+			longTimer.Start();
 			while(_isRunning)
 			{
 
@@ -170,6 +198,12 @@ namespace SharpEngine.Library.Forms
 				frameTime = deltaTime;
 				deltaTime = elapsed / frameSampleTime;
 				frameCount++;
+				if(longTimer.ElapsedMilliseconds > 1000 )
+				{
+					longTimer.Reset();
+					_currentFrameCnt = frameCount;
+					frameCount = 0;
+				}
 			}
 		}
 
@@ -200,7 +234,7 @@ namespace SharpEngine.Library.Forms
 		private float frameTime;
 		public void Render()
 		{
-			GameMessage.Text = String.Format("Position [{0}, {1}]", player.Position.X, player.Position.Y);
+			GameMessage.Text = String.Format("Position [{0}, {1}] FPS: {2}", player.Position.X, player.Position.Y, _currentFrameCnt);
 			// Backbuffer rendering
 			lock (_gfxLock)
 			{
@@ -225,11 +259,12 @@ namespace SharpEngine.Library.Forms
 				int cnt = items.Count;
 				for (int i = 0; i < cnt; ++i)
 				{
+					UObject obj1 = items[i];
 					if (i + 1 < cnt)
 					{
 						for (int j = i + 1; j < cnt; ++j)
 						{
-							items[i].Collider.Hit(items[j]);
+							obj1.Collider.Hit(items[j]);
 						}
 					}
 				}

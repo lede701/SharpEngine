@@ -52,18 +52,21 @@ namespace SharpEngine.Library.Math
 		public bool Hit(ICollider other)
 		{
 			bool bRetVal = false;
-			switch (other.Type)
+			if (other != null)
 			{
-				case Collider2DType.Box:
-					//HitBox((BoxCollider)other);
-					break;
-				case Collider2DType.Circle:
-					bRetVal = HitCircle((CircleCollider)other);
-					break;
-				case Collider2DType.PlaneX:
-				case Collider2DType.PlaneY:
-					bRetVal = HitPlane((PlaneCollider)other);
-					break;
+				switch (other.Type)
+				{
+					case Collider2DType.Box:
+						//HitBox((BoxCollider)other);
+						break;
+					case Collider2DType.Circle:
+						bRetVal = HitCircle((CircleCollider)other);
+						break;
+					case Collider2DType.PlaneX:
+					case Collider2DType.PlaneY:
+						bRetVal = HitPlane((PlaneCollider)other);
+						break;
+				}
 			}
 
 			return bRetVal;
@@ -152,11 +155,14 @@ namespace SharpEngine.Library.Math
 			return bRetVal;
 		}
 
+		private float _circleDistance;
+
 		private bool HitCircle(CircleCollider other)
 		{
 			float doubleRadius = Square(Radius + other.Radius);
 			float doubleDistance = Square(System.Math.Abs(other.Position.X - Position.X)) + Square(System.Math.Abs(other.Position.Y - Position.Y));
 
+			_circleDistance = doubleDistance;
 			return doubleDistance <= doubleRadius;
 		}
 

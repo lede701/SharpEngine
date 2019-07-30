@@ -53,11 +53,14 @@ namespace SharpEngine.Library.Objects
 			get
 			{
 				List<UObject> list = new List<UObject>();
-				foreach(GObject obj in _gameObjects)
+				lock (SceneManager.Instance.ObjectLock)
 				{
-					if(obj is UObject)
-					{ 
-						list.Add((UObject)obj);
+					foreach (GObject obj in _gameObjects)
+					{
+						if (obj is UObject)
+						{
+							list.Add((UObject)obj);
+						}
 					}
 				}
 
@@ -110,14 +113,18 @@ namespace SharpEngine.Library.Objects
 
 		public void Add(GObject obj, int layer)
 		{
-			// Check if there is a valid layer
-			if (_gameScene.ContainsKey(layer))
+			lock (SceneManager.Instance.ObjectLock)
 			{
-				_gameScene[layer].Add(obj);
-				_gameObjects.Add(obj);
-			}else
-			{
-				// Report invalid key for layer
+				// Check if there is a valid layer
+				if (_gameScene.ContainsKey(layer))
+				{
+					_gameScene[layer].Add(obj);
+					_gameObjects.Add(obj);
+				}
+				else
+				{
+					// Report invalid key for layer
+				}
 			}
 		}
 
@@ -138,6 +145,7 @@ namespace SharpEngine.Library.Objects
 					// Call the layer objects remove method
 					bRetVal = _gameScene[layer].Remove(obj);
 					_gameObjects.Remove(obj);
+					obj.Dispose();
 				}
 			}
 

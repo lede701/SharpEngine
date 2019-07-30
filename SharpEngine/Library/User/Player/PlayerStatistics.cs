@@ -24,6 +24,7 @@ namespace SharpEngine.Library.User.Player
 		public float MaxWeaponEnergy;
 		public float WeaponEnergyUse;
 		public float WeaponDamage;
+		public int WeaponPauseRate;
 
 		public PlayerStatistics()
 		{
@@ -34,15 +35,16 @@ namespace SharpEngine.Library.User.Player
 			Experience = 0;
 			NextExperienceLevel = 500;
 
-			ShieldEnergy = 3.0f;
+			ShieldEnergy = 1.0f;
 			MaxShieldEnergy = 5.0f;
 			ShieldEnergyRechargeRate = 0.01f;
 
 			WeaponEnergy = 8.0f;
 			MaxWeaponEnergy = 8.0f;
-			WeaponEnergyRechargeRate = 0.1f;
-			WeaponEnergyUse = 1.6f;
+			WeaponEnergyRechargeRate = 0.08f;
+			WeaponEnergyUse = 6.0f;
 			WeaponDamage = 2.0f;
+			WeaponPauseRate = 2;
 		}
 
 		public void Update(float deltaTime)
@@ -51,11 +53,13 @@ namespace SharpEngine.Library.User.Player
 			WeaponEnergy = System.Math.Min(WeaponEnergy + (WeaponEnergyRechargeRate * deltaTime), MaxWeaponEnergy);
 		}
 
+		private int _frameCnt;
 		public bool CanFire
 		{
 			get
 			{
-				return WeaponEnergy > WeaponEnergyUse;
+				_frameCnt = (_frameCnt + 1) % WeaponPauseRate;
+				return WeaponEnergy > WeaponEnergyUse && _frameCnt == 0;
 			}
 		}
 
@@ -64,7 +68,7 @@ namespace SharpEngine.Library.User.Player
 			get
 			{
 				float damage = 0.0f;
-				if(CanFire)
+				if (WeaponEnergy > WeaponEnergyUse)
 				{
 					WeaponEnergy -= WeaponEnergyUse;
 					damage = WeaponDamage;

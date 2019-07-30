@@ -56,17 +56,20 @@ namespace SharpEngine.Library.Math
 		public bool Hit(ICollider other)
 		{
 			bool bRetVal = false;
-			switch(other.Type)
+			if (other != null)
 			{
-				case Collider2DType.Box:
-					HitBox((BoxCollider)other);
-					break;
-				case Collider2DType.Circle:
-					break;
-				case Collider2DType.PlaneX:
-				case Collider2DType.PlaneY:
+				switch (other.Type)
+				{
+					case Collider2DType.Box:
+						HitBox((BoxCollider)other);
+						break;
+					case Collider2DType.Circle:
+						break;
+					case Collider2DType.PlaneX:
+					case Collider2DType.PlaneY:
 
-					break;
+						break;
+				}
 			}
 
 			return bRetVal;

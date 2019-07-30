@@ -16,7 +16,7 @@ namespace SharpEngine.Library.User.Objects
 	{
 		public PlayerStatistics PlayerStats;
 		private Rectangle _boundary;
-		public SpriteShip(Sprite sprite) : base(sprite)
+		public SpriteShip(Sprite sprite) : base(sprite, false)
 		{
 			_boundary = new Rectangle
 			{
@@ -28,6 +28,24 @@ namespace SharpEngine.Library.User.Objects
 			Scale.X = Scale.Y = 0.20f;
 			PlayerStats = new PlayerStatistics();
 		}
+
+		public float Width
+		{
+			get
+			{
+				return Sprite.Frame.Width * Scale.X;
+			}
+		}
+
+		public float Height
+		{
+			get
+			{
+				return Sprite.Frame.Height * Scale.Y;
+			}
+		}
+
+		public UObject DebugObject { get; set; }
 
 		private bool _canon;
 
@@ -42,38 +60,50 @@ namespace SharpEngine.Library.User.Objects
 			float sWidth = maxWidth * (PlayerStats.ShieldEnergy / PlayerStats.MaxShieldEnergy);
 
 			// Draw energy levels
-			g.FillRectangle(x, y, wWidth, 5, Color.FromArgb(120, 255, 0, 0));
-			g.DrawRectangle(x, y, maxWidth, 5, Color.FromArgb(120, 255, 0, 0));
+			g.FillRectangle(x, y, wWidth, 5, Color.FromArgb(120, 252, 119, 3));
+			g.DrawRectangle(x, y, maxWidth, 5, Color.FromArgb(120, 252, 119, 3));
 			// Draw shield levels
 			g.FillRectangle(x, y + 7, sWidth, 5, Color.FromArgb(120, 60, 177, 255));
 			g.DrawRectangle(x, y + 7, maxWidth, 5, Color.FromArgb(120, 60, 177, 255));
-
-			Rectangle rect = new Rectangle
+			// Draw shields
+			int shieldsAlpha = (int)(80f * (float)(PlayerStats.ShieldEnergy / PlayerStats.MaxShieldEnergy));
+			float radius = ((CircleCollider)Collider).Radius;
+			RectangleF shieldsRect = new RectangleF
 			{
-				X = (int)Position.X,
-				Y = (int)Position.Y,
-				Width = 400,
-				Height = 50
+				X = Position.X + (Width / 2),
+				Y = Position.Y + (Height / 2),
+				Width = radius * 2,
+				Height = radius * 2
 			};
+			g.FillEllipse(shieldsRect, Color.FromArgb(shieldsAlpha, 128, 128, 255));
+			g.DrawEllipse(shieldsRect, Color.FromArgb(shieldsAlpha, 128, 128, 255));
+			g.FillEllipse(shieldsRect.X, shieldsRect.Y, 5, 5, Color.FromArgb(200, 0, 0, 255));
 		}
 
 		public override void Update(float deltaTime)
 		{
 			// Call the base update method
 			base.Update(deltaTime);
-			float radius = ((CircleCollider)Collider).Radius;
-			// Check if sprite has gone beoyond boundary
-			if (Position.X + (radius * 2) > _boundary.Width)
+			Rectangle src = Sprite.Frame;
+			Rectangle dest = new Rectangle
 			{
-				Position.X = _boundary.Width - (radius * 2);
+				X = (int)Position.X,
+				Y = (int)Position.Y,
+				Width = (int)((float)src.Width * Scale.X),
+				Height = (int)((float)src.Height * Scale.Y)
+			};
+			// Check if sprite has gone beoyond boundary
+			if (Position.X + dest.Width > _boundary.Width)
+			{
+				Position.X = _boundary.Width - dest.Width;
 			}
 			else if (Position.X < _boundary.X)
 			{
 				Position.X = _boundary.X;
 			}
-			if(Position.Y + radius > _boundary.Height)
+			if(Position.Y + dest.Height > _boundary.Height)
 			{
-				Position.Y = _boundary.Height - radius;
+				Position.Y = _boundary.Height - dest.Height;
 			}else if(Position.Y < _boundary.Y)
 			{
 				Position.Y = _boundary.Y;
@@ -81,12 +111,14 @@ namespace SharpEngine.Library.User.Objects
 			if(Controller.Get(Input.Fire) && PlayerStats.CanFire)
 			{
 				// Spawn blaster object
-				ShipBlaster bolt = new ShipBlaster();
-				int offset = 15;
+				ShipBlaster bolt = new ShipBlaster(true);
+				int offset = (int)(90 * Scale.X);
 				bolt.Position.X = Position.X + (_canon ? offset : Sprite.Frame.Width * Scale.X - offset);
 				_canon = !_canon;
 				bolt.Position.Y = Position.Y - 5.0f;
-				bolt.Velocity.Y = -1.0f;
+				bolt.Velocity.Y = -0.5f;
+				bolt.DebugObject = DebugObject;
+				bolt.Type = Type;
 				SceneManager.Instance.Scene.Add(bolt, 4);
 				float damage = PlayerStats.Fire;
 			}

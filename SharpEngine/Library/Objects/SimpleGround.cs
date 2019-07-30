@@ -39,6 +39,8 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public ObjectType Type { get; set; }
+
 		private Transform _transform;
 		public Transform Transform
 		{

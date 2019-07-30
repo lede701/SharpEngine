@@ -17,6 +17,6 @@ namespace SharpEngine.Library.Objects
 		Vector2D Velocity { get; }
 		Vector2D Scale { get; }
 		float Rotation { get; }
-
+		ObjectType Type { get; set; }
 	}
 }
