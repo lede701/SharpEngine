@@ -57,31 +57,53 @@ namespace SharpEngine.Library.GraphicsSystem
 			}
 			_win = win;
 
+            // Check for available settings
+            Factory1 fac = new Factory1();
+            Adapter adapter = fac.GetAdapter(0);
+            Output mon = adapter.GetOutput(0);
+
+            ModeDescription[] modeList =  mon.GetDisplayModeList(Format.B8G8R8A8_UNorm, DisplayModeEnumerationFlags.Interlaced);
+            Rational rational = new Rational(0, 1);
+            foreach(ModeDescription mode in modeList)
+            {
+                if(mode.Width == win.ClientSize.Width)
+                {
+                    rational = new Rational(mode.RefreshRate.Numerator, mode.RefreshRate.Numerator);
+                }
+            }
+
 			// Create swap chain descirpiom object
 			SwapChainDescription scd = new SwapChainDescription
 			{
 				BufferCount = 2,
 				Flags = SwapChainFlags.None,
 				IsWindowed = true,
-				ModeDescription = new ModeDescription(win.ClientSize.Width, win.ClientSize.Height, new Rational(60, 1), Format.B8G8R8A8_UNorm),
+				ModeDescription = new ModeDescription(win.ClientSize.Width, win.ClientSize.Height, rational, Format.B8G8R8A8_UNorm),
 				OutputHandle = win.Handle,
 				SampleDescription = new SampleDescription(1, 0),
 				SwapEffect = SwapEffect.FlipDiscard,
 				Usage = Usage.RenderTargetOutput
 			};
 
-			/* Reference
+            /* Reference
 			* https://stackoverflow.com/questions/26220964/sharpdxhow-to-place-sharpdx-window-in-winforms-window
 			* https://github.com/sharpdx/SharpDX-Samples/blob/master/Desktop/Direct2D1/MiniRect/Program.cs
 			* https://github.com/r2d2rigo/MyFirstDirect2D-SharpDX/blob/master/MyFirstDirect2D/MyViewProvider.cs
 			*/
+            try
+            {
 
-			// Create our DirectX 11 device object and swap chain
-			SharpDX.Direct3D11.Device.CreateWithSwapChain(
-				SharpDX.Direct3D.DriverType.Hardware,
-				DeviceCreationFlags.Debug | DeviceCreationFlags.BgraSupport,
-				scd,
-				out d3dDevice, out swapChain );
+
+                // Create our DirectX 11 device object and swap chain
+                SharpDX.Direct3D11.Device.CreateWithSwapChain(
+                    SharpDX.Direct3D.DriverType.Hardware,
+                    DeviceCreationFlags.Debug | DeviceCreationFlags.BgraSupport,
+                    scd,
+                    out d3dDevice, out swapChain);
+            }catch(Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
 			// Get access to the DirectX 11 context
 			d3dContext = d3dDevice.ImmediateContext;
 
@@ -98,7 +120,7 @@ namespace SharpEngine.Library.GraphicsSystem
 
 			// Finally create the important Direct2D render target
 			d2dRenderTarget = new SharpDX.Direct2D1.RenderTarget(d2dFactory, surface, new SharpDX.Direct2D1.RenderTargetProperties(
-				new SharpDX.Direct2D1.PixelFormat(Format.Unknown, SharpDX.Direct2D1.AlphaMode.Premultiplied)
+				new SharpDX.Direct2D1.PixelFormat(scd.ModeDescription.Format, SharpDX.Direct2D1.AlphaMode.Premultiplied)
 			));
 
 			// Initiallize the Graphic Manager internal parameters
