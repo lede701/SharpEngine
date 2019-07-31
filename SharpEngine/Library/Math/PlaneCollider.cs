@@ -56,6 +56,10 @@ namespace SharpEngine.Library.Math
 		#endregion
 
 		public event EventHandler CollisionEvent;
+		public void CallCollisionEvent(Object obj, CollisionEventArgs e)
+		{
+			CollisionEvent?.Invoke(obj, e);
+		}
 
 		public PlaneCollider()
 		{

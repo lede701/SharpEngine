@@ -18,5 +18,6 @@ namespace SharpEngine.Library.Objects
 		Vector2D Scale { get; }
 		float Rotation { get; }
 		ObjectType Type { get; set; }
+		int Layer { get; set; }
 	}
 }

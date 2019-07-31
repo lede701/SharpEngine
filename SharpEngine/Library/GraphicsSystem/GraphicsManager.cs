@@ -21,6 +21,8 @@ namespace SharpEngine.Library.GraphicsSystem
 		private SwapChain swapChain;
 		private Surface surface;
 
+		private SharpDX.Direct3D12.Device d3dDevice12;
+
 		private SharpDX.DirectWrite.Factory dwFactory;
 
 		private Texture2D target;
@@ -92,7 +94,7 @@ namespace SharpEngine.Library.GraphicsSystem
 				ModeDescription = new ModeDescription(win.ClientSize.Width, win.ClientSize.Height, rational, Format.R8G8B8A8_UNorm),
 				OutputHandle = win.Handle,
 				SampleDescription = new SampleDescription(1, 0),
-				SwapEffect = SwapEffect.Discard,
+				SwapEffect = SwapEffect.FlipDiscard,
 				Usage = Usage.RenderTargetOutput
 			};
 
@@ -214,6 +216,78 @@ namespace SharpEngine.Library.GraphicsSystem
 
 		}
 
+		public void FillGradientEllipse(float x, float y, float width, float height, System.Drawing.Color[] colors)
+		{
+			// Create the radial gradient brush properties object
+			SharpDX.Direct2D1.RadialGradientBrushProperties radProp = new SharpDX.Direct2D1.RadialGradientBrushProperties
+			{
+				RadiusX = width,
+				RadiusY = height,
+				Center = new SharpDX.Mathematics.Interop.RawVector2(x, y)
+			};
+			// Create a list of gratiend stops
+			List<SharpDX.Direct2D1.GradientStop> stops = new List<SharpDX.Direct2D1.GradientStop>();
+			// TODO: Create a color collection that also stores the color position
+			// Auto calulate color position
+			for (int i = 0; i < colors.Length; ++i)
+			{
+				SharpDX.Direct2D1.GradientStop stop = new SharpDX.Direct2D1.GradientStop
+				{
+					Color = ToColor(colors[i]),
+					Position = (float)(1.0 / colors.Length) * (i + 1)
+				};
+				stops.Add(stop);
+			}
+
+			SharpDX.Direct2D1.GradientStopCollection radStops = new SharpDX.Direct2D1.GradientStopCollection(d2dRenderTarget, stops.ToArray());
+			SharpDX.Direct2D1.RadialGradientBrush rgBrush = new SharpDX.Direct2D1.RadialGradientBrush(d2dRenderTarget, ref radProp, radStops);
+			SharpDX.Mathematics.Interop.RawVector2 center = new SharpDX.Mathematics.Interop.RawVector2(x, y);
+			SharpDX.Direct2D1.Ellipse ellipse = new SharpDX.Direct2D1.Ellipse(center, width, height);
+			d2dRenderTarget.FillEllipse(ellipse, rgBrush);
+
+			radStops.Dispose();
+			rgBrush.Dispose();
+		}
+
+		public void FillGradientEllipse(float x, float y, float width, float height, float cx, float cy, System.Drawing.Color[] colors)
+		{
+			// Create the radial gradient brush properties object
+			SharpDX.Direct2D1.RadialGradientBrushProperties radProp = new SharpDX.Direct2D1.RadialGradientBrushProperties
+			{
+				RadiusX = width,
+				RadiusY = height,
+				Center = new SharpDX.Mathematics.Interop.RawVector2(x, y)
+			};
+			// Create a list of gratiend stops
+			List<SharpDX.Direct2D1.GradientStop> stops = new List<SharpDX.Direct2D1.GradientStop>();
+			// TODO: Create a color collection that also stores the color position
+			// Auto calulate color position
+			for (int i = 0; i < colors.Length; ++i)
+			{
+				SharpDX.Direct2D1.GradientStop stop = new SharpDX.Direct2D1.GradientStop
+				{
+					Color = ToColor(colors[i]),
+					Position = (float)(1.0 / colors.Length) * (i + 1)
+				};
+				stops.Add(stop);
+			}
+
+			SharpDX.Direct2D1.GradientStopCollection radStops = new SharpDX.Direct2D1.GradientStopCollection(d2dRenderTarget, stops.ToArray());
+			SharpDX.Direct2D1.RadialGradientBrush rgBrush = new SharpDX.Direct2D1.RadialGradientBrush(d2dRenderTarget, ref radProp, radStops);
+			rgBrush.GradientOriginOffset = new SharpDX.Mathematics.Interop.RawVector2 { X = cx, Y = cy };
+			SharpDX.Mathematics.Interop.RawVector2 center = new SharpDX.Mathematics.Interop.RawVector2(x, y);
+			SharpDX.Direct2D1.Ellipse ellipse = new SharpDX.Direct2D1.Ellipse(center, width, height);
+			d2dRenderTarget.FillEllipse(ellipse, rgBrush);
+
+			radStops.Dispose();
+			rgBrush.Dispose();
+		}
+
+		public void FillGradientEllipse(System.Drawing.RectangleF rect, System.Drawing.Color[] colors)
+		{
+			FillGradientEllipse(rect.X, rect.Y, rect.Width, rect.Height, colors);
+		}
+
 		public void FillEllipse(System.Drawing.Rectangle rect, System.Drawing.Color clr)
 		{
 			FillEllipse((float)rect.X, (float)rect.Y, (float)rect.Width, (float)rect.Height, clr);
@@ -314,25 +388,28 @@ namespace SharpEngine.Library.GraphicsSystem
 			if (image is SharpDX.Direct2D1.Bitmap)
 			{
 				SharpDX.Direct2D1.Bitmap bImg = (SharpDX.Direct2D1.Bitmap)image;
-
-				SharpDX.Mathematics.Interop.RawRectangleF src = new SharpDX.Mathematics.Interop.RawRectangleF
+				if (!bImg.IsDisposed)
 				{
-					Top = srcRect.Top,
-					Left = srcRect.Left,
-					Bottom = srcRect.Bottom,
-					Right = srcRect.Width
-				};
 
-				SharpDX.Mathematics.Interop.RawRectangleF dest = new SharpDX.Mathematics.Interop.RawRectangleF
-				{
-					Top = destRect.Top,
-					Left = destRect.Left,
-					Bottom = destRect.Bottom,
-					Right = destRect.Right
-				};
+					SharpDX.Mathematics.Interop.RawRectangleF src = new SharpDX.Mathematics.Interop.RawRectangleF
+					{
+						Top = srcRect.Top,
+						Left = srcRect.Left,
+						Bottom = srcRect.Bottom,
+						Right = srcRect.Width
+					};
 
-				d2dRenderTarget.DrawBitmap(bImg, dest, 1.0f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear, src);
-			}
+					SharpDX.Mathematics.Interop.RawRectangleF dest = new SharpDX.Mathematics.Interop.RawRectangleF
+					{
+						Top = destRect.Top,
+						Left = destRect.Left,
+						Bottom = destRect.Bottom,
+						Right = destRect.Right
+					};
+
+					d2dRenderTarget.DrawBitmap(bImg, dest, 1.0f, SharpDX.Direct2D1.BitmapInterpolationMode.Linear, src);
+				}// Endif image is not disposed
+			}// Endif image is DirectX Bitmap
 		}
 
 		public void DrawText(String message, String fontFamily, float fontSize, System.Drawing.Color clr, System.Drawing.Rectangle area)

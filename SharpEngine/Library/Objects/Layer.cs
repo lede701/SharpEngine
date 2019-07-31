@@ -45,9 +45,12 @@ namespace SharpEngine.Library.Objects
 		public void Render(IGraphics g)
 		{
 			// Call the render item for each game object
-			foreach (GObject obj in _layerObjects.Values)
+			lock (SceneManager.Instance.ObjectLock)
 			{
-				obj.Render(g);
+				foreach (GObject obj in _layerObjects.Values)
+				{
+					obj.Render(g);
+				}
 			}
 		}
 

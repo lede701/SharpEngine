@@ -24,6 +24,7 @@ namespace SharpEngine.Library.Math
 		}
 		public float Radius;
 		public Vector2D Position;
+		public Vector2D Center;
 
 		private UObject _owner;
 		public UObject Owner
@@ -47,6 +48,15 @@ namespace SharpEngine.Library.Math
 		}
 
 		public event EventHandler CollisionEvent;
+		public void CallCollisionEvent(Object obj, CollisionEventArgs e)
+		{
+			CollisionEvent?.Invoke(obj, e);
+		}
+
+		public CircleCollider()
+		{
+			Center = new Vector2D { X = 0, Y = 0 };
+		}
 
 
 		public bool Hit(ICollider other)
@@ -77,13 +87,22 @@ namespace SharpEngine.Library.Math
 			bool bRetVal = Hit(obj.Collider);
 			if(bRetVal)
 			{
-				CollisionEventArgs e = new CollisionEventArgs
+				CollisionEventArgs me = new CollisionEventArgs
 				{
 					Who = obj,
 					Point = _hitPoint,
-					Location = _hitLocation
+					Location = _hitLocation,
+					Distance = _circleDistance
 				};
-				CollisionEvent?.Invoke(this, e);
+				CollisionEventArgs you = new CollisionEventArgs
+				{
+					Who = this.Owner,
+					Point = _hitPoint,
+					Location = _hitLocation,
+					Distance = _circleDistance
+				};
+				CallCollisionEvent(obj, me);
+				obj.Collider.CallCollisionEvent(this.Owner, you);
 			}
 
 			return bRetVal;
@@ -159,8 +178,13 @@ namespace SharpEngine.Library.Math
 
 		private bool HitCircle(CircleCollider other)
 		{
+			float x0 = Position.X + Center.X;
+			float y0 = Position.Y + Center.Y;
+			float x1 = other.Position.X + other.Center.X;
+			float y1 = other.Position.Y + other.Center.Y;
+
 			float doubleRadius = Square(Radius + other.Radius);
-			float doubleDistance = Square(System.Math.Abs(other.Position.X - Position.X)) + Square(System.Math.Abs(other.Position.Y - Position.Y));
+			float doubleDistance = Square(x0 - x1) + Square(y0 - y1);
 
 			_circleDistance = doubleDistance;
 			return doubleDistance <= doubleRadius;

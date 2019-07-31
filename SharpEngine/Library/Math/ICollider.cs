@@ -1,4 +1,5 @@
-﻿using SharpEngine.Library.Objects;
+﻿using SharpEngine.Library.Events;
+using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace SharpEngine.Library.Math
 		bool Hit(ICollider other);
 		bool Hit(UObject obj);
 		event EventHandler CollisionEvent;
+		void CallCollisionEvent(Object obj, CollisionEventArgs e);
 		
 	}
 }

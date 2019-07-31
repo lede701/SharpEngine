@@ -21,5 +21,6 @@ namespace SharpEngine.Library.Events
 		public UObject Who;
 		public Vector2D Point;
 		public HitLocation Location;
+		public float Distance;
 	}
 }

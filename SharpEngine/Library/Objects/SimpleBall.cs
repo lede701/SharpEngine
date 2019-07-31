@@ -92,6 +92,8 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public int Layer { get; set; }
+
 		private int _radius;
 		private Rectangle _boundary;
 		private bool _isMoving;

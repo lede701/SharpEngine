@@ -91,6 +91,8 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public int Layer { get; set; }
+
 		public SimpleGround(float ground, Collider2DType type)
 		{
 			_controller = new NullController();

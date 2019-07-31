@@ -118,6 +118,11 @@ namespace SharpEngine.Library.Objects
 				// Check if there is a valid layer
 				if (_gameScene.ContainsKey(layer))
 				{
+					// Check if object type can store layer information
+					if(obj is UObject)
+					{
+						((UObject)obj).Layer = layer;
+					}
 					_gameScene[layer].Add(obj);
 					_gameObjects.Add(obj);
 				}

@@ -39,12 +39,12 @@ namespace SharpEngine.Library.User.Player
 			MaxShieldEnergy = 5.0f;
 			ShieldEnergyRechargeRate = 0.01f;
 
-			WeaponEnergy = 8.0f;
-			MaxWeaponEnergy = 8.0f;
-			WeaponEnergyRechargeRate = 0.08f;
-			WeaponEnergyUse = 6.0f;
+			WeaponEnergy = 20.0f;
+			MaxWeaponEnergy = 20.0f;
+			WeaponEnergyRechargeRate = 0.1f;
+			WeaponEnergyUse = 3.0f;
 			WeaponDamage = 2.0f;
-			WeaponPauseRate = 2;
+			WeaponPauseRate = 50;
 		}
 
 		public void Update(float deltaTime)
@@ -86,6 +86,14 @@ namespace SharpEngine.Library.User.Player
 				ShieldEnergy -= damage;
 			}
 			return bRetVal;
+		}
+
+		public float TotalLife
+		{
+			get
+			{
+				return ShieldEnergy;
+			}
 		}
 		
 	}

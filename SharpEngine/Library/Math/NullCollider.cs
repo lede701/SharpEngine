@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SharpEngine.Library.Events;
 using SharpEngine.Library.Objects;
 
 namespace SharpEngine.Library.Math
@@ -40,6 +41,10 @@ namespace SharpEngine.Library.Math
 		}
 
 		public event EventHandler CollisionEvent;
+		public void CallCollisionEvent(Object obj, CollisionEventArgs e)
+		{
+			CollisionEvent?.Invoke(obj, e);
+		}
 
 		public bool Hit(ICollider other)
 		{

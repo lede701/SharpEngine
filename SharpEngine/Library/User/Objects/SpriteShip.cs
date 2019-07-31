@@ -2,6 +2,7 @@
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.User.Interfaces;
 using SharpEngine.Library.User.Player;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SharpEngine.Library.User.Objects
 {
-	public class SpriteShip : USpriteObject
+	public class SpriteShip : USpriteObject, ITakeDamage
 	{
 		public PlayerStatistics PlayerStats;
 		private Rectangle _boundary;
@@ -27,6 +28,16 @@ namespace SharpEngine.Library.User.Objects
 			};
 			Scale.X = Scale.Y = 0.20f;
 			PlayerStats = new PlayerStatistics();
+			// Create collider for ship
+			CircleCollider cldr = new CircleCollider()
+			{
+				Radius = (int)230 * Scale.X,
+				Position = Position
+			};
+			cldr.Center.X = (Width / 2) - 9;
+			cldr.Center.Y = (Height / 2) - 9;
+
+			Collider = cldr;
 		}
 
 		public float Width
@@ -66,18 +77,27 @@ namespace SharpEngine.Library.User.Objects
 			g.FillRectangle(x, y + 7, sWidth, 5, Color.FromArgb(120, 60, 177, 255));
 			g.DrawRectangle(x, y + 7, maxWidth, 5, Color.FromArgb(120, 60, 177, 255));
 			// Draw shields
-			int shieldsAlpha = (int)(80f * (float)(PlayerStats.ShieldEnergy / PlayerStats.MaxShieldEnergy));
+			float shieldsLevel = (float)(PlayerStats.ShieldEnergy / PlayerStats.MaxShieldEnergy);
+			int shieldsAlpha = (int)(100f * shieldsLevel);
 			float radius = ((CircleCollider)Collider).Radius;
 			RectangleF shieldsRect = new RectangleF
 			{
 				X = Position.X + (Width / 2),
 				Y = Position.Y + (Height / 2),
-				Width = radius * 2,
-				Height = radius * 2
+				Width = radius,
+				Height = radius
 			};
+			List<System.Drawing.Color> colors = new List<Color>();
+			colors.Add(Color.FromArgb(5, 80, 80, 200));
+			colors.Add(Color.FromArgb(10, 80, 80, 200));
+			colors.Add(Color.FromArgb(shieldsAlpha, 8, 152, 255));
+			g.FillGradientEllipse(shieldsRect, colors.ToArray());
+			g.DrawEllipse(shieldsRect, Color.FromArgb((int)(210 * shieldsLevel), 175, 219, 250));
+			/*
 			g.FillEllipse(shieldsRect, Color.FromArgb(shieldsAlpha, 128, 128, 255));
 			g.DrawEllipse(shieldsRect, Color.FromArgb(shieldsAlpha, 128, 128, 255));
 			g.FillEllipse(shieldsRect.X, shieldsRect.Y, 5, 5, Color.FromArgb(200, 0, 0, 255));
+			*/
 		}
 
 		public override void Update(float deltaTime)
@@ -111,19 +131,25 @@ namespace SharpEngine.Library.User.Objects
 			if(Controller.Get(Input.Fire) && PlayerStats.CanFire)
 			{
 				// Spawn blaster object
-				ShipBlaster bolt = new ShipBlaster(true);
+				ShipBlaster bolt = new ShipBlaster(false);
 				int offset = (int)(90 * Scale.X);
 				bolt.Position.X = Position.X + (_canon ? offset : Sprite.Frame.Width * Scale.X - offset);
 				_canon = !_canon;
 				bolt.Position.Y = Position.Y - 5.0f;
-				bolt.Velocity.Y = -0.5f;
+				bolt.Velocity.Y = -4.0f;
 				bolt.DebugObject = DebugObject;
-				bolt.Type = Type;
+				bolt.Type = ObjectType.MISSLE;
 				SceneManager.Instance.Scene.Add(bolt, 4);
 				float damage = PlayerStats.Fire;
 			}
 
 			PlayerStats.Update(deltaTime);
+		}
+
+		public float TakeDamage(float damage)
+		{
+			PlayerStats.ShieldEnergy -= damage;
+			return PlayerStats.TotalLife;
 		}
 	}
 }

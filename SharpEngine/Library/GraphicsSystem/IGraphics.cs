@@ -30,6 +30,10 @@ namespace SharpEngine.Library.GraphicsSystem
 		void DrawImage(Object image, System.Drawing.RectangleF srcRect, System.Drawing.RectangleF destRect);
 		void DrawText(String message, String fontFamily, float fontSize, System.Drawing.Color clr, System.Drawing.Rectangle area);
 
+		void FillGradientEllipse(float x, float y, float width, float height, System.Drawing.Color[] colors);
+		void FillGradientEllipse(System.Drawing.RectangleF rect, System.Drawing.Color[] colors);
+		void FillGradientEllipse(float x, float y, float width, float height, float cx, float cy, System.Drawing.Color[] colors);
+
 		void Translate(float x, float y);
 	}
 }

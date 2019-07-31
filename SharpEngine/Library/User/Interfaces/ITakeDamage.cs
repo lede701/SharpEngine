@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpEngine.Library.Objects
+namespace SharpEngine.Library.User.Interfaces
 {
-	public enum ObjectType
+	public interface ITakeDamage
 	{
-		PLAYER,
-		ENEMY,
-		MISSLE,
-		NONE
+		float TakeDamage(float damage);
 	}
 }

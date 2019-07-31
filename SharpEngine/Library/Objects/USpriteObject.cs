@@ -55,6 +55,7 @@ namespace SharpEngine.Library.Objects
 				_collider = value;
 				// Connect collider to event handler
 				_collider.CollisionEvent += OnCollision;
+				_collider.Owner = this;
 			}
 		}
 
@@ -145,6 +146,8 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public int Layer { get; set; }
+
 		private bool _debug;
 		public bool Debug
 		{
@@ -201,10 +204,10 @@ namespace SharpEngine.Library.Objects
 						CircleCollider cc = (CircleCollider)Collider;
 						Rectangle cldrCircle = new Rectangle
 						{
-							X = (int)rect.X,
-							Y = (int)rect.Y,
-							Width = (int)cc.Radius * 2,
-							Height = (int)cc.Radius * 2
+							X = (int)(rect.X + cc.Center.X),
+							Y = (int)(rect.Y + cc.Center.Y),
+							Width = (int)cc.Radius,
+							Height = (int)cc.Radius
 						};
 						g.FillEllipse(cldrCircle, Color.FromArgb(25, 0, 180, 0));
 						g.FillEllipse(cldrCircle.X, cldrCircle.Y, 5, 5, Color.FromArgb(120, 0, 180, 0));

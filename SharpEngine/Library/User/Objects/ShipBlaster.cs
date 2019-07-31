@@ -1,7 +1,9 @@
 ﻿using SharpEngine.Library.Controller;
+using SharpEngine.Library.Events;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.User.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -46,6 +48,7 @@ namespace SharpEngine.Library.User.Objects
 				return _key;
 			}
 		}
+		public int Layer { get; set; }
 
 		public ObjectType Type { get; set; }
 
@@ -68,7 +71,11 @@ namespace SharpEngine.Library.User.Objects
 			}
 			set
 			{
-
+				if (value is CircleCollider)
+				{
+					_collider = (CircleCollider)value;
+					_collider.Owner = this;
+				}
 			}
 		}
 
@@ -103,6 +110,8 @@ namespace SharpEngine.Library.User.Objects
 			}
 		}
 
+		public List<System.Drawing.Color> blasterTexture;
+
 		public ShipBlaster(bool debug = false)
 		{
 			_key = Guid.NewGuid().ToString();
@@ -110,38 +119,49 @@ namespace SharpEngine.Library.User.Objects
 			_collider = new CircleCollider();
 			_collider.Radius = 3.0f;
 			_collider.Position = Position;
+			_collider.Owner = this;
 			_debug = debug;
 			Collider.CollisionEvent += OnCollision;
-			dr = 0;
-			dg = 200;
-			db = 0;
-		}
+			blasterTexture = new List<System.Drawing.Color>();
 
-		private int dr;
-		private int dg;
-		private int db;
+			blasterTexture.Add(Color.FromArgb(190, 247, 233, 203));
+			blasterTexture.Add(Color.FromArgb(120, 252, 55, 0));
+			blasterTexture.Add(Color.FromArgb(80, 255, 81, 0));
+
+		}
 
 		private void OnCollision(object sender, EventArgs e)
 		{
-			dr = 255;
-			dg = 0;
+			CollisionEventArgs ce = (CollisionEventArgs)e;
+			if (ce.Who.Type == ObjectType.ENEMY)
+			{
+				// We hit something so let see if it gets destroyed
+				if(((ITakeDamage)ce.Who).TakeDamage(1.0f) <= 0.0f)
+				{
+					SceneManager.Instance.Scene.Remove(ce.Who, ce.Who.Layer);
+				}
+				SceneManager.Instance.Scene.Remove(this, Layer);
+			}
 		}
 
 		public void Render(IGraphics g)
 		{
-			g.FillEllipse(Position.X, Position.Y, 2.0f, 25.0f, Color.FromArgb(180, 252, 119, 3));
-			if(Debug)
+			// Draw blaster to screen
+			//g.FillEllipse(Position.X, Position.Y, 2.0f, 25.0f, Color.FromArgb(180, 252, 119, 3));
+			g.FillGradientEllipse(Position.X, Position.Y, 3.0f, 25.0f, 0f, -12f, blasterTexture.ToArray());
+
+			if (Debug)
 			{
 				CircleCollider cc = (CircleCollider)Collider;
 				RectangleF rect = new RectangleF
 				{
 					X = Position.X,
 					Y = Position.Y,
-					Width = cc.Radius * 2,
-					Height = cc.Radius * 2
+					Width = cc.Radius,
+					Height = cc.Radius
 				};
-				g.FillEllipse(rect, Color.FromArgb(80, dr, dg, db));
-				g.DrawEllipse(rect, Color.FromArgb(120, dr, dg, db));
+				g.FillEllipse(rect, Color.FromArgb(80, 0, 200, 0));
+				g.DrawEllipse(rect, Color.FromArgb(120, 0, 200, 0));
 				if(DebugObject != null)
 				{
 					float distX = Position.X - DebugObject.Position.X;
@@ -166,7 +186,7 @@ namespace SharpEngine.Library.User.Objects
 			// Check if bolt needs to be auto destroyed
 			if(Position.Y < -10)
 			{
-				SceneManager.Instance.Scene.Remove(this, 4);
+				SceneManager.Instance.Scene.Remove(this, Layer);
 			}
 		}
 
