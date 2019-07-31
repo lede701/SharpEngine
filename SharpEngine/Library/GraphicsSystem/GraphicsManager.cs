@@ -72,6 +72,17 @@ namespace SharpEngine.Library.GraphicsSystem
                 }
             }
 
+			/*
+            SwapChainDescription1 scd1 = new SwapChainDescription1
+            {
+                BufferCount = 2,
+				Flags = SwapChainFlags.None,
+				SampleDescription = new SampleDescription(1, 0),
+				SwapEffect = SwapEffect.Discard
+            };
+			*/
+			
+
 			// Create swap chain descirpiom object
 			SwapChainDescription scd = new SwapChainDescription
 			{
@@ -81,7 +92,7 @@ namespace SharpEngine.Library.GraphicsSystem
 				ModeDescription = new ModeDescription(win.ClientSize.Width, win.ClientSize.Height, rational, Format.R8G8B8A8_UNorm),
 				OutputHandle = win.Handle,
 				SampleDescription = new SampleDescription(1, 0),
-				SwapEffect = SwapEffect.FlipDiscard,
+				SwapEffect = SwapEffect.Discard,
 				Usage = Usage.RenderTargetOutput
 			};
 
@@ -101,6 +112,7 @@ namespace SharpEngine.Library.GraphicsSystem
             }catch(Exception e)
             {
                 MessageBox.Show(e.ToString());
+                return;
             }
 			// Get access to the DirectX 11 context
 			d3dContext = d3dDevice.ImmediateContext;
