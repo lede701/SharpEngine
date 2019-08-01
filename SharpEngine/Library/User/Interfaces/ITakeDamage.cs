@@ -9,5 +9,6 @@ namespace SharpEngine.Library.User.Interfaces
 	public interface ITakeDamage
 	{
 		float TakeDamage(float damage);
+		float Life { get; }
 	}
 }

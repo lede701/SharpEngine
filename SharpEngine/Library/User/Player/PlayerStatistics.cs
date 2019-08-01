@@ -37,10 +37,10 @@ namespace SharpEngine.Library.User.Player
 
 			ShieldEnergy = 1.0f;
 			MaxShieldEnergy = 5.0f;
-			ShieldEnergyRechargeRate = 0.01f;
+			ShieldEnergyRechargeRate = 0.001f;
 
-			WeaponEnergy = 20.0f;
-			MaxWeaponEnergy = 20.0f;
+			WeaponEnergy = 50.0f;
+			MaxWeaponEnergy = 50.0f;
 			WeaponEnergyRechargeRate = 0.1f;
 			WeaponEnergyUse = 3.0f;
 			WeaponDamage = 2.0f;
@@ -51,6 +51,7 @@ namespace SharpEngine.Library.User.Player
 		{
 			ShieldEnergy = System.Math.Min(ShieldEnergy + (ShieldEnergyRechargeRate * deltaTime), MaxShieldEnergy);
 			WeaponEnergy = System.Math.Min(WeaponEnergy + (WeaponEnergyRechargeRate * deltaTime), MaxWeaponEnergy);
+			_frameCnt++;
 		}
 
 		private int _frameCnt;
@@ -58,8 +59,7 @@ namespace SharpEngine.Library.User.Player
 		{
 			get
 			{
-				_frameCnt = (_frameCnt + 1) % WeaponPauseRate;
-				return WeaponEnergy > WeaponEnergyUse && _frameCnt == 0;
+				return WeaponEnergy > WeaponEnergyUse && _frameCnt > WeaponPauseRate;
 			}
 		}
 
@@ -73,6 +73,7 @@ namespace SharpEngine.Library.User.Player
 					WeaponEnergy -= WeaponEnergyUse;
 					damage = WeaponDamage;
 				}
+				_frameCnt = 0;
 
 				return damage;
 			}

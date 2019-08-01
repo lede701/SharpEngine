@@ -333,6 +333,7 @@ namespace SharpEngine.Library.GraphicsSystem
 			SharpDX.Direct2D1.SolidColorBrush brush = new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget, ToColor(clr));
 
 			d2dRenderTarget.DrawRectangle(rect, brush, 1.0f);
+			brush.Dispose();
 		}
 
 		public void DrawRectangle(int x, int y, int width, int height, System.Drawing.Color clr)
@@ -356,6 +357,7 @@ namespace SharpEngine.Library.GraphicsSystem
 			SharpDX.Direct2D1.SolidColorBrush brush = new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget, ToColor(clr));
 
 			d2dRenderTarget.FillRectangle(rect, brush);
+			brush.Dispose();
 		}
 
 		public void FillRectangle(int x, int y, int width, int height, System.Drawing.Color clr)
@@ -419,6 +421,8 @@ namespace SharpEngine.Library.GraphicsSystem
 			SharpDX.Mathematics.Interop.RawRectangleF rect = ToRectangle(area);
 			SharpDX.Direct2D1.SolidColorBrush brush = new SharpDX.Direct2D1.SolidColorBrush(d2dRenderTarget, ToColor(clr));
 			d2dRenderTarget.DrawText(message, fmt, rect, brush);
+			fmt.Dispose();
+			brush.Dispose();
 		}
 
 		public void Translate(float x, float y)

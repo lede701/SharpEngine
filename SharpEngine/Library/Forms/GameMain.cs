@@ -2,9 +2,11 @@
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.Particles;
 using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.Threading;
 using SharpEngine.Library.User.Objects;
+using SharpEngine.Library.User.Player;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -72,7 +74,7 @@ namespace SharpEngine.Library.Forms
 
 			_gm = new GraphicsManager(this);
 
-			
+
 			// Load scene
 			SetupScene();
 
@@ -86,10 +88,6 @@ namespace SharpEngine.Library.Forms
 			_updateNode.Start();
 			_physicsNode.Start();
 
-		}
-
-		private void InitDevice()
-		{
 		}
 
 		private String backName = String.Empty;
@@ -123,7 +121,7 @@ namespace SharpEngine.Library.Forms
 
 					float scale = 0.15f;
 
-					Sprite hero = new Sprite(_gm.LoadImage(heroName));
+					Sprite hero = new Sprite(heroName);
 					hero.Frames.Add(new Rectangle
 					{
 						X = 0,
@@ -142,6 +140,9 @@ namespace SharpEngine.Library.Forms
 					player.Controller = KeyboardController.Instance;
 					player.Type = ObjectType.PLAYER;
 
+					PlayerUI plUI = new PlayerUI(ref player.PlayerStats);
+
+					//*
 					// Create game scene backdrop
 					Sprite back = new Sprite(_gm.LoadImage(backName));
 					SharpDX.Direct2D1.Bitmap backBitmap = (SharpDX.Direct2D1.Bitmap)back.SpriteSheet;
@@ -153,9 +154,11 @@ namespace SharpEngine.Library.Forms
 					GameMessage = new SimpleText("Hello, World!");
 					GameMessage.Position.X = World.Instance.WorldSize.X - 250f;
 					GameMessage.Position.Y = 10;
+					//*/
 
 					SceneManager.Add(player, 6);
 					SceneManager.Add(GameMessage, 8);
+					SceneManager.Add(plUI, 8);
 					SceneManager.Add(sfield, 2);
 					SceneManager.Add(bdrop, 1);
 				}
@@ -204,11 +207,17 @@ namespace SharpEngine.Library.Forms
 
 		public void Spawn()
 		{
+			float lastX = 0;
+			Sprite spAsteroid = new Sprite(_gm.LoadImage(asteroidName));
+			spAsteroid.AutoDispose = false;
 			while (_spawner.IsRunning)
 			{
-				Sprite spAsteroid = new Sprite(_gm.LoadImage(asteroidName));
 				SpriteAsteroid asteroid = new SpriteAsteroid(spAsteroid);
-				asteroid.Position.X = RandomManager.Instance.Next(100, (int)World.Instance.WorldSize.X - 100);
+				do
+				{
+					asteroid.Position.X = RandomManager.Instance.Next(100, (int)World.Instance.WorldSize.X - 100);
+				} while (lastX > asteroid.Position.X && lastX + 100f < asteroid.Position.X);
+				lastX = asteroid.Position.X;
 				asteroid.Position.Y = -200;
 				asteroid.Velocity.Y = (float)(RandomManager.Instance.Next(500, 4500) / 1000f);
 				asteroid.Life = (float)(RandomManager.Instance.Next(120, 400) / 100f);
@@ -216,9 +225,10 @@ namespace SharpEngine.Library.Forms
 				asteroid.EventDestroyed += EnemyDestoryed;
 				player.DebugObject = asteroid;
 				SceneManager.Add(asteroid, 5);
-				int waitTime = RandomManager.Instance.Next(100, 5000);
+				int waitTime = RandomManager.Instance.Next(100, 2000);
 				ThreadManager.Sleep(waitTime, _spawner);
 			}
+			spAsteroid.Dispose();
 		}
 
 		public void EnemyDestoryed(Object enemy, EventArgs e)
@@ -256,7 +266,10 @@ namespace SharpEngine.Library.Forms
 		private float frameTime;
 		public void Render()
 		{
-			GameMessage.Text = String.Format("Position [{0}, {1}] FPS: {2}", player.Position.X, player.Position.Y, _currentFrameCnt);
+			if (GameMessage != null)
+			{
+				GameMessage.Text = String.Format("Position [{0}, {1}] FPS: {2}", player.Position.X, player.Position.Y, _currentFrameCnt);
+			}
 			// Backbuffer rendering
 			lock (_gfxLock)
 			{

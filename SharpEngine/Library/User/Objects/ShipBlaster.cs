@@ -3,6 +3,7 @@ using SharpEngine.Library.Events;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.Particles;
 using SharpEngine.Library.User.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,8 @@ namespace SharpEngine.Library.User.Objects
 				return _key;
 			}
 		}
+
+		public float Damage { get; set; }
 		public int Layer { get; set; }
 
 		public ObjectType Type { get; set; }
@@ -127,7 +130,7 @@ namespace SharpEngine.Library.User.Objects
 			blasterTexture.Add(Color.FromArgb(190, 247, 233, 203));
 			blasterTexture.Add(Color.FromArgb(120, 252, 55, 0));
 			blasterTexture.Add(Color.FromArgb(80, 255, 81, 0));
-
+			Damage = 1.0f;
 		}
 
 		private void OnCollision(object sender, EventArgs e)
@@ -136,11 +139,13 @@ namespace SharpEngine.Library.User.Objects
 			if (ce.Who.Type == ObjectType.ENEMY)
 			{
 				// We hit something so let see if it gets destroyed
-				if(((ITakeDamage)ce.Who).TakeDamage(1.0f) <= 0.0f)
+				if(((ITakeDamage)ce.Who).TakeDamage(Damage) <= 0.0f)
 				{
 					SceneManager.Instance.Scene.Remove(ce.Who, ce.Who.Layer);
 				}
 				SceneManager.Instance.Scene.Remove(this, Layer);
+				ParticleExplosion exp = new ParticleExplosion(Position);
+				SceneManager.Instance.Scene.Add(exp, 6);
 			}
 		}
 

@@ -16,12 +16,13 @@ namespace SharpEngine.Library.GraphicsSystem
 		public List<Rectangle> Frames;
 		public int CurrentFrame;
 		public bool AutoAdvance;
+		public bool AutoDispose;
 
 		public Sprite(String filename)
 		{
 			if (File.Exists(filename))
 			{
-				SpriteSheet = new Bitmap(filename);
+				SpriteSheet = GraphicsManager.Instance.LoadImage(filename);
 			}
 			CenterPoint = new Vector2D();
 			Frames = new List<Rectangle>();

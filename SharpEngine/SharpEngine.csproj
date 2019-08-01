@@ -129,6 +129,9 @@
     <Compile Include="Library\Objects\UObject.cs" />
     <Compile Include="Library\Objects\USpriteObject.cs" />
     <Compile Include="Library\Objects\World.cs" />
+    <Compile Include="Library\Particles\Particle.cs" />
+    <Compile Include="Library\Particles\ParticleGroup.cs" />
+    <Compile Include="Library\Particles\ParticleExplosion.cs" />
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
     <Compile Include="Library\Objects\ObjectType.cs" />
@@ -139,6 +142,9 @@
     <Compile Include="Library\User\Objects\SpriteShip.cs" />
     <Compile Include="Library\User\Objects\SpriteStarField.cs" />
     <Compile Include="Library\User\Player\PlayerStatistics.cs" />
+    <Compile Include="Library\User\Player\PlayerUI.cs" />
+    <Compile Include="Library\User\Player\Weapons\IWeapon.cs" />
+    <Compile Include="Library\User\Player\Weapons\SingleBlaster.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Library\Forms\DxMain.resx">

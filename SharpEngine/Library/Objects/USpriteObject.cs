@@ -229,7 +229,10 @@ namespace SharpEngine.Library.Objects
 
 		public virtual void Dispose()
 		{
-			Sprite.Dispose();
+			if (Sprite.AutoDispose)
+			{
+				Sprite.Dispose();
+			}
 		}
 	}
 }

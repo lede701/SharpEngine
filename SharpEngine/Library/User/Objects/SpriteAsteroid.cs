@@ -86,10 +86,11 @@ namespace SharpEngine.Library.User.Objects
 			base.Render(g);
 			System.Drawing.Rectangle rect = Sprite.Frame;
 			float lifeLevel = _life / _maxLife;
-			float lWidth = rect.Width * lifeLevel;
+			float lWidth = (rect.Width / 2f) * lifeLevel;
+			float x = Position.X + (rect.Width / 4f);
 
-			g.FillRectangle(Position.X, Position.Y, lWidth, 5, System.Drawing.Color.FromArgb(100, 192, 250, 0));
-			g.DrawRectangle(Position.X, Position.Y, rect.Width, 5, System.Drawing.Color.FromArgb(180, 98, 128, 0));
+			g.FillRectangle(x, Position.Y, lWidth, 5, System.Drawing.Color.FromArgb(100, 192, 250, 0));
+			g.DrawRectangle(x, Position.Y, (rect.Width / 2f), 5, System.Drawing.Color.FromArgb(180, 98, 128, 0));
 		}
 
 		private Vector2D _speedEffect;

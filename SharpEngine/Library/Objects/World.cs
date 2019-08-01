@@ -28,6 +28,8 @@ namespace SharpEngine.Library.Objects
 		private World()
 		{
 			_worldSize = new Vector2D();
+			_gravity = new Vector2D();
+			_wind = new Vector2D();
 		}
 
 		private Vector2D _worldSize;
@@ -40,6 +42,24 @@ namespace SharpEngine.Library.Objects
 			set
 			{
 				_worldSize = value;
+			}
+		}
+
+		private Vector2D _gravity;
+		public Vector2D Gravity
+		{
+			get
+			{
+				return _gravity;
+			}
+		}
+
+		private Vector2D _wind;
+		public Vector2D Wind
+		{
+			get
+			{
+				return _wind;
 			}
 		}
 
