@@ -225,7 +225,7 @@ namespace SharpEngine.Library.Forms
 				asteroid.EventDestroyed += EnemyDestoryed;
 				player.DebugObject = asteroid;
 				SceneManager.Add(asteroid, 5);
-				int waitTime = RandomManager.Instance.Next(1000, 5000);
+				int waitTime = RandomManager.Instance.Next(1000, 3000);
 				ThreadManager.Sleep(waitTime, _spawner);
 			}
 			spAsteroid.Dispose();
