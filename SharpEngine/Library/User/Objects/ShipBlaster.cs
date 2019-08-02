@@ -147,6 +147,17 @@ namespace SharpEngine.Library.User.Objects
 				ParticleExplosion exp = new ParticleExplosion(Position);
 				SceneManager.Instance.Scene.Add(exp, 6);
 			}
+			if(ce.Source.Type == ObjectType.ENEMY)
+			{
+				// We hit something so let see if it gets destroyed
+				if (((ITakeDamage)ce.Source).TakeDamage(Damage) <= 0.0f)
+				{
+					SceneManager.Instance.Scene.Remove(ce.Source, ce.Source.Layer);
+				}
+				SceneManager.Instance.Scene.Remove(this, Layer);
+				ParticleExplosion exp = new ParticleExplosion(Position);
+				SceneManager.Instance.Scene.Add(exp, 6);
+			}
 		}
 
 		public void Render(IGraphics g)

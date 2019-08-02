@@ -56,11 +56,19 @@ namespace SharpEngine.Library.Objects
 
 		public void Update(float deltaTime)
 		{
-			List<GObject> layerObjects = _layerObjects.Values.ToList<GObject>();
+			List<GObject> layerObjects;
+			lock (SceneManager.Instance.ObjectLock)
+			{
+				layerObjects = _layerObjects.Values.ToList<GObject>();
+			}
 			// Call update for all game objects
 			foreach (GObject obj in layerObjects)
 			{
-				obj.Update(deltaTime);
+				// Make sure there is valid objeft to update
+				if(obj != null)
+				{
+					obj.Update(deltaTime);
+				}
 			}
 		}
 

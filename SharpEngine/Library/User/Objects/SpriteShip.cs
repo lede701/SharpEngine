@@ -155,10 +155,14 @@ namespace SharpEngine.Library.User.Objects
 			if(e is CollisionEventArgs)
 			{
 				CollisionEventArgs ce = (CollisionEventArgs)e;
-				if(ce.Who.Type == ObjectType.ENEMY)
+				if(ce.Source.Type == ObjectType.ENEMY)
 				{
 					PlayerStats.Score += 50;
-					if(ce.Who is ITakeDamage && ((ITakeDamage)ce.Who).Life <= 0f)
+					ShowPoints points = new ShowPoints(50);
+					points.Position.X = ce.Who.Position.X;
+					points.Position.Y = ce.Who.Position.Y;
+					SceneManager.Instance.Scene.Add(points, 6);
+					if (ce.Who is ITakeDamage && ((ITakeDamage)ce.Who).Life <= 0f)
 					{
 						PlayerStats.WeaponEnergy += 5.0f;
 					}

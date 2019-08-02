@@ -64,18 +64,18 @@ namespace SharpEngine.Library.User.Objects
 		{
 			// Set to figure out what hit this object
 			CollisionEventArgs ce = (CollisionEventArgs)e;
-			if(ce.Who.Type == ObjectType.PLAYER)
+			if(ce.Source.Type == ObjectType.PLAYER)
 			{
-				if(((ITakeDamage)ce.Who).TakeDamage(Life) <= 0f)
+				if(((ITakeDamage)ce.Source).TakeDamage(Life) <= 0f)
 				{
 					// Game over event
-					SceneManager.Instance.Scene.Remove(ce.Who, ce.Who.Layer);
+					SceneManager.Instance.Scene.Remove(ce.Source, ce.Source.Layer);
 				}
 				SceneManager.Instance.Scene.Remove(this, Layer);
 				EventDestroyed?.Invoke(this, e);
 				Life = 0f;
 			}
-			if (Life <= 0)
+			if (Life <= 0) 
 			{
 				EventDestroyed?.Invoke(this, e);
 			}
@@ -83,9 +83,10 @@ namespace SharpEngine.Library.User.Objects
 
 		public override void Render(IGraphics g)
 		{
+			float lifeLevel = _life / _maxLife;
+
 			base.Render(g);
 			System.Drawing.Rectangle rect = Sprite.Frame;
-			float lifeLevel = _life / _maxLife;
 			float lWidth = (rect.Width / 2f) * lifeLevel;
 			float x = Position.X + (rect.Width / 4f);
 

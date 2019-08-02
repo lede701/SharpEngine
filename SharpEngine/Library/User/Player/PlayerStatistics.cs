@@ -41,7 +41,7 @@ namespace SharpEngine.Library.User.Player
 
 			WeaponEnergy = 50.0f;
 			MaxWeaponEnergy = 50.0f;
-			WeaponEnergyRechargeRate = 0.1f;
+			WeaponEnergyRechargeRate = 0.13f;
 			WeaponEnergyUse = 3.0f;
 			WeaponDamage = 2.0f;
 			WeaponPauseRate = 50;

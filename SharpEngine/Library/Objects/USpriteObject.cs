@@ -73,11 +73,11 @@ namespace SharpEngine.Library.Objects
 							PlaneCollider pc = (PlaneCollider)ce.Who.Collider;
 							if (ce.Location == CollisionEventArgs.HitLocation.Top)
 							{
-								Position.Y = ce.Point.Y;
+								Position.Y = ce.Points[0].Y;
 							}
 							else
 							{
-								Position.Y = ce.Point.Y - (((CircleCollider)Collider).Radius * 2);
+								Position.Y = ce.Points[0].Y - (((CircleCollider)Collider).Radius * 2);
 							}
 						}
 						break;

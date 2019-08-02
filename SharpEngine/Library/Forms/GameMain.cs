@@ -220,12 +220,14 @@ namespace SharpEngine.Library.Forms
 				lastX = asteroid.Position.X;
 				asteroid.Position.Y = -200;
 				asteroid.Velocity.Y = (float)(RandomManager.Instance.Next(500, 4500) / 1000f);
-				asteroid.Life = (float)(RandomManager.Instance.Next(120, 400) / 100f);
+				asteroid.Life = (float)(RandomManager.Instance.Next(150, 800) / 100f);
 				asteroid.Type = ObjectType.ENEMY;
 				asteroid.EventDestroyed += EnemyDestoryed;
 				player.DebugObject = asteroid;
 				SceneManager.Add(asteroid, 5);
-				int waitTime = RandomManager.Instance.Next(1000, 3000);
+
+				// Wait to spawn another enemy
+				int waitTime = RandomManager.Instance.Next(300, 4000);
 				ThreadManager.Sleep(waitTime, _spawner);
 			}
 			spAsteroid.Dispose();
@@ -265,7 +267,7 @@ namespace SharpEngine.Library.Forms
 		{
 			if (GameMessage != null)
 			{
-				GameMessage.Text = String.Format("Position [{0}, {1}] FPS: {2}", player.Position.X, player.Position.Y, _currentFrameCnt);
+				GameMessage.Text = String.Format("FPS: {0}", _currentFrameCnt);
 			}
 			// Backbuffer rendering
 			lock (_gfxLock)

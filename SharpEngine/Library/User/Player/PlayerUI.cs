@@ -51,7 +51,7 @@ namespace SharpEngine.Library.User.Player
 
 			// Draw player score
 			String lblScore = String.Format("Score: {0}", _plStats.Score);
-			g.DrawText(lblScore, "Ariel", 12f, Color.White, new Rectangle { X = 100, Y = 10, Width = 200, Height = 50 });
+			g.DrawText(lblScore, "Ariel", 16f, Color.White, new Rectangle { X = 100, Y = 10, Width = 200, Height = 50 });
 		}
 
 		public void Update(float deltaTime)

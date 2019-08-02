@@ -56,12 +56,14 @@ namespace SharpEngine.Library.Math
 		public CircleCollider()
 		{
 			Center = new Vector2D { X = 0, Y = 0 };
+			_hitPoint = new List<Vector2D>();
 		}
 
 
 		public bool Hit(ICollider other)
 		{
 			bool bRetVal = false;
+			_hitPoint.Clear();
 			if (other != null)
 			{
 				switch (other.Type)
@@ -70,7 +72,13 @@ namespace SharpEngine.Library.Math
 						//HitBox((BoxCollider)other);
 						break;
 					case Collider2DType.Circle:
-						bRetVal = HitCircle((CircleCollider)other);
+						{
+							bRetVal = HitCircle((CircleCollider)other);
+							if (bRetVal)
+							{
+								CalcCircleHits((CircleCollider)other);
+							}
+						}
 						break;
 					case Collider2DType.PlaneX:
 					case Collider2DType.PlaneY:
@@ -87,29 +95,23 @@ namespace SharpEngine.Library.Math
 			bool bRetVal = Hit(obj.Collider);
 			if(bRetVal)
 			{
-				CollisionEventArgs me = new CollisionEventArgs
+				CollisionEventArgs ce = new CollisionEventArgs
 				{
 					Who = obj,
-					Point = _hitPoint,
+					Source = this.Owner,
+					Points = _hitPoint,
 					Location = _hitLocation,
 					Distance = _circleDistance
 				};
-				CollisionEventArgs you = new CollisionEventArgs
-				{
-					Who = this.Owner,
-					Point = _hitPoint,
-					Location = _hitLocation,
-					Distance = _circleDistance
-				};
-				CallCollisionEvent(obj, me);
-				obj.Collider.CallCollisionEvent(this.Owner, you);
+				CallCollisionEvent(obj, ce);
+				obj.Collider.CallCollisionEvent(this.Owner, ce);
 			}
 
 			return bRetVal;
 		}
 
 		// Collision object to return when collision occure
-		private Vector2D _hitPoint;
+		private List<Vector2D> _hitPoint;
 		private CollisionEventArgs.HitLocation _hitLocation;
 
 		public bool HitPlane(PlaneCollider other)
@@ -125,11 +127,7 @@ namespace SharpEngine.Library.Math
 						{
 							if (Position.X + (Radius * 2) > other.Tupal)
 							{
-								_hitPoint = new Vector2D
-								{
-									X = other.Tupal,
-									Y = Position.Y
-								};
+								_hitPoint.Add(new Vector2D { X = other.Tupal, Y = Position.Y });
 								bRetVal = true;
 								// Tell collider if it was on the left or right the collision occured
 								_hitLocation = CollisionEventArgs.HitLocation.Right;
@@ -140,11 +138,7 @@ namespace SharpEngine.Library.Math
 						{
 							if (Position.X < other.Tupal)
 							{
-								_hitPoint = new Vector2D
-								{
-									X = other.Tupal,
-									Y = Position.Y
-								};
+								_hitPoint.Add(new Vector2D { X = other.Tupal, Y = Position.Y });
 								bRetVal = true;
 								// Tell collider if it was on the left or right the collision occured
 								_hitLocation = CollisionEventArgs.HitLocation.Left;
@@ -158,11 +152,7 @@ namespace SharpEngine.Library.Math
 						// This is actually using Diameter and should be changed
 						if(Position.Y + (Radius * 2) > other.Tupal || Position.Y < other.Tupal)
 						{
-							_hitPoint = new Vector2D
-							{
-								X = Position.X,
-								Y = other.Tupal
-							};
+							_hitPoint.Add(new Vector2D { X = Position.X, Y = other.Tupal });
 							bRetVal = true;
 							// Tell collider if it was on the top or bottom the collision occured
 							_hitLocation = (Position.Y + (Radius * 2) > other.Tupal) ? CollisionEventArgs.HitLocation.Bottom : CollisionEventArgs.HitLocation.Top;
@@ -188,6 +178,61 @@ namespace SharpEngine.Library.Math
 
 			_circleDistance = doubleDistance;
 			return doubleDistance <= doubleRadius;
+		}
+
+		private void CalcCircleHits(CircleCollider other)
+		{
+			// Set small value for validating collider values
+			float EPS = 0.0000001f;
+			float r, R, d, dx, dy, cx, cy, Cx, Cy;
+			if(Radius < other.Radius)
+			{
+				r = Radius;
+				R = other.Radius;
+				cx = Position.X;
+				cy = Position.Y;
+				Cx = other.Position.X;
+				Cy = other.Position.Y;
+			}else
+			{
+				R = Radius;
+				r = other.Radius;
+				Cx = Position.X;
+				Cy = Position.Y;
+				cx = other.Position.X;
+				cy = other.Position.Y;
+			}
+
+			dx = cx - Cx;
+			dy = cy - Cy;
+
+			d = (float)System.Math.Sqrt(Square(dx) + Square(dy));
+			// Check for no intersections and circles are outside
+			if (d < EPS && System.Math.Abs(R - r) < EPS) return;
+			else if (d < EPS) return;
+
+			Vector2D p = new Vector2D { X = (dx / d) * R + Cx, Y = (dy / d) * R + Cy };
+			// Check if colliders are touching on one point
+			if (System.Math.Abs((R + r) - d) < EPS || System.Math.Abs(R - (r + d)) < EPS)
+			{
+				_hitPoint.Add(p);
+				return;
+			}
+			// Check if collider is within collider
+			if ((d + r) < R || R + r < d) return;
+
+			Vector2D C = new Vector2D { X = Cx, Y = Cy };
+			float angle = (float) SafeACOS(Square(r) - Square(d) - Square(R) / (-2.0 * d * R));
+			_hitPoint.Add(C.RotateVector(C, p, +angle));
+			_hitPoint.Add(C.RotateVector(C, p, -angle));
+		}
+
+		public float SafeACOS(double val)
+		{
+			float v = (float)val;
+			if (v >= 1.0f) return 0f;
+			if (v <= -1.0f) return (float)System.Math.PI;
+			return (float)System.Math.Acos(val);
 		}
 
 		private float Square(float v)

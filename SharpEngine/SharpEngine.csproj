@@ -137,6 +137,7 @@
     <Compile Include="Library\Objects\ObjectType.cs" />
     <Compile Include="Library\User\Interfaces\ITakeDamage.cs" />
     <Compile Include="Library\User\Objects\ShipBlaster.cs" />
+    <Compile Include="Library\User\Objects\ShowPoints.cs" />
     <Compile Include="Library\User\Objects\SpriteAsteroid.cs" />
     <Compile Include="Library\User\Objects\SpriteBackdrop.cs" />
     <Compile Include="Library\User\Objects\SpriteShip.cs" />
