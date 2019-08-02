@@ -93,6 +93,7 @@ namespace SharpEngine.Library.Objects
 			if(_scenes.Count > 0)
 			{
 				_scenes.Peek().Render(g);
+				g.Invalidate();
 			}
 		}
 

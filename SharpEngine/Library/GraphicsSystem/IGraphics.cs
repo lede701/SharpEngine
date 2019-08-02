@@ -33,6 +33,8 @@ namespace SharpEngine.Library.GraphicsSystem
 		void FillGradientEllipse(float x, float y, float width, float height, System.Drawing.Color[] colors);
 		void FillGradientEllipse(System.Drawing.RectangleF rect, System.Drawing.Color[] colors);
 		void FillGradientEllipse(float x, float y, float width, float height, float cx, float cy, System.Drawing.Color[] colors);
+		void Invalidate();
+		bool WaitingRender { get; }
 
 		void Translate(float x, float y);
 	}

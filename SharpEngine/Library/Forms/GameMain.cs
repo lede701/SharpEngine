@@ -225,7 +225,7 @@ namespace SharpEngine.Library.Forms
 				asteroid.EventDestroyed += EnemyDestoryed;
 				player.DebugObject = asteroid;
 				SceneManager.Add(asteroid, 5);
-				int waitTime = RandomManager.Instance.Next(100, 2000);
+				int waitTime = RandomManager.Instance.Next(1000, 5000);
 				ThreadManager.Sleep(waitTime, _spawner);
 			}
 			spAsteroid.Dispose();
@@ -233,10 +233,7 @@ namespace SharpEngine.Library.Forms
 
 		public void EnemyDestoryed(Object enemy, EventArgs e)
 		{
-			if(enemy is SpriteAsteroid)
-			{
 
-			}
 		}
 
 		public void PhysicsLoop()
@@ -277,8 +274,9 @@ namespace SharpEngine.Library.Forms
 					_gm.Clear();
 					SceneManager.Render(_gm);
 				_gm.EndDraw();
+				_gm.Render();
 			}
-			Invalidate();
+			//Invalidate();
 		}
 
 		public void Physics()

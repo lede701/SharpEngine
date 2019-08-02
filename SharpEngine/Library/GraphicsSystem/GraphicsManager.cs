@@ -94,7 +94,7 @@ namespace SharpEngine.Library.GraphicsSystem
 				ModeDescription = new ModeDescription(win.ClientSize.Width, win.ClientSize.Height, rational, Format.R8G8B8A8_UNorm),
 				OutputHandle = win.Handle,
 				SampleDescription = new SampleDescription(1, 0),
-				SwapEffect = SwapEffect.FlipDiscard,
+				SwapEffect = SwapEffect.FlipSequential,
 				Usage = Usage.RenderTargetOutput
 			};
 
@@ -184,6 +184,21 @@ namespace SharpEngine.Library.GraphicsSystem
 			lock (_lock)
 			{
 				swapChain.Present(0, PresentFlags.None);
+				_waitingRender = false;
+			}
+		}
+
+		public void Invalidate()
+		{
+			_waitingRender = true;
+		}
+
+		private bool _waitingRender = false;
+		public bool WaitingRender
+		{
+			get
+			{
+				return _waitingRender;
 			}
 		}
 
