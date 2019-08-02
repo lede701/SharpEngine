@@ -21,7 +21,7 @@ namespace SharpEngine.Library.User.Objects
 		}
 
 		public System.Drawing.Color PosColor = System.Drawing.Color.White;
-		public System.Drawing.Color NegColor = System.Drawing.Color.DarkRed;
+		public System.Drawing.Color NegColor = System.Drawing.Color.Red;
 		public System.Drawing.Color Color;
 
 		private Transform _transform;
@@ -63,7 +63,7 @@ namespace SharpEngine.Library.User.Objects
 				Color = PosColor;
 				if(value < 0)
 				{
-					fmt = "-{0}";
+					fmt = "{0}";
 					Color = NegColor;
 				}
 				Text = String.Format(fmt, value);
@@ -119,7 +119,7 @@ namespace SharpEngine.Library.User.Objects
 		{
 			_transform.Position.X += _transform.Velocity.X * deltaTime;
 			_transform.Position.Y += _transform.Velocity.Y * deltaTime;
-			float alpha = 1.0f - (float)_life++ / (float)_maxLife;
+			float alpha = System.Math.Max(1.0f - (float)_life++ / (float)_maxLife, 0f);
 			int iAlpha = (int)(255f * alpha);
 			Color = System.Drawing.Color.FromArgb(iAlpha, Color.R, Color.G, Color.B);
 			if(Life > MaxLife)

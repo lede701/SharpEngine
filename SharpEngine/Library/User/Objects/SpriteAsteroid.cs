@@ -73,6 +73,7 @@ namespace SharpEngine.Library.User.Objects
 				}
 				SceneManager.Instance.Scene.Remove(this, Layer);
 				EventDestroyed?.Invoke(this, e);
+
 				Life = 0f;
 			}
 			if (Life <= 0) 
@@ -80,6 +81,9 @@ namespace SharpEngine.Library.User.Objects
 				EventDestroyed?.Invoke(this, e);
 			}
 		}
+
+		private System.Drawing.Color _newColor = System.Drawing.Color.FromArgb(255, 192, 250, 0);
+		private System.Drawing.Color _dangerColor = System.Drawing.Color.FromArgb(255, 255, 0, 0);
 
 		public override void Render(IGraphics g)
 		{
@@ -90,8 +94,19 @@ namespace SharpEngine.Library.User.Objects
 			float lWidth = (rect.Width / 2f) * lifeLevel;
 			float x = Position.X + (rect.Width / 4f);
 
-			g.FillRectangle(x, Position.Y, lWidth, 5, System.Drawing.Color.FromArgb(100, 192, 250, 0));
-			g.DrawRectangle(x, Position.Y, (rect.Width / 2f), 5, System.Drawing.Color.FromArgb(180, 98, 128, 0));
+			g.FillRectangle(x, Position.Y, lWidth, 5, BlendColor(_newColor, _dangerColor, lifeLevel, 0.4f));
+			g.DrawRectangle(x, Position.Y, (rect.Width / 2f), 5, BlendColor(_newColor, _dangerColor, lifeLevel, 0.55f));
+		}
+
+		private System.Drawing.Color BlendColor(System.Drawing.Color clr1, System.Drawing.Color clr2, float blend, float alpha)
+		{
+			int r, g, b, a;
+			float baseBlend = 1.0f - blend;
+			r = (int)((clr2.R * baseBlend) + (clr1.R * blend));
+			g = (int)((clr2.G * baseBlend) + (clr1.G * blend));
+			b = (int)((clr2.B * baseBlend) + (clr1.B * blend));
+			a = (int)(255f * alpha);
+			return System.Drawing.Color.FromArgb(a, r, g, b);
 		}
 
 		private Vector2D _speedEffect;

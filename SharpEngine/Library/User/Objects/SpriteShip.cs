@@ -172,8 +172,13 @@ namespace SharpEngine.Library.User.Objects
 
 		public float TakeDamage(float damage)
 		{
+			int minusScore = (int)(damage * 108);
 			PlayerStats.ShieldEnergy -= damage;
-			PlayerStats.Score -= (int)(damage * 108);
+			PlayerStats.Score -= minusScore;
+			ShowPoints pts = new ShowPoints(-minusScore);
+			pts.Position.X = Position.X;
+			pts.Position.Y = Position.Y;
+			SceneManager.Instance.Scene.Add(pts);
 			return PlayerStats.TotalLife;
 		}
 	}

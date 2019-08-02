@@ -227,7 +227,7 @@ namespace SharpEngine.Library.Forms
 				SceneManager.Add(asteroid, 5);
 
 				// Wait to spawn another enemy
-				int waitTime = RandomManager.Instance.Next(300, 4000);
+				int waitTime = RandomManager.Instance.Next(200, 3000);
 				ThreadManager.Sleep(waitTime, _spawner);
 			}
 			spAsteroid.Dispose();
