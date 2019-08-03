@@ -41,7 +41,7 @@ namespace SharpEngine.Library.User.Player.Weapons
 			//_canon = !_canon;
 			//bolt.Position.Y = Position.Y - 5.0f;
 
-			bolt.Velocity.Y = -4.0f;
+			bolt.Velocity.Y = -12.0f;
 			bolt.Type = ObjectType.MISSLE;
 			stats.Score -= 15;
 			bolt.Damage = stats.Fire;

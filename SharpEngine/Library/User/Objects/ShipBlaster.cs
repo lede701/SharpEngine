@@ -197,8 +197,8 @@ namespace SharpEngine.Library.User.Objects
 
 		public void Update(float deltaTime)
 		{
-			Position.X += Velocity.X;
-			Position.Y += Velocity.Y;
+			Position.X += Velocity.X * deltaTime;
+			Position.Y += Velocity.Y * deltaTime;
 			// Check if bolt needs to be auto destroyed
 			if(Position.Y < -10)
 			{

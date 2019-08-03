@@ -42,7 +42,6 @@ namespace SharpEngine.Library.Forms
 		private ThreadManager.ThreadNode _physicsNode;
 		private ThreadManager.ThreadNode _spawner;
 		// Game engine base controller
-		private IController controller;
 
 		// Scene clear color
 		private Color _backColor;
@@ -129,6 +128,7 @@ namespace SharpEngine.Library.Forms
 						Width = 405,
 						Height = 488
 					});
+					
 					player = new SpriteShip(hero);
 
 					player.Position.X = (World.Instance.WorldSize.X / 2) - 12;
@@ -141,6 +141,7 @@ namespace SharpEngine.Library.Forms
 					player.Type = ObjectType.PLAYER;
 
 					PlayerUI plUI = new PlayerUI(ref player.PlayerStats);
+					
 
 					//*
 					// Create game scene backdrop
@@ -221,13 +222,14 @@ namespace SharpEngine.Library.Forms
 				asteroid.Position.Y = -200;
 				asteroid.Velocity.Y = (float)(RandomManager.Instance.Next(500, 4500) / 1000f);
 				asteroid.Life = (float)(RandomManager.Instance.Next(150, 800) / 100f);
+				//asteroid.Life = 1000f;
 				asteroid.Type = ObjectType.ENEMY;
 				asteroid.EventDestroyed += EnemyDestoryed;
 				player.DebugObject = asteroid;
 				SceneManager.Add(asteroid, 5);
 
 				// Wait to spawn another enemy
-				int waitTime = RandomManager.Instance.Next(200, 3000);
+				int waitTime = RandomManager.Instance.Next(1000, 5000);
 				ThreadManager.Sleep(waitTime, _spawner);
 			}
 			spAsteroid.Dispose();
@@ -334,7 +336,7 @@ namespace SharpEngine.Library.Forms
 			switch(e.KeyCode)
 			{
 				case Keys.Escape:
-				case Keys.Q:
+				//case Keys.Q:
 					Close();
 					break;
 				case Keys.R:
