@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,23 +14,43 @@ namespace SharpEngine.Library.Forms
 {
 	public partial class DxMain : Form
 	{
+		private SceneManager _sm;
+		private GraphicsManager _gm;
 		public DxMain()
 		{
 			InitializeComponent();
 
-			GraphicsManager gm = new GraphicsManager(this);
+			// Initialize GTraphics Manager
+			_gm = new GraphicsManager(this);
+			_sm = SceneManager.Instance;
+			Scene top = new Scene();
+			_sm.Add(top);
 		}
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			GraphicsManager.Instance.Render();
+			_gm.Render();
 			base.OnPaint(e);
 		}
 
 		protected override void OnFormClosing(FormClosingEventArgs e)
 		{
-			GraphicsManager.Instance.Dispose();
+			_gm.Dispose();
+			_sm.Clear();
 			base.OnFormClosing(e);
+		}
+
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+			switch(e.KeyCode)
+			{
+				case Keys.Escape:
+					{
+						Close();
+					}
+					break;
+			}
 		}
 	}
 }
