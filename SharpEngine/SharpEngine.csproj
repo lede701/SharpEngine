@@ -96,11 +96,11 @@
     <Compile Include="Library\Controller\KeyboardController.cs" />
     <Compile Include="Library\Controller\NullController.cs" />
     <Compile Include="Library\Events\CollisionEventArgs.cs" />
-    <Compile Include="Library\Forms\DxMain.cs">
+    <Compile Include="Library\Forms\Game.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Library\Forms\DxMain.Designer.cs">
-      <DependentUpon>DxMain.cs</DependentUpon>
+    <Compile Include="Library\Forms\Game.Designer.cs">
+      <DependentUpon>Game.cs</DependentUpon>
     </Compile>
     <Compile Include="Library\Forms\GameMain.cs">
       <SubType>Form</SubType>
@@ -135,6 +135,12 @@
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
     <Compile Include="Library\Objects\ObjectType.cs" />
+    <Compile Include="Library\User\Form\StarMine.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Library\User\Form\StarMine.Designer.cs">
+      <DependentUpon>StarMine.cs</DependentUpon>
+    </Compile>
     <Compile Include="Library\User\Interfaces\ITakeDamage.cs" />
     <Compile Include="Library\User\Objects\ShipBlaster.cs" />
     <Compile Include="Library\User\Objects\ShowPoints.cs" />
@@ -148,11 +154,14 @@
     <Compile Include="Library\User\Player\Weapons\SingleBlaster.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Library\Forms\DxMain.resx">
-      <DependentUpon>DxMain.cs</DependentUpon>
+    <EmbeddedResource Include="Library\Forms\Game.resx">
+      <DependentUpon>Game.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Library\Forms\GameMain.resx">
       <DependentUpon>GameMain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Library\User\Form\StarMine.resx">
+      <DependentUpon>StarMine.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -179,9 +188,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Media\Backgrounds\nebula01.jpg" />
-    <Content Include="Media\Hero\fighter.png" />
-    <Content Include="Media\Spritesheets\asteroid_01.png" />
+    <Content Include="Content\Backgrounds\nebula01.jpg" />
+    <Content Include="Content\Hero\fighter.png" />
+    <Content Include="Content\Spritesheets\asteroid_01.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.2">

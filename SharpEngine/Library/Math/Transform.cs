@@ -15,6 +15,10 @@ namespace SharpEngine.Library.Math
 			{
 				return _position;
 			}
+			set
+			{
+				_position = value;
+			}
 		}
 
 		private Vector2D _velocity;
@@ -24,6 +28,10 @@ namespace SharpEngine.Library.Math
 			{
 				return _velocity;
 			}
+			set
+			{
+				_velocity = value;
+			}
 		}
 
 		private Vector2D _scale;
@@ -32,6 +40,10 @@ namespace SharpEngine.Library.Math
 			get
 			{
 				return _scale;
+			}
+			set
+			{
+				_scale = value;
 			}
 		}
 

@@ -1,6 +1,6 @@
 ﻿namespace SharpEngine.Library.Forms
 {
-	partial class DxMain
+	partial class Game
 	{
 		/// <summary>
 		/// Required designer variable.

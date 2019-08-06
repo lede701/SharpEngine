@@ -49,6 +49,9 @@ namespace SharpEngine.Library.User.Objects
 			};
 			Scale.X = Scale.Y = 0.20f;
 			PlayerStats = new PlayerStatistics();
+
+			Controller = new NullController();
+
 			// Create collider for ship
 			CircleCollider cldr = new CircleCollider()
 			{
@@ -60,13 +63,16 @@ namespace SharpEngine.Library.User.Objects
 
 			Collider = cldr;
 			_weapon = new SingleBlaster(Width);
+
+			Sprite.Frames.Add(new Rectangle { X = 0, Y = 0, Width = 405, Height = 488 });
+			Sprite.CenterPoint = new Vector2D { X = 405f / 2f, Y = 488f / 2f };
 		}
 
 		public float Width
 		{
 			get
 			{
-				return Sprite.Frame.Width * Scale.X;
+				return Sprite.Frame.Width;
 			}
 		}
 
@@ -74,7 +80,7 @@ namespace SharpEngine.Library.User.Objects
 		{
 			get
 			{
-				return Sprite.Frame.Height * Scale.Y;
+				return Sprite.Frame.Height;
 			}
 		}
 
@@ -82,27 +88,27 @@ namespace SharpEngine.Library.User.Objects
 
 		private bool _canon;
 
-		public override void Render(IGraphics g)
-		{
-			base.Render(g);
 
+		public override void RenderAddons(IGraphics g)
+		{
 			// Draw shields
 			float shieldsLevel = System.Math.Max((float)(PlayerStats.ShieldEnergy / PlayerStats.MaxShieldEnergy), 0f);
 			int shieldsAlpha;
 			if (shieldsLevel < 1.0f)
 			{
 				shieldsAlpha = (int)(80f * shieldsLevel);
-			}else
+			}
+			else
 			{
 				shieldsAlpha = 120;
 			}
 			float radius = ((CircleCollider)Collider).Radius;
 			RectangleF shieldsRect = new RectangleF
 			{
-				X = Position.X + (Width / 2),
-				Y = Position.Y + (Height / 2),
-				Width = radius,
-				Height = radius
+				X = (Width / 2),
+				Y = (Height / 2),
+				Width = 300,
+				Height = 300
 			};
 			List<System.Drawing.Color> colors = new List<Color>();
 			colors.Add(Color.FromArgb(5, 80, 80, 200));
@@ -114,37 +120,16 @@ namespace SharpEngine.Library.User.Objects
 
 		public override void Update(float deltaTime)
 		{
-			// Call the base update method
-			base.Update(deltaTime);
-			Rectangle src = Sprite.Frame;
-			Rectangle dest = new Rectangle
+			if(Controller != null)
 			{
-				X = (int)Position.X,
-				Y = (int)Position.Y,
-				Width = (int)Width,
-				Height = (int)Height
-			};
-			// Check if sprite has gone beoyond boundary
-			if (Position.X + dest.Width > _boundary.Width)
-			{
-				Position.X = _boundary.Width - dest.Width;
-			}
-			else if (Position.X < _boundary.X)
-			{
-				Position.X = _boundary.X;
-			}
-			if(Position.Y + dest.Height > _boundary.Height)
-			{
-				Position.Y = _boundary.Height - dest.Height;
-			}else if(Position.Y < _boundary.Y)
-			{
-				Position.Y = _boundary.Y;
-			}
-			if(Controller.Get(Input.Fire) && PlayerStats.CanFire)
-			{
-				UObject bolt = Weapon.CreateBolt(Position, ref PlayerStats);
-				bolt.Collider.CollisionEvent += OnBoltHit;
-				SceneManager.Instance.Scene.Add(bolt);
+				float rotSpeed = 0.08f;
+				Transform.Rotation += ((rotSpeed * Controller.GetValue(Input.Right)) - (rotSpeed * Controller.GetValue(Input.Left))) * deltaTime;
+				if (Controller.Get(Input.Fire) && PlayerStats.CanFire)
+				{
+					UObject bolt = Weapon.CreateBolt(Position, ref PlayerStats);
+					bolt.Collider.CollisionEvent += OnBoltHit;
+					SceneManager.Instance.Scene.Add(bolt);
+				}
 			}
 
 			PlayerStats.Update(deltaTime);

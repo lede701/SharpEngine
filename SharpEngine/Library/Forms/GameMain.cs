@@ -114,9 +114,9 @@ namespace SharpEngine.Library.Forms
 					pathName = String.Join("\\", pathParts.Reverse().ToArray());
 
 					// Put path back together as a string
-					String heroName = String.Format("{0}\\Media\\Hero\\fighter.png", pathName);
-					backName = String.Format("{0}\\Media\\Backgrounds\\nebula01.jpg", pathName);
-					asteroidName = String.Format("{0}\\Media\\Spritesheets\\asteroid_01.png", pathName);
+					String heroName = String.Format("{0}\\Content\\Hero\\fighter.png", pathName);
+					backName = String.Format("{0}\\Content\\Backgrounds\\nebula01.jpg", pathName);
+					asteroidName = String.Format("{0}\\Content\\Spritesheets\\asteroid_01.png", pathName);
 
 					float scale = 0.15f;
 

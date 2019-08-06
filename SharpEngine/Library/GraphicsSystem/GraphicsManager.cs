@@ -11,9 +11,13 @@ using System.Windows.Forms;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using SharpDX;
+using SharpEngine.Library.Math;
 
 namespace SharpEngine.Library.GraphicsSystem
 {
+
+	using Matrix = SharpDX.Matrix3x2;
+
 	public class GraphicsManager : IGraphics
 	{
 		private SharpDX.Direct3D11.Device d3dDevice;
@@ -138,7 +142,8 @@ namespace SharpEngine.Library.GraphicsSystem
 			// Initiallize the Graphic Manager internal parameters
 			_inRender = false;
 			_lock = new Object();
-
+			// Set initial tranformation of graphics system
+			d2dRenderTarget.Transform = Identity;
 		}
 
 		#endregion
@@ -184,21 +189,18 @@ namespace SharpEngine.Library.GraphicsSystem
 			lock (_lock)
 			{
 				swapChain.Present(0, PresentFlags.None);
-				_waitingRender = false;
 			}
 		}
 
 		public void Invalidate()
 		{
-			_waitingRender = true;
 		}
 
-		private bool _waitingRender = false;
 		public bool WaitingRender
 		{
 			get
 			{
-				return _waitingRender;
+				return true;
 			}
 		}
 
@@ -440,17 +442,47 @@ namespace SharpEngine.Library.GraphicsSystem
 			brush.Dispose();
 		}
 
-		public void Translate(float x, float y)
+		public void Translate(Transform transform)
 		{
-			d2dRenderTarget.Transform = new SharpDX.Mathematics.Interop.RawMatrix3x2
+			Matrix tran = Matrix.Transformation(transform.Scale.X, transform.Scale.Y, transform.Rotation, transform.Position.X, transform.Position.Y);
+			d2dRenderTarget.Transform = tran;
+		}
+		public void Translate(Transform transform, Vector2D center)
+		{
+			Matrix tran = Matrix.Translation(transform.Position.X, transform.Position.Y);
+			Matrix rot = Matrix.Rotation(transform.Rotation, new SharpDX.Vector2(center.X, center.Y));
+			Matrix sca = Matrix.Scaling(transform.Scale.X, transform.Scale.Y);
+			d2dRenderTarget.Transform = rot * sca * tran;
+		}
+
+		public void Translate(float x, float y, float r = 0f, Math.Vector2D scale = null)
+		{
+			if(scale == null)
 			{
-				M11 = 1,
-				M12 = 0,
-				M21 = 0,
-				M22 = 1,
-				M31 = x,
-				M32 = y
-			};
+				scale = new Math.Vector2D { X = 1f, Y = 1f };
+			}
+			Matrix tran = Matrix.Translation(x, y);
+			Matrix rot = Matrix.Rotation(r);
+			Matrix sca = Matrix.Scaling(scale.X, scale.Y);
+			d2dRenderTarget.Transform = sca * rot * tran;
+		}
+
+		public void Translate(Matrix m)
+		{
+			d2dRenderTarget.Transform = m;
+		}
+
+		public void TranslateReset()
+		{
+			d2dRenderTarget.Transform = Identity;
+		}
+
+		public Matrix Identity
+		{
+			get
+			{
+				return Matrix.Identity;
+			}
 		}
 
 		#endregion
@@ -481,6 +513,15 @@ namespace SharpEngine.Library.GraphicsSystem
 			}
 
 			return image;
+		}
+
+		#endregion
+
+		#region Sprite Tools
+
+		public Sprite LoadSpriteFromImagePath(String filename)
+		{
+			return new Sprite(LoadImage(filename));
 		}
 
 		#endregion

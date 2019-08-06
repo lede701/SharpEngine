@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.Forms;
+using SharpEngine.Library.User.Form;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace SharpEngine
 		{
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new DxMain());
+			Application.Run(new StarMine());
 		}
 	}
 }

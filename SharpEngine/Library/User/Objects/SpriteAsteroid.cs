@@ -102,10 +102,10 @@ namespace SharpEngine.Library.User.Objects
 		{
 			int r, g, b, a;
 			float baseBlend = 1.0f - blend;
-			r = (int)((clr2.R * baseBlend) + (clr1.R * blend));
-			g = (int)((clr2.G * baseBlend) + (clr1.G * blend));
-			b = (int)((clr2.B * baseBlend) + (clr1.B * blend));
-			a = (int)(255f * alpha);
+			r = System.Math.Max((int)((clr2.R * baseBlend) + (clr1.R * blend)), 0);
+			g = System.Math.Max((int)((clr2.G * baseBlend) + (clr1.G * blend)), 0);
+			b = System.Math.Max((int)((clr2.B * baseBlend) + (clr1.B * blend)), 0);
+			a = System.Math.Max((int)(255f * alpha), 0);
 			return System.Drawing.Color.FromArgb(a, r, g, b);
 		}
 

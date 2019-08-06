@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SharpEngine.Library.Math;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,6 +37,9 @@ namespace SharpEngine.Library.GraphicsSystem
 		void Invalidate();
 		bool WaitingRender { get; }
 
-		void Translate(float x, float y);
+		void Translate(float x, float y, float rotate = 0f, Math.Vector2D scale = null);
+		void Translate(Transform transform);
+		void Translate(Transform transform, Vector2D center);
+		void TranslateReset();
 	}
 }

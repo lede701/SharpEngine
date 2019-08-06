@@ -172,25 +172,29 @@ namespace SharpEngine.Library.Objects
 		public virtual void Render(IGraphics g)
 		{
 			// TODO: Write graphics transofrm utility
-			//g.TranslateTransform(Position.X, Position.Y);
-			//g.Translate(Position.X, Position.Y);
+			g.Translate(Transform, Sprite.CenterPoint);
+
 			Rectangle src = Sprite.Frame;
 			Rectangle dest = new Rectangle
 			{
-				X = (int)Position.X,
-				Y = (int)Position.Y,
-				Width = (int)((float)src.Width * Scale.X),
-				Height = (int)((float)src.Height * Scale.Y)
+				X = 0,
+				Y = 0,
+				Width = src.Width,
+				Height = src.Height
 			};
 			// TODO: Write image drawing utility
 			g.DrawImage(Sprite.SpriteSheet, src, dest);
-			//g.DrawImage(Sprite.SpriteSheet, dest, src, GraphicsUnit.Pixel );
-			//g.TranslateTransform(-Position.X, -Position.Y);
 			if(Debug)
 			{
 				DebugRender(g, dest);
 			}
-			//g.Translate(-Position.X, -Position.Y);
+			RenderAddons(g);
+			g.TranslateReset();
+		}
+
+		public virtual void RenderAddons(IGraphics g)
+		{
+
 		}
 
 		public void DebugRender(IGraphics g, Rectangle rect)
