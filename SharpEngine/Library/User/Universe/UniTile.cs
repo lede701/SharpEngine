@@ -27,6 +27,11 @@ namespace SharpEngine.Library.User.Universe
 			Items = new List<IUniverseItem>();
 		}
 
+		public void Add(IUniverseItem item)
+		{
+			Items.Add(item);
+		}
+
 		public void Dispose()
 		{
 		}

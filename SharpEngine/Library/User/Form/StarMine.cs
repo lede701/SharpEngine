@@ -2,6 +2,7 @@
 using SharpEngine.Library.Forms;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.User.Factories;
 using SharpEngine.Library.User.Objects;
 using SharpEngine.Library.User.Player;
 using SharpEngine.Library.User.Universe;
@@ -42,6 +43,8 @@ namespace SharpEngine.Library.User.Form
 			World.WorldSize.Y = size;
 			World.WorldBoundary = new Rectangle { X = 0, Y = 0, Height = size, Width = size };
 
+			UniverseFactory.Instance.AssetPath = AssetsPath;
+
 			String heroPath = String.Format("{0}\\Hero\\fighter.png", AssetsPath);
 			SpriteShip player = new SpriteShip(GraphicsManager.LoadSpriteFromImagePath(heroPath));
 			player.Position.X = World.ScreenSize.X / 2f;
@@ -61,7 +64,7 @@ namespace SharpEngine.Library.User.Form
 			pc.Universe = _theUniverse;
 
 			_debug = new SimpleText("");
-			_debug.Position.X = World.ScreenSize.X - 80;
+			_debug.Position.X = World.ScreenSize.X - 200;
 			_debug.Position.Y = 10;
 
 			Add(pc, 7);
@@ -73,7 +76,7 @@ namespace SharpEngine.Library.User.Form
 		{
 			if(_debug != null)
 			{
-				_debug.Text = String.Format("[{0}, {1}]", _theUniverse.Position.X, _theUniverse.Position.Y);
+				_debug.Text = String.Format("[{0}, {1}]", (int)_theUniverse.Position.X, (int)_theUniverse.Position.Y);
 			}
 			base.Render(g);
 		}

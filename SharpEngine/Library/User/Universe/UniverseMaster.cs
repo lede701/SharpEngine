@@ -2,6 +2,8 @@
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Randomizer;
+using SharpEngine.Library.User.Factories;
+using SharpEngine.Library.User.Objects;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,6 +34,7 @@ namespace SharpEngine.Library.User.Universe
 
 		private void SetupTile()
 		{
+			RandomManager rm = RandomManager.Instance;
 			int tileX = (int)(World.Instance.WorldSize.X / World.Instance.ScreenSize.X) + 1;
 			int tileY = (int)(World.Instance.WorldSize.Y / World.Instance.ScreenSize.Y) + 1;
 
@@ -43,8 +46,8 @@ namespace SharpEngine.Library.User.Universe
 				{
 					System.Drawing.Rectangle range = new System.Drawing.Rectangle
 					{
-						X = x*tileX,
-						Y = y*tileY,
+						X = (int)(x * World.Instance.ScreenSize.X),
+						Y = (int)(y * World.Instance.ScreenSize.Y),
 						Width = (int)World.Instance.ScreenSize.X,
 						Height = (int)World.Instance.ScreenSize.Y
 					};
@@ -52,7 +55,13 @@ namespace SharpEngine.Library.User.Universe
 					for (int i = 0; i < 100; ++i)
 					{
 						UniverseStar star = new UniverseStar(range);
-						MapData[x, y].Items.Add(star);
+						MapData[x, y].Add(star);
+					}
+					if(rm.Next(0,500) > 300)
+					{
+						float astX = rm.Next(range.Left, range.Right);
+						float astY = rm.Next(range.Top, range.Bottom);
+						MapData[x, y].Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
 					}
 				}
 			}
@@ -68,8 +77,8 @@ namespace SharpEngine.Library.User.Universe
 
 				System.Drawing.Rectangle rect = new System.Drawing.Rectangle
 				{
-					X = tileX - 1,
-					Y = tileY - 1,
+					X = System.Math.Max(tileX - 1, 0),
+					Y = System.Math.Max(tileY - 1, 0),
 					Width = 3,
 					Height = 3
 				};
@@ -101,6 +110,14 @@ namespace SharpEngine.Library.User.Universe
 				for (int y = rect.Top; y < rect.Bottom; ++y)
 				{
 					MapData[x, y].Render(g);
+					String tilePos = String.Format("[{0},{1}]", x, y);
+					g.DrawText(tilePos, "Ariel", 10, System.Drawing.Color.White, new System.Drawing.Rectangle
+					{
+						X = (int)(x * World.Instance.ScreenSize.X),
+						Y = (int)(y * World.Instance.ScreenSize.Y),
+						Width = 100,
+						Height = 20
+					});
 				}
 			}
 

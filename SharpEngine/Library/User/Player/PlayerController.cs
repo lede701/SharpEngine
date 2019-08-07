@@ -34,7 +34,7 @@ namespace SharpEngine.Library.User.Player
 		public void Update(float deltaTime)
 		{
 			float rotSpeed = 0.08f;
-			float thrustSpeed = 3.5f;
+			float thrustSpeed = 5.0f;
 			// Change ship rotation
 			Player.Transform.Rotation += ((rotSpeed * _controller.GetValue(Input.Right)) - (rotSpeed * _controller.GetValue(Input.Left))) * deltaTime;
 			// Check if the booster is on

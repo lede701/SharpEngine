@@ -4,6 +4,7 @@ using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.User.Interfaces;
+using SharpEngine.Library.User.Universe;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace SharpEngine.Library.User.Objects
 {
-	public class SpriteAsteroid : USpriteObject, ITakeDamage
+	public class SpriteAsteroid : USpriteObject, ITakeDamage, IUniverseItem
 	{
 		public event EventHandler EventDestroyed;
 		private float _life;
@@ -89,7 +90,20 @@ namespace SharpEngine.Library.User.Objects
 		{
 			float lifeLevel = _life / _maxLife;
 
-			base.Render(g);
+			System.Drawing.Rectangle src = Sprite.Frame;
+			System.Drawing.Rectangle dest = new System.Drawing.Rectangle
+			{
+				X = (int)Position.X,
+				Y = (int)Position.Y,
+				Width = src.Width,
+				Height = src.Height
+			};
+			// TODO: Write image drawing utility
+			g.DrawImage(Sprite.SpriteSheet, src, dest);
+			if (Debug)
+			{
+				DebugRender(g, dest);
+			}
 			System.Drawing.Rectangle rect = Sprite.Frame;
 			float lWidth = (rect.Width / 2f) * lifeLevel;
 			float x = Position.X + (rect.Width / 4f);
@@ -124,7 +138,7 @@ namespace SharpEngine.Library.User.Objects
 			Position.Y += (Velocity.Y + SpeedEffect.Y) * deltaTime;
 
 			// Reduce the amount of speed effect
-			SpeedEffect.Y = System.Math.Min(SpeedEffect.Y + 0.1f, 0f);
+			SpeedEffect.Y = System.Math.Min(SpeedEffect.Y + (0.1f * deltaTime), 0f);
 
 			if(Position.Y > World.Instance.WorldSize.Y + 100)
 			{

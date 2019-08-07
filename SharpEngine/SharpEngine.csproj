@@ -135,6 +135,7 @@
     <Compile Include="Library\Randomizer\RandomManager.cs" />
     <Compile Include="Library\Threading\ThreadManager.cs" />
     <Compile Include="Library\Objects\ObjectType.cs" />
+    <Compile Include="Library\User\Factories\UniverseFactory.cs" />
     <Compile Include="Library\User\Form\StarMine.cs">
       <SubType>Form</SubType>
     </Compile>
