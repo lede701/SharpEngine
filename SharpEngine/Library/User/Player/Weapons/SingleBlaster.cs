@@ -28,7 +28,7 @@ namespace SharpEngine.Library.User.Player.Weapons
 
 		private Vector2D _firePos;
 
-		public UObject CreateBolt(Vector2D position, ref PlayerStatistics stats)
+		public UObject CreateBolt(Vector2D position, float rotation, ref PlayerStatistics stats)
 		{
 			// Spawn blaster object
 			ShipBlaster bolt = new ShipBlaster(false);
@@ -41,7 +41,10 @@ namespace SharpEngine.Library.User.Player.Weapons
 			//_canon = !_canon;
 			//bolt.Position.Y = Position.Y - 5.0f;
 
-			bolt.Velocity.Y = -12.0f;
+			float boltSpeed = -12.0f;
+			bolt.Transform.Rotation = rotation;
+			bolt.Velocity.Y = boltSpeed * (float)System.Math.Cos(rotation);
+			bolt.Velocity.X = -boltSpeed * (float)System.Math.Sin(rotation);
 			bolt.Type = ObjectType.MISSLE;
 			stats.Score -= 15;
 			bolt.Damage = stats.Fire;

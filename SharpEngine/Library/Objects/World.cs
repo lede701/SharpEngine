@@ -27,9 +27,10 @@ namespace SharpEngine.Library.Objects
 
 		private World()
 		{
-			_worldSize = new Vector2D();
-			_gravity = new Vector2D();
-			_wind = new Vector2D();
+			_worldSize = Vector2D.Zero;
+			_screenSize = Vector2D.Zero;
+			_gravity = Vector2D.Zero;
+			_wind = Vector2D.Zero;
 		}
 
 		private Vector2D _worldSize;
@@ -42,6 +43,19 @@ namespace SharpEngine.Library.Objects
 			set
 			{
 				_worldSize = value;
+			}
+		}
+
+		private Vector2D _screenSize;
+		public Vector2D ScreenSize
+		{
+			get
+			{
+				return _screenSize;
+			}
+			set
+			{
+				_screenSize = value;
 			}
 		}
 

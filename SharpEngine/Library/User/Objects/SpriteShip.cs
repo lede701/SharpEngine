@@ -118,11 +118,10 @@ namespace SharpEngine.Library.User.Objects
 		{
 			if(Controller != null)
 			{
-				float rotSpeed = 0.08f;
-				Transform.Rotation += ((rotSpeed * Controller.GetValue(Input.Right)) - (rotSpeed * Controller.GetValue(Input.Left))) * deltaTime;
+				// Fire weapons
 				if (Controller.Get(Input.Fire) && PlayerStats.CanFire)
 				{
-					UObject bolt = Weapon.CreateBolt(Position, ref PlayerStats);
+					UObject bolt = Weapon.CreateBolt(Position, Rotation, ref PlayerStats);
 					bolt.Collider.CollisionEvent += OnBoltHit;
 					SceneManager.Instance.Scene.Add(bolt);
 				}

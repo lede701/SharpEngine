@@ -148,11 +148,13 @@
     <Compile Include="Library\User\Objects\SpriteBackdrop.cs" />
     <Compile Include="Library\User\Objects\SpriteShip.cs" />
     <Compile Include="Library\User\Objects\SpriteStarField.cs" />
+    <Compile Include="Library\User\Player\PlayerController.cs" />
     <Compile Include="Library\User\Player\PlayerStatistics.cs" />
     <Compile Include="Library\User\Player\PlayerUI.cs" />
     <Compile Include="Library\User\Player\Weapons\IWeapon.cs" />
     <Compile Include="Library\User\Player\Weapons\SingleBlaster.cs" />
     <Compile Include="Library\User\Universe\IUniverseItem.cs" />
+    <Compile Include="Library\User\Universe\UniTile.cs" />
     <Compile Include="Library\User\Universe\UniverseMaster.cs" />
     <Compile Include="Library\User\Universe\UniverseStar.cs" />
     <Compile Include="Program.cs" />

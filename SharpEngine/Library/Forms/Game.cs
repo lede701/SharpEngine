@@ -74,6 +74,8 @@ namespace SharpEngine.Library.Forms
 			// Setup world global object
 			World.Instance.WorldSize.X = this.ClientSize.Width;
 			World.Instance.WorldSize.Y = this.ClientSize.Height;
+			World.Instance.ScreenSize.X = this.ClientSize.Width;
+			World.Instance.ScreenSize.Y = this.ClientSize.Height;
 			World.Instance.WorldBoundary = new Rectangle
 			{
 				X = 0,

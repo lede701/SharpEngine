@@ -22,6 +22,12 @@ namespace SharpEngine.Library.User.Form
 {
 	public partial class StarMine : Game
 	{
+		public static int GUILAYER = 9;
+
+
+		private SimpleText _debug;
+		private UniverseMaster _theUniverse;
+
 		public StarMine() : base()
 		{
 			InitializeComponent();
@@ -29,21 +35,47 @@ namespace SharpEngine.Library.User.Form
 
 		public override void InitializeGame()
 		{
+			int size = 50000;
 			base.InitializeGame();
+			// Setup world
+			World.WorldSize.X = size;
+			World.WorldSize.Y = size;
+			World.WorldBoundary = new Rectangle { X = 0, Y = 0, Height = size, Width = size };
 
 			String heroPath = String.Format("{0}\\Hero\\fighter.png", AssetsPath);
 			SpriteShip player = new SpriteShip(GraphicsManager.LoadSpriteFromImagePath(heroPath));
-			player.Position.X = World.WorldSize.X / 2f;
-			player.Position.Y = World.WorldSize.Y / 2f;
+			player.Position.X = World.ScreenSize.X / 2f;
+			player.Position.Y = World.ScreenSize.Y / 2f;
 			player.Controller = KeyboardController.Instance;
 			PlayerUI pui = new PlayerUI(ref player.PlayerStats);
 
 			// Create the universe
-			UniverseMaster universe = new UniverseMaster();
+			_theUniverse = new UniverseMaster
+			{
+				BlockSize = new Math.Vector2D { X = World.ScreenSize.X, Y = World.ScreenSize.Y }
+			};
 
-			Add(universe, 1);
-			Add(player);
-			Add(pui, 7);
+			// Build player control object
+			PlayerController pc = new PlayerController(KeyboardController.Instance);
+			pc.Player = player;
+			pc.Universe = _theUniverse;
+
+			_debug = new SimpleText("");
+			_debug.Position.X = World.ScreenSize.X - 80;
+			_debug.Position.Y = 10;
+
+			Add(pc, 7);
+			Add(pui, GUILAYER);
+			Add(_debug, GUILAYER);
+		}
+
+		protected override void Render(IGraphics g)
+		{
+			if(_debug != null)
+			{
+				_debug.Text = String.Format("[{0}, {1}]", _theUniverse.Position.X, _theUniverse.Position.Y);
+			}
+			base.Render(g);
 		}
 
 	}

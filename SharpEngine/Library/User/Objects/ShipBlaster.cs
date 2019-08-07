@@ -164,7 +164,8 @@ namespace SharpEngine.Library.User.Objects
 		{
 			// Draw blaster to screen
 			//g.FillEllipse(Position.X, Position.Y, 2.0f, 25.0f, Color.FromArgb(180, 252, 119, 3));
-			g.FillGradientEllipse(Position.X, Position.Y, 3.0f, 25.0f, 0f, -12f, blasterTexture.ToArray());
+			g.Translate(Transform);
+			g.FillGradientEllipse(0, 0, 3.0f, 25.0f, 0f, -12f, blasterTexture.ToArray());
 
 			if (Debug)
 			{
@@ -193,14 +194,18 @@ namespace SharpEngine.Library.User.Objects
 					});
 				}
 			}
+			g.TranslateReset();
 		}
+		private float _life = 0f;
+		private float _maxLife = 50f;
 
 		public void Update(float deltaTime)
 		{
 			Position.X += Velocity.X * deltaTime;
 			Position.Y += Velocity.Y * deltaTime;
 			// Check if bolt needs to be auto destroyed
-			if(Position.Y < -10)
+			_life += 1.0f * deltaTime;
+			if(_life > _maxLife)
 			{
 				SceneManager.Instance.Scene.Remove(this, Layer);
 			}

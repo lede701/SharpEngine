@@ -39,6 +39,14 @@ namespace SharpEngine.Library.Math
 			}
 		}
 
+		public static Vector2D One
+		{
+			get
+			{
+				return new Vector2D { X = 1f, Y = 1f };
+			}
+		}
+
 		public float Distance(Vector2D p1)
 		{
 			return (float)System.Math.Sqrt(Square(X - p1.X) + Square(Y - p1.Y));

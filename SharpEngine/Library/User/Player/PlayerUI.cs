@@ -37,8 +37,8 @@ namespace SharpEngine.Library.User.Player
 		{
 			// Render player stats
 			float x = 10;
-			float y = World.Instance.WorldSize.Y - 25;
-			float maxWidth = (World.Instance.WorldSize.X - 20);
+			float y = World.Instance.ScreenSize.Y - 25;
+			float maxWidth = (World.Instance.ScreenSize.X - 20);
 			float wWidth = maxWidth * (_plStats.WeaponEnergy / _plStats.MaxWeaponEnergy);
 			float sWidth = maxWidth * (_plStats.ShieldEnergy / _plStats.MaxShieldEnergy);
 

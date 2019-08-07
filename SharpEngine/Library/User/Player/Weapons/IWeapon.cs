@@ -10,6 +10,6 @@ namespace SharpEngine.Library.User.Player.Weapons
 {
 	public interface IWeapon
 	{
-		UObject CreateBolt(Vector2D position, ref PlayerStatistics stats);
+		UObject CreateBolt(Vector2D position, float Rotation, ref PlayerStatistics stats);
 	}
 }
