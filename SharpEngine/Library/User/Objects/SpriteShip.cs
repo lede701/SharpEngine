@@ -19,7 +19,6 @@ namespace SharpEngine.Library.User.Objects
 	{
 		public PlayerStatistics PlayerStats;
 		private Rectangle _boundary;
-		private List<Color> _shieldTexture;
 
 		public float Life
 		{
@@ -85,9 +84,6 @@ namespace SharpEngine.Library.User.Objects
 		}
 
 		public UObject DebugObject { get; set; }
-
-		private bool _canon;
-
 
 		public override void RenderAddons(IGraphics g)
 		{

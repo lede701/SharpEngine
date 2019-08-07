@@ -152,6 +152,8 @@
     <Compile Include="Library\User\Player\PlayerUI.cs" />
     <Compile Include="Library\User\Player\Weapons\IWeapon.cs" />
     <Compile Include="Library\User\Player\Weapons\SingleBlaster.cs" />
+    <Compile Include="Library\User\Universe\IUniverseItem.cs" />
+    <Compile Include="Library\User\Universe\UniverseMaster.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Library\Forms\Game.resx">
