@@ -4,6 +4,7 @@ using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.User.Objects;
 using SharpEngine.Library.User.Player;
+using SharpEngine.Library.User.Universe;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -37,6 +38,10 @@ namespace SharpEngine.Library.User.Form
 			player.Controller = KeyboardController.Instance;
 			PlayerUI pui = new PlayerUI(ref player.PlayerStats);
 
+			// Create the universe
+			UniverseMaster universe = new UniverseMaster();
+
+			Add(universe, 1);
 			Add(player);
 			Add(pui, 7);
 		}

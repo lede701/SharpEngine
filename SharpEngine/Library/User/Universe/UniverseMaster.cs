@@ -15,9 +15,13 @@ namespace SharpEngine.Library.User.Universe
 		public Vector2D BlockSize;
 		public Vector2D PlayerPosition;
 
+		private Dictionary<String, IUniverseItem> _world;
+
 		public UniverseMaster()
 		{
-		
+			_world = new Dictionary<String, IUniverseItem>();
+			UniverseStar star = new UniverseStar();
+			_world[star.Key] = star;
 		}
 
 		private String _key = Guid.NewGuid().ToString();
@@ -36,12 +40,19 @@ namespace SharpEngine.Library.User.Universe
 
 		public void Render(IGraphics g)
 		{
-			
+			foreach(IUniverseItem item in _world.Values)
+			{
+				item.Render(g);
+			}
 		}
 
 		public void Update(float deltaTime)
 		{
-			
+			foreach (IUniverseItem item in _world.Values)
+			{
+				item.Update(deltaTime);
+			}
+
 		}
 	}
 }

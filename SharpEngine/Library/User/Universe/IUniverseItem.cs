@@ -9,6 +9,6 @@ namespace SharpEngine.Library.User.Universe
 {
 	public interface IUniverseItem : GObject
 	{
-
+		
 	}
 }
