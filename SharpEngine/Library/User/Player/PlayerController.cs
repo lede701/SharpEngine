@@ -1,5 +1,6 @@
 ﻿using SharpEngine.Library.Controller;
 using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.User.Universe;
 using System;
@@ -29,14 +30,24 @@ namespace SharpEngine.Library.User.Player
 		public PlayerController(IController controller)
 		{
 			_controller = controller;
+			_prevVelocity = Vector2D.Zero;
+			_prevRotationSpeed = 0.0f;
 		}
+
+		private Vector2D _prevVelocity;
+		private float _prevRotationSpeed;
+		private float _frameCnt;
 
 		public void Update(float deltaTime)
 		{
-			float rotSpeed = 0.08f;
-			float thrustSpeed = 5.0f;
+			float rotSpeed = _controller.Get(Input.RightShift) ? 0.08f : 0.02f;
+			float thrustSpeed = _controller.Get(Input.RightShift) ? 8.0f : 5.0f;
+
+			float nextRotSpeed = ((rotSpeed * _controller.GetValue(Input.Right)) - (rotSpeed * _controller.GetValue(Input.Left))) * deltaTime;
+			float framePer = 1.0f;
+
 			// Change ship rotation
-			Player.Transform.Rotation += ((rotSpeed * _controller.GetValue(Input.Right)) - (rotSpeed * _controller.GetValue(Input.Left))) * deltaTime;
+			Player.Transform.Rotation += Vector2D.Lerp(nextRotSpeed, _prevRotationSpeed, framePer);
 			// Check if the booster is on
 			if (_controller.Get(Input.Up))
 			{
@@ -45,6 +56,7 @@ namespace SharpEngine.Library.User.Player
 				Universe.Position.X += up * thrustSpeed * (float)System.Math.Sin(Player.Rotation);
 				Universe.Position.Y -= up * thrustSpeed * (float)System.Math.Cos(Player.Rotation);
 			}
+
 			Player.Update(deltaTime);
 			Universe.Update(deltaTime);
 		}

@@ -60,6 +60,7 @@ namespace SharpEngine.Library.User.Form
 
 			// Build player control object
 			PlayerController pc = new PlayerController(KeyboardController.Instance);
+			KeyboardController.Instance.Map(Input.RightShift, Keys.RShiftKey);
 			pc.Player = player;
 			pc.Universe = _theUniverse;
 

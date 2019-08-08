@@ -20,6 +20,8 @@ namespace SharpEngine.Library.Controller
 		Jump2,
 		Fire,
 		Fire2,
+		LeftShift,
+		RightShift,
 		Error
 	}
 }

@@ -32,17 +32,20 @@ namespace SharpEngine.Library.User.Universe
 			SetupTile();
 		}
 
+		private int _tileMaxX;
+		private int _tileMaxY;
+
 		private void SetupTile()
 		{
 			RandomManager rm = RandomManager.Instance;
-			int tileX = (int)(World.Instance.WorldSize.X / World.Instance.ScreenSize.X) + 1;
-			int tileY = (int)(World.Instance.WorldSize.Y / World.Instance.ScreenSize.Y) + 1;
+			_tileMaxX = (int)(World.Instance.WorldSize.X / World.Instance.ScreenSize.X) + 1;
+			_tileMaxY = (int)(World.Instance.WorldSize.Y / World.Instance.ScreenSize.Y) + 1;
 
-			MapData = new UniTile[tileX, tileY];
+			MapData = new UniTile[_tileMaxX, _tileMaxY];
 
-			for(int x = 0; x<tileX;++x)
+			for(int x = 0; x<_tileMaxX;++x)
 			{
-				for(int y=0;y<tileY; ++y)
+				for(int y=0;y<_tileMaxY; ++y)
 				{
 					System.Drawing.Rectangle range = new System.Drawing.Rectangle
 					{
@@ -74,6 +77,8 @@ namespace SharpEngine.Library.User.Universe
 			{
 				int tileX = (int)(Position.X / World.Instance.ScreenSize.X);
 				int tileY = (int)(Position.Y / World.Instance.ScreenSize.Y);
+				int width = System.Math.Min(3, _tileMaxX - tileX);
+				int height = System.Math.Min(3, _tileMaxY - tileY);
 
 				System.Drawing.Rectangle rect = new System.Drawing.Rectangle
 				{
