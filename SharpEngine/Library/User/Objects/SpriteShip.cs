@@ -46,7 +46,7 @@ namespace SharpEngine.Library.User.Objects
 				Height = (int)World.Instance.WorldSize.Y - 80,
 				Width = (int)World.Instance.WorldSize.X - 10
 			};
-			Scale.X = Scale.Y = 0.20f;
+			Scale.X = Scale.Y = 0.15f;
 			PlayerStats = new PlayerStatistics();
 
 			Controller = new NullController();

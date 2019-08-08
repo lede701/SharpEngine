@@ -65,6 +65,7 @@ namespace SharpEngine.Library.User.Universe
 						float astX = rm.Next(range.Left, range.Right);
 						float astY = rm.Next(range.Top, range.Bottom);
 						MapData[x, y].Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
+						//SceneManager.Instance.Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
 					}
 				}
 			}
