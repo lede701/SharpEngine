@@ -1,6 +1,7 @@
 ﻿using SharpEngine.Library.Events;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
+using SharpEngine.Library.Math.Physics;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.User.Interfaces;
@@ -30,7 +31,7 @@ namespace SharpEngine.Library.User.Objects
 				_maxLife = value;
 			}
 		}
-		public SpriteAsteroid(Sprite sprite) : base(sprite, false)
+		public SpriteAsteroid(Sprite sprite) : base(sprite, true)
 		{
 			sprite.Frames.Add(new System.Drawing.Rectangle
 			{
@@ -39,16 +40,9 @@ namespace SharpEngine.Library.User.Objects
 				Width = 125,
 				Height = 125
 			});
-			CircleCollider cldr = new CircleCollider();
-
-			cldr.Radius = 40;
-			cldr.Position = Position;
-			cldr.Center.X = 125 / 2;
-			cldr.Center.Y = 125 / 2;
-			Collider = cldr;
 			Type = ObjectType.ENEMY;
 			Life = 2.0f;
-			_speedEffect = new Vector2D { X = 0f, Y = 0f };
+			_speedEffect = Vector2D.Zero;
 		}
 
 		public float TakeDamage(float damage)

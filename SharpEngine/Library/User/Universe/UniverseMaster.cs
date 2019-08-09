@@ -14,7 +14,6 @@ namespace SharpEngine.Library.User.Universe
 {
 	public class UniverseMaster : GObject
 	{
-		public Vector2D Position;
 		public Vector2D WorldSize;
 		public Vector2D BlockSize;
 		public Vector2D PlayerPosition;
@@ -24,11 +23,18 @@ namespace SharpEngine.Library.User.Universe
 		private UniTile[,] MapData;
 
 		
+		public World World
+		{
+			get
+			{
+				return World.Instance;
+			}
+		}
 
 		public UniverseMaster()
 		{
 			_world = new Dictionary<String, IUniverseItem>();
-			Position = new Vector2D { X = RandomManager.Instance.Next(0, (int)World.Instance.WorldSize.X), Y = RandomManager.Instance.Next(0, (int)World.Instance.WorldSize.Y) };
+			World.WorldPosition = new Vector2D { X = RandomManager.Instance.Next(1000, (int)World.Instance.WorldSize.X - 1000), Y = RandomManager.Instance.Next(1000, (int)World.Instance.WorldSize.Y - 1000) };
 			SetupTile();
 		}
 
@@ -76,8 +82,8 @@ namespace SharpEngine.Library.User.Universe
 		{
 			get
 			{
-				int tileX = (int)(Position.X / World.Instance.ScreenSize.X);
-				int tileY = (int)(Position.Y / World.Instance.ScreenSize.Y);
+				int tileX = (int)(World.WorldPosition.X / World.Instance.ScreenSize.X);
+				int tileY = (int)(World.WorldPosition.Y / World.Instance.ScreenSize.Y);
 				int width = System.Math.Min(3, _tileMaxX - tileX);
 				int height = System.Math.Min(3, _tileMaxY - tileY);
 
@@ -109,7 +115,7 @@ namespace SharpEngine.Library.User.Universe
 
 		public void Render(IGraphics g)
 		{
-			g.Translate(-Position.X, -Position.Y, 0f, Vector2D.One);
+			g.Translate(-World.WorldPosition.X, -World.WorldPosition.Y, 0f, Vector2D.One);
 			System.Drawing.Rectangle rect = CurrentTilePosition;
 			for (int x = rect.Left; x < rect.Right; ++x)
 			{

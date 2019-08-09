@@ -1,6 +1,6 @@
 ﻿using SharpEngine.Library.Controller;
 using SharpEngine.Library.GraphicsSystem;
-using SharpEngine.Library.Math;
+using SharpEngine.Library.Math.Physics;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Particles;
 using SharpEngine.Library.Randomizer;

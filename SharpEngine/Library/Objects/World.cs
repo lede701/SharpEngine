@@ -31,6 +31,7 @@ namespace SharpEngine.Library.Objects
 			_screenSize = Vector2D.Zero;
 			_gravity = Vector2D.Zero;
 			_wind = Vector2D.Zero;
+			_worldPos = Vector2D.Zero;
 		}
 
 		private Vector2D _worldSize;
@@ -56,6 +57,19 @@ namespace SharpEngine.Library.Objects
 			set
 			{
 				_screenSize = value;
+			}
+		}
+
+		private Vector2D _worldPos;
+		public Vector2D WorldPosition
+		{
+			get
+			{
+				return _worldPos;
+			}
+			set
+			{
+				_worldPos = value;
 			}
 		}
 
@@ -103,6 +117,41 @@ namespace SharpEngine.Library.Objects
 				_centerOfWorld.Y = _worldSize.Y / 2;
 				return _centerOfWorld;
 			}
+		}
+
+		public Vector2D ToScreen(Vector2D vec)
+		{
+			Vector2D retVec = new Vector2D(vec);
+			switch(vec.Type)
+			{
+				case VectorType.WORLD:
+					{
+						retVec.X -= WorldPosition.X;
+						retVec.Y -= WorldPosition.Y;
+						retVec.Type = VectorType.SCREEN;
+					}
+					break;
+			}
+
+			return retVec;
+		}
+
+		public Vector2D ToWorld(Vector2D vec)
+		{
+			Vector2D retVec = new Vector2D(vec);
+
+			switch (vec.Type)
+			{
+				case VectorType.SCREEN:
+					{
+						retVec.X += WorldPosition.X;
+						retVec.Y += WorldPosition.Y;
+						retVec.Type = VectorType.WORLD;
+					}
+					break;
+			}
+
+			return retVec;
 		}
 	}
 }

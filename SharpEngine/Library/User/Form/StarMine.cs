@@ -37,13 +37,16 @@ namespace SharpEngine.Library.User.Form
 		public override void InitializeGame()
 		{
 			int size = 50000;
-			base.InitializeGame();
 			// Setup world
 			World.WorldSize.X = size;
 			World.WorldSize.Y = size;
 			World.WorldBoundary = new Rectangle { X = 0, Y = 0, Height = size, Width = size };
+			// Call core Initialzation of game engine
+			base.InitializeGame();
 
+			// Create the Universe factory
 			UniverseFactory.Instance.AssetPath = AssetsPath;
+			UniverseFactory.Instance.PhysicsFactory = PhysicsFactory;
 
 			String heroPath = String.Format("{0}\\Hero\\fighter.png", AssetsPath);
 			SpriteShip player = new SpriteShip(GraphicsManager.LoadSpriteFromImagePath(heroPath));
@@ -71,13 +74,14 @@ namespace SharpEngine.Library.User.Form
 			Add(pc, 7);
 			Add(pui, GUILAYER);
 			Add(_debug, GUILAYER);
+			InDebugMode = true;
 		}
 
 		protected override void Render(IGraphics g)
 		{
 			if(_debug != null)
 			{
-				_debug.Text = String.Format("[{0}, {1}]", (int)_theUniverse.Position.X, (int)_theUniverse.Position.Y);
+				_debug.Text = String.Format("[{0}, {1}]", (int)World.WorldPosition.X, (int)World.WorldPosition.Y);
 			}
 			base.Render(g);
 		}

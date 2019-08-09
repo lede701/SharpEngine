@@ -6,10 +6,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpEngine.Library.Math
+namespace SharpEngine.Library.Math.Physics
 {
 	public class BoxCollider : ICollider
 	{
+		private String _key = Guid.NewGuid().ToString();
+		public String Key
+		{
+			get
+			{
+				return _key;
+			}
+		}
+
+		private Vector2D _position;
+		public Vector2D Position
+		{
+			get
+			{
+				return _position;
+			}
+			set
+			{
+				_position = value;
+			}
+		}
+
 		private bool _isActive;
 		public bool IsActive
 		{

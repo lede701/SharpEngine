@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math.Physics;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Threading;
 using System;
@@ -22,10 +23,24 @@ namespace SharpEngine.Library.Forms
 		private SceneManager _sm;
 		private GraphicsManager _gm;
 		private ThreadManager.ThreadNode _gameLoop;
+		private ThreadManager.ThreadNode _physicsLoop;
 
 		#endregion
 
 		#region Public Parameters
+
+		private bool _inDebugMode = false;
+		public bool InDebugMode
+		{
+			get
+			{
+				return _inDebugMode;
+			}
+			set
+			{
+				_inDebugMode = value;
+			}
+		}
 
 		public String AssetsPath;
 		public World World
@@ -33,6 +48,24 @@ namespace SharpEngine.Library.Forms
 			get
 			{
 				return World.Instance;
+			}
+		}
+
+		private PhysicsWorld _physicsWorld;
+		public PhysicsWorld PhysicsWorld
+		{
+			get
+			{
+				return _physicsWorld;
+			}
+		}
+
+		private PhysicsFactory _physicsFactory;
+		public PhysicsFactory PhysicsFactory
+		{
+			get
+			{
+				return _physicsFactory;
 			}
 		}
 
@@ -65,24 +98,28 @@ namespace SharpEngine.Library.Forms
 		public Game()
 		{
 			InitializeComponent();
-			InitializeGame();
 			this.FormBorderStyle = FormBorderStyle.Fixed3D;
-		}
 
-		public virtual void InitializeGame()
-		{
-			// Setup world global object
-			World.Instance.WorldSize.X = this.ClientSize.Width;
-			World.Instance.WorldSize.Y = this.ClientSize.Height;
-			World.Instance.ScreenSize.X = this.ClientSize.Width;
-			World.Instance.ScreenSize.Y = this.ClientSize.Height;
-			World.Instance.WorldBoundary = new Rectangle
+			// Set world default values
+			World.WorldSize.X = this.ClientSize.Width;
+			World.WorldSize.Y = this.ClientSize.Height;
+			World.ScreenSize.X = this.ClientSize.Width;
+			World.ScreenSize.Y = this.ClientSize.Height;
+			World.WorldBoundary = new Rectangle
 			{
 				X = 0,
 				Y = 0,
 				Width = this.ClientSize.Width,
 				Height = this.ClientSize.Height
 			};
+
+			InitializeGame();
+		}
+
+		public virtual void InitializeGame()
+		{
+			// Setup world global object
+
 
 			// Initialize GTraphics Manager
 			_gm = new GraphicsManager(this);
@@ -93,6 +130,7 @@ namespace SharpEngine.Library.Forms
 			// Start the game loop thread
 			_gameLoop = ThreadManager.CreateThread(GameLoop);
 			_gameLoop.Start();
+
 
 			AssetsPath = Application.ExecutablePath + "\\Content";
 			if (!Directory.Exists(AssetsPath))
@@ -107,12 +145,19 @@ namespace SharpEngine.Library.Forms
 					AssetsPath = String.Format("{0}\\Content", String.Join("\\", path));
 				} while (!Directory.Exists(AssetsPath) && path.Count > 0);
 			}
+
+			_physicsWorld = new PhysicsWorld(World.WorldSize);
+			_physicsFactory = new PhysicsFactory(_physicsWorld);
+			// Start the Physics loop now that the world is created
+			_physicsLoop = ThreadManager.CreateThread(PhysicsLoop);
+			_physicsLoop.Start();
 		}
 
 		#endregion
 
 		#region Game Loop
 
+		private float _currentFrameCount;
 		private void GameLoop()
 		{
 			// Pasue this thread while app wamrs up
@@ -121,26 +166,68 @@ namespace SharpEngine.Library.Forms
 			float deltaTime = 1.0f;
 			int frameCount = 0;
 
+			// Setup timers to track game loop metrics
 			Stopwatch timer = new Stopwatch();
 			Stopwatch longTimer = new Stopwatch();
 			longTimer.Reset();
 			longTimer.Start();
 			while (_gameLoop.IsRunning)
 			{
-
+				// Reset time for performance metrics
 				timer.Reset();
 				timer.Start();
+				// Process game updates
 				Update(deltaTime);
+				// Render scene
 				Render(_gm);
+				// Stop timer
+				timer.Stop();
+				// Calculate current deltaTime
+				float elapsed = timer.ElapsedTicks;
+				deltaTime = elapsed / frameSampleTime;
+				frameCount++;
+				// Update Frames Per Second
+				if (longTimer.ElapsedMilliseconds > 1000)
+				{
+					longTimer.Reset();
+					_currentFrameCount = frameCount;
+					frameCount = 0;
+				}
+			}
+		}
+
+		#endregion
+
+		#region Physics Loop
+
+		private float _physicsFrameCount;
+
+		public virtual void PhysicsLoop()
+		{
+			// Pasue this thread while app wamrs up
+			float frameSampleTime = Stopwatch.Frequency / 60.0f;
+			float deltaTime = 1.0f;
+			int frameCount = 0;
+
+			// Setup physics metrics
+			Stopwatch timer = new Stopwatch();
+			Stopwatch longTimer = new Stopwatch();
+			longTimer.Reset();
+			longTimer.Start();
+			// Start physics iteration of the world
+			while (_physicsLoop.IsRunning)
+			{
+				timer.Reset();
+				timer.Start();
+				PhysicsWorld.Update(deltaTime);
 				timer.Stop();
 				float elapsed = timer.ElapsedTicks;
-				//frameTime = deltaTime;
 				deltaTime = elapsed / frameSampleTime;
 				frameCount++;
 				if (longTimer.ElapsedMilliseconds > 1000)
 				{
 					longTimer.Reset();
-					//_currentFrameCnt = frameCount;
+					_physicsFrameCount = frameCount;
 					frameCount = 0;
 				}
 			}
@@ -157,11 +244,30 @@ namespace SharpEngine.Library.Forms
 
 		protected virtual void Render(IGraphics g)
 		{
+			// Start the drawing process
 			g.BeginDraw();
+				// Clear buffer to background color
 				g.Clear(BackColor);
+				// Render Scene Objects
 				_sm.Render(g);
+				// Call Render Metrics
+				RenderMetrics(g);
+			// Done drawing so tell graphics engine we are done
 			g.EndDraw();
+			// Invalide form so it will redraw
 			Invalidate();
+		}
+
+		protected virtual void RenderMetrics(IGraphics g)
+		{
+			if(InDebugMode)
+			{
+				String fps = String.Format("FPS: {0}", _currentFrameCount);
+				String pfps = String.Format("Physics Frames: {0}", _physicsFrameCount);
+
+				g.DrawText(fps, "Ariel", 12f, Color.White, new Rectangle { X = (int)World.ScreenSize.X - 200, Y = (int)World.ScreenSize.Y - 50, Width = 200, Height = 25 });
+				g.DrawText(pfps, "Ariel", 12f, Color.White, new Rectangle { X = (int)World.ScreenSize.X - 200, Y = (int)World.ScreenSize.Y - 25, Width = 200, Height = 25 });
+			}
 		}
 
 		public void Add(GObject gobj)

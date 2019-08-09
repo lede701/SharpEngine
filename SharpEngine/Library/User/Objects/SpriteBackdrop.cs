@@ -1,5 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
-using SharpEngine.Library.Math;
+using SharpEngine.Library.Math.Physics;
 using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;

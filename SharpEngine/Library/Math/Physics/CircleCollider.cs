@@ -6,10 +6,18 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpEngine.Library.Math
+namespace SharpEngine.Library.Math.Physics
 {
 	public class CircleCollider : ICollider
 	{
+		private String _key = Guid.NewGuid().ToString();
+		public String Key
+		{
+			get
+			{
+				return _key;
+			}
+		}
 		private bool _isActive;
 		public bool IsActive
 		{
@@ -23,7 +31,7 @@ namespace SharpEngine.Library.Math
 			}
 		}
 		public float Radius;
-		public Vector2D Position;
+		public Vector2D Position { get; set; }
 		public Vector2D Center;
 
 		private UObject _owner;

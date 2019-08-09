@@ -6,10 +6,19 @@ using System.Threading.Tasks;
 using SharpEngine.Library.Events;
 using SharpEngine.Library.Objects;
 
-namespace SharpEngine.Library.Math
+namespace SharpEngine.Library.Math.Physics
 {
 	public class NullCollider : ICollider
 	{
+		private String _key = Guid.NewGuid().ToString();
+		public String Key
+		{
+			get
+			{
+				return _key;
+			}
+		}
+		public Vector2D Position { get; set; }
 		public bool IsActive{
 			get
 			{

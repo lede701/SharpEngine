@@ -2,6 +2,7 @@
 using SharpEngine.Library.Events;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
+using SharpEngine.Library.Math.Physics;
 using SharpEngine.Library.Objects;
 using SharpEngine.Library.Particles;
 using SharpEngine.Library.User.Interfaces;
@@ -78,6 +79,7 @@ namespace SharpEngine.Library.User.Objects
 				{
 					_collider = (CircleCollider)value;
 					_collider.Owner = this;
+					_collider.CollisionEvent += OnCollision;
 				}
 			}
 		}
@@ -119,12 +121,7 @@ namespace SharpEngine.Library.User.Objects
 		{
 			_key = Guid.NewGuid().ToString();
 			_transform = new Transform();
-			_collider = new CircleCollider();
-			_collider.Radius = 3.0f;
-			_collider.Position = Position;
-			_collider.Owner = this;
 			_debug = debug;
-			Collider.CollisionEvent += OnCollision;
 			blasterTexture = new List<System.Drawing.Color>();
 
 			blasterTexture.Add(Color.FromArgb(190, 247, 233, 203));

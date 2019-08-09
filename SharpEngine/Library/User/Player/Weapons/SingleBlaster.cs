@@ -1,6 +1,7 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.User.Factories;
 using SharpEngine.Library.User.Objects;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace SharpEngine.Library.User.Player.Weapons
 {
 	public class SingleBlaster : IWeapon, IDisposable
 	{
-		private String _key;
+		private String _key = Guid.NewGuid().ToString();
 		public string Key
 		{
 			get
@@ -30,10 +31,9 @@ namespace SharpEngine.Library.User.Player.Weapons
 
 		public UObject CreateBolt(Vector2D position, float rotation, ref PlayerStatistics stats)
 		{
+
 			// Spawn blaster object
-			ShipBlaster bolt = new ShipBlaster(false);
-			bolt.Position.X = position.X +_firePos.X;
-			bolt.Position.Y = position.Y + _firePos.Y;
+			ShipBlaster bolt = UniverseFactory.Instance.CreateBlaster(position.X + _firePos.X, position.Y + _firePos.Y, 3f, ObjectType.MISSLE);
 			stats.WeaponDamage = 1.2f;
 			stats.WeaponEnergyUse = 3.5f;
 
@@ -45,7 +45,6 @@ namespace SharpEngine.Library.User.Player.Weapons
 			bolt.Transform.Rotation = rotation;
 			bolt.Velocity.Y = boltSpeed * (float)System.Math.Cos(rotation);
 			bolt.Velocity.X = -boltSpeed * (float)System.Math.Sin(rotation);
-			bolt.Type = ObjectType.MISSLE;
 			stats.Score -= 15;
 			bolt.Damage = stats.Fire;
 			return bolt;

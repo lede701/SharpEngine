@@ -8,6 +8,8 @@ using SharpEngine.Library.Controller;
 using SharpEngine.Library.Events;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math;
+using SharpEngine.Library.Math.Physics;
+
 
 namespace SharpEngine.Library.Objects
 {

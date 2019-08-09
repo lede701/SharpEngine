@@ -6,11 +6,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SharpEngine.Library.Math
+namespace SharpEngine.Library.Math.Physics
 {
 	public class PlaneCollider : ICollider
 	{
 		#region ICollider parameters
+
+		private String _key = Guid.NewGuid().ToString();
+		public String Key
+		{
+			get
+			{
+				return _key;
+			}
+		}
+
+		public Vector2D Position { get; set; }
+
 		private bool _isActive;
 		public bool IsActive
 		{

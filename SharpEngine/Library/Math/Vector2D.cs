@@ -10,6 +10,7 @@ namespace SharpEngine.Library.Math
 	{
 		public float X;
 		public float Y;
+		public VectorType Type = VectorType.WORLD;
 		public static float Lerp(float v1, float v2, float t)
 		{
 			return (1.0f - t) * v1 + t * v1;
@@ -24,11 +25,11 @@ namespace SharpEngine.Library.Math
 			X = x;
 			Y = y;
 		}
-
-		public Vector2D(Vector2D pos)
+		public Vector2D(Vector2D vec)
 		{
-			X = pos.X;
-			Y = pos.Y;
+			X = vec.X;
+			Y = vec.Y;
+			Type = vec.Type;
 		}
 
 		public static Vector2D Zero
