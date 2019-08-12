@@ -22,6 +22,8 @@ namespace SharpEngine.Library.User.Universe
 
 		private UniTile[,] MapData;
 
+		public UObject DebugObj;
+
 		
 		public World World
 		{
@@ -34,7 +36,6 @@ namespace SharpEngine.Library.User.Universe
 		public UniverseMaster()
 		{
 			_world = new Dictionary<String, IUniverseItem>();
-			World.WorldPosition = new Vector2D { X = RandomManager.Instance.Next(1000, (int)World.Instance.WorldSize.X - 1000), Y = RandomManager.Instance.Next(1000, (int)World.Instance.WorldSize.Y - 1000) };
 			SetupTile();
 		}
 
@@ -66,6 +67,7 @@ namespace SharpEngine.Library.User.Universe
 						UniverseStar star = new UniverseStar(range);
 						MapData[x, y].Add(star);
 					}
+					/*
 					if(rm.Next(0,500) > 300)
 					{
 						float astX = rm.Next(range.Left, range.Right);
@@ -73,9 +75,20 @@ namespace SharpEngine.Library.User.Universe
 						MapData[x, y].Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
 						//SceneManager.Instance.Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
 					}
+					//*/
 				}
 			}
 
+			AddAsteroid(4600f, 4200f);
+		}
+
+		public void AddAsteroid(float x, float y)
+		{
+			SpriteAsteroid asteroid = UniverseFactory.Instance.CreateAsteroid(x, y, 0f);
+			int mapX = (int)(x / World.Instance.ScreenSize.X);
+			int mapY = (int)(y / World.Instance.ScreenSize.Y);
+			MapData[mapX, mapY].Add(asteroid);
+			DebugObj = asteroid;
 		}
 
 		public System.Drawing.Rectangle CurrentTilePosition

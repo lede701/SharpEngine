@@ -449,7 +449,8 @@ namespace SharpEngine.Library.GraphicsSystem
 		}
 		public void Translate(Transform transform, Vector2D center)
 		{
-			Matrix tran = Matrix.Translation(transform.Position.X, transform.Position.Y);
+			Vector2D pos = World.Instance.ToScreen(transform.Position);
+			Matrix tran = Matrix.Translation(pos.X, pos.Y);
 			Matrix rot = Matrix.Rotation(transform.Rotation, new SharpDX.Vector2(center.X, center.Y));
 			Matrix sca = Matrix.Scaling(transform.Scale.X, transform.Scale.Y);
 			d2dRenderTarget.Transform = rot * sca * tran;

@@ -123,6 +123,7 @@ namespace SharpEngine.Library.User.Objects
 				if (Controller.Get(Input.Fire) && PlayerStats.CanFire)
 				{
 					UObject bolt = Weapon.CreateBolt(Position, Rotation, ref PlayerStats);
+					((ShipBlaster)bolt).DebugObject = DebugObject;
 					bolt.Collider.CollisionEvent += OnBoltHit;
 					SceneManager.Instance.Scene.Add(bolt);
 				}

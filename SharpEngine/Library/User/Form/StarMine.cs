@@ -2,6 +2,7 @@
 using SharpEngine.Library.Forms;
 using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.User.Factories;
 using SharpEngine.Library.User.Objects;
 using SharpEngine.Library.User.Player;
@@ -24,6 +25,7 @@ namespace SharpEngine.Library.User.Form
 	public partial class StarMine : Game
 	{
 		public static int GUILAYER = 9;
+		public static int PLAYERLAYER = 5;
 
 
 		private SimpleText _debug;
@@ -48,13 +50,18 @@ namespace SharpEngine.Library.User.Form
 			UniverseFactory.Instance.AssetPath = AssetsPath;
 			UniverseFactory.Instance.PhysicsFactory = PhysicsFactory;
 
-			String heroPath = String.Format("{0}\\Hero\\fighter.png", AssetsPath);
-			SpriteShip player = new SpriteShip(GraphicsManager.LoadSpriteFromImagePath(heroPath));
-			player.Position.X = World.ScreenSize.X / 2f;
-			player.Position.Y = World.ScreenSize.Y / 2f;
+			float playerX = (float)RandomManager.Instance.Next(1000, (int)World.WorldSize.X - 1000);
+			float playerY = (float)RandomManager.Instance.Next(1000, (int)World.WorldSize.Y - 1000);
+			playerX = 5000;
+			playerY = 4000;
+
+			SpriteShip player = UniverseFactory.Instance.CreatePlayer(playerX, playerY);
 			player.Controller = KeyboardController.Instance;
+			World.WorldPosition.X = playerX - ((World.ScreenSize.X / 2) - (player.Width * player.Scale.X) / 2);
+			World.WorldPosition.Y = playerY - ((World.ScreenSize.Y / 2) - (player.Height * player.Scale.Y) / 2);
 			PlayerUI pui = new PlayerUI(ref player.PlayerStats);
 
+			//*
 			// Create the universe
 			_theUniverse = new UniverseMaster
 			{
@@ -66,15 +73,17 @@ namespace SharpEngine.Library.User.Form
 			KeyboardController.Instance.Map(Input.RightShift, Keys.RShiftKey);
 			pc.Player = player;
 			pc.Universe = _theUniverse;
-
+			player.DebugObject = _theUniverse.DebugObj;
+			//*/
 			_debug = new SimpleText("");
 			_debug.Position.X = World.ScreenSize.X - 200;
 			_debug.Position.Y = 10;
 
-			Add(pc, 7);
+			Add(pc, PLAYERLAYER);
 			Add(pui, GUILAYER);
 			Add(_debug, GUILAYER);
 			InDebugMode = true;
+			//Add(player, PLAYERLAYER);
 		}
 
 		protected override void Render(IGraphics g)

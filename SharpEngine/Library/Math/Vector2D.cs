@@ -79,18 +79,29 @@ namespace SharpEngine.Library.Math
 			return new Vector2D { X = (X - p1.X) / 2, Y = (Y - p1.Y) / 2 };
 		}
 
-		public Vector2D RotateVector(Vector2D fp, Vector2D pt, float angle)
+		public Vector2D RotateVector(Vector2D pt, float angle)
 		{
-			float x = pt.X - fp.X;
-			float y = pt.Y - fp.Y;
+			float x = pt.X - X;
+			float y = pt.Y - Y;
 			float xRot = (float)(x * System.Math.Cos(angle) + y * System.Math.Sin(angle));
 			float yRot = (float)(y * System.Math.Cos(angle) - x * System.Math.Sin(angle));
-			return new Vector2D { X = fp.X + xRot, Y = fp.Y + yRot };
+			return new Vector2D { X = X + xRot, Y = Y + yRot };
 		}
 
 		public float Square(float val)
 		{
 			return val * val;
+		}
+
+		public static Vector2D operator +(Vector2D v1, Vector2D v2)
+		{
+			Vector2D plus = new Vector2D(v1.X + v2.X, v1.Y + v2.Y);
+			return plus;
+		}
+		public static Vector2D operator -(Vector2D v1, Vector2D v2)
+		{
+			Vector2D minus = new Vector2D(v1.X - v2.X, v1.Y - v2.Y);
+			return minus;
 		}
 	}
 }

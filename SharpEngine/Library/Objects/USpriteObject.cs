@@ -173,7 +173,6 @@ namespace SharpEngine.Library.Objects
 
 		public virtual void Render(IGraphics g)
 		{
-			// TODO: Write graphics transofrm utility
 			g.Translate(Transform, Sprite.CenterPoint);
 
 			Rectangle src = Sprite.Frame;

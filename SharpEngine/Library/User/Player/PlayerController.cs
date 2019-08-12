@@ -53,8 +53,12 @@ namespace SharpEngine.Library.User.Player
 			{
 				// Calculate the thrust of ship
 				float up = _controller.GetValue(Input.Up) * deltaTime;
-				World.Instance.WorldPosition.X += up * thrustSpeed * (float)System.Math.Sin(Player.Rotation);
-				World.Instance.WorldPosition.Y -= up * thrustSpeed * (float)System.Math.Cos(Player.Rotation);
+				float vx = up * thrustSpeed * (float)System.Math.Sin(Player.Rotation);
+				float vy = up * thrustSpeed * (float)System.Math.Cos(Player.Rotation);
+				World.Instance.WorldPosition.X += vx;
+				World.Instance.WorldPosition.Y -= vy;
+				Player.Position.X += vx;
+				Player.Position.Y -= vy;
 			}
 
 			Player.Update(deltaTime);

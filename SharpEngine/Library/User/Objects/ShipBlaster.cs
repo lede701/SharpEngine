@@ -160,8 +160,8 @@ namespace SharpEngine.Library.User.Objects
 		public void Render(IGraphics g)
 		{
 			// Draw blaster to screen
-			//g.FillEllipse(Position.X, Position.Y, 2.0f, 25.0f, Color.FromArgb(180, 252, 119, 3));
-			g.Translate(Transform);
+			Vector2D blasterCenter = new Vector2D(1.5f, 1.5f);
+			g.Translate(Transform, blasterCenter);
 			g.FillGradientEllipse(0, 0, 3.0f, 25.0f, 0f, -12f, blasterTexture.ToArray());
 
 			if (Debug)
@@ -169,8 +169,8 @@ namespace SharpEngine.Library.User.Objects
 				CircleCollider cc = (CircleCollider)Collider;
 				RectangleF rect = new RectangleF
 				{
-					X = Position.X,
-					Y = Position.Y,
+					X = 0,
+					Y = 0,
 					Width = cc.Radius,
 					Height = cc.Radius
 				};
@@ -181,11 +181,12 @@ namespace SharpEngine.Library.User.Objects
 					float distX = Position.X - DebugObject.Position.X;
 					float distY = Position.Y - DebugObject.Position.Y;
 					int len = (int)System.Math.Sqrt((distX * distX) + (distY * distY));
+					Vector2D destPos = Position - DebugObject.Position;
 					// Draw a line between these two items
-					g.DrawLine(Position.X, Position.Y, DebugObject.Position.X, DebugObject.Position.Y, Color.FromArgb(200, 0, 200, 0));
+					g.DrawLine(0f, 0f, destPos.X, destPos.Y, Color.FromArgb(200, 0, 200, 0));
 					g.DrawText(len.ToString(), "Ariel", 10f, Color.White, new Rectangle{
-						X = (int)(Position.X - (distX / 2)),
-						Y = (int)(Position.Y - (distY / 2)),
+						X = (int)(distX / 2),
+						Y = (int)(distY / 2),
 						Width = 50,
 						Height = 25
 					});

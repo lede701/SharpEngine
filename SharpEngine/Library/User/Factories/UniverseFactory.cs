@@ -66,6 +66,9 @@ namespace SharpEngine.Library.User.Factories
 			}
 
 			SpriteShip ship = new SpriteShip(_playerSprite);
+			ship.Position.X = x;
+			ship.Position.Y = y;
+			ship.Position.Type = Math.VectorType.WORLD;
 
 
 			return ship;
@@ -73,7 +76,7 @@ namespace SharpEngine.Library.User.Factories
 
 		public ShipBlaster CreateBlaster(float x, float y, float radius, ObjectType type)
 		{
-			ShipBlaster bolt = new ShipBlaster();
+			ShipBlaster bolt = new ShipBlaster(true);
 			bolt.Position.X = x;
 			bolt.Position.Y = y;
 			bolt.Collider = PhysicsFactory.CreateCircleCollider(bolt.Position, radius);

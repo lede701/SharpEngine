@@ -231,8 +231,8 @@ namespace SharpEngine.Library.Math.Physics
 
 			Vector2D C = new Vector2D { X = Cx, Y = Cy };
 			float angle = (float) SafeACOS(Square(r) - Square(d) - Square(R) / (-2.0 * d * R));
-			_hitPoint.Add(C.RotateVector(C, p, +angle));
-			_hitPoint.Add(C.RotateVector(C, p, -angle));
+			_hitPoint.Add(C.RotateVector(p, +angle));
+			_hitPoint.Add(C.RotateVector(p, -angle));
 		}
 
 		public float SafeACOS(double val)
