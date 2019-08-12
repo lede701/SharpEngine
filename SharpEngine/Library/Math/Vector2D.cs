@@ -93,6 +93,14 @@ namespace SharpEngine.Library.Math
 			return val * val;
 		}
 
+		public float Length
+		{
+			get
+			{
+				return (float)System.Math.Sqrt((X * X) + (Y * Y));
+			}
+		}
+
 		public static Vector2D operator +(Vector2D v1, Vector2D v2)
 		{
 			Vector2D plus = new Vector2D(v1.X + v2.X, v1.Y + v2.Y);

@@ -178,15 +178,14 @@ namespace SharpEngine.Library.User.Objects
 				g.DrawEllipse(rect, Color.FromArgb(120, 0, 200, 0));
 				if(DebugObject != null)
 				{
-					float distX = Position.X - DebugObject.Position.X;
-					float distY = Position.Y - DebugObject.Position.Y;
-					int len = (int)System.Math.Sqrt((distX * distX) + (distY * distY));
+					Vector2D dist = Position - DebugObject.Position;
+					int len = (int)dist.Length;
 					Vector2D destPos = Position - DebugObject.Position;
 					// Draw a line between these two items
 					g.DrawLine(0f, 0f, destPos.X, destPos.Y, Color.FromArgb(200, 0, 200, 0));
 					g.DrawText(len.ToString(), "Ariel", 10f, Color.White, new Rectangle{
-						X = (int)(distX / 2),
-						Y = (int)(distY / 2),
+						X = (int)(dist.X / 2),
+						Y = (int)(dist.Y / 2),
 						Width = 50,
 						Height = 25
 					});
