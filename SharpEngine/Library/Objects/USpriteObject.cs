@@ -200,7 +200,7 @@ namespace SharpEngine.Library.Objects
 
 		public void DebugRender(IGraphics g, Rectangle rect)
 		{
-			g.DrawRectangle(rect, Color.FromArgb(255, 255, 0, 0));
+			g.DrawRectangle(rect, Color.FromArgb(200, 255, 0, 0));
 			if (Collider != null)
 			{
 				switch(Collider.Type)
@@ -237,6 +237,10 @@ namespace SharpEngine.Library.Objects
 			if (Sprite.AutoDispose)
 			{
 				Sprite.Dispose();
+			}
+			if (Collider != null)
+			{
+				Collider.Dispose();
 			}
 		}
 	}

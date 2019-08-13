@@ -31,7 +31,7 @@ namespace SharpEngine.Library.Math.Physics
 				{
 					for (int j = i + 1; j < colliders.Count; ++j)
 					{
-						colliders[i].Hit(colliders[j]);
+						 colliders[i].Hit(colliders[j]);
 					}
 				}
 			}
@@ -42,7 +42,18 @@ namespace SharpEngine.Library.Math.Physics
 			lock (_lock)
 			{
 				_world[collider.Key] = collider;
+				collider.PWorld = this;
 			}
+		}
+		
+		public void Remove(ICollider collider)
+		{
+			Remove(collider.Key);
+		}
+
+		public void Remove(String key)
+		{
+			_world.Remove(key);
 		}
 	}
 }

@@ -21,6 +21,19 @@ namespace SharpEngine.Library.Math.Physics
 			}
 		}
 
+		private PhysicsWorld _pworld;
+		public PhysicsWorld PWorld
+		{
+			get
+			{
+				return _pworld;
+			}
+			set
+			{
+				_pworld = value;
+			}
+		}
+
 		public Vector2D Position { get; set; }
 
 		private bool _isActive;
@@ -153,6 +166,14 @@ namespace SharpEngine.Library.Math.Physics
 					break;
 			}
 			return bRetVal;
+		}
+
+		public void Dispose()
+		{
+			if (PWorld != null)
+			{
+				PWorld.Remove(this);
+			}
 		}
 	}
 }

@@ -444,8 +444,7 @@ namespace SharpEngine.Library.GraphicsSystem
 
 		public void Translate(Transform transform)
 		{
-			Matrix tran = Matrix.Transformation(transform.Scale.X, transform.Scale.Y, transform.Rotation, transform.Position.X, transform.Position.Y);
-			d2dRenderTarget.Transform = tran;
+			Translate(transform, Vector2D.Zero);
 		}
 		public void Translate(Transform transform, Vector2D center)
 		{

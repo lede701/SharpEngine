@@ -67,19 +67,25 @@ namespace SharpEngine.Library.User.Universe
 						UniverseStar star = new UniverseStar(range);
 						MapData[x, y].Add(star);
 					}
-					/*
+					//*
 					if(rm.Next(0,500) > 300)
 					{
 						float astX = rm.Next(range.Left, range.Right);
 						float astY = rm.Next(range.Top, range.Bottom);
-						MapData[x, y].Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
+						//AddAsteroid(astX, astY);
+						//MapData[x, y].Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
 						//SceneManager.Instance.Add(UniverseFactory.Instance.CreateAsteroid(astX, astY, 0f));
 					}
 					//*/
 				}
 			}
+			for(int i=0; i<50; ++i)
+			{
+				float x = rm.Next(0, (int)World.WorldSize.X);
+				float y = rm.Next(0, (int)World.WorldSize.Y);
+				AddAsteroid(x, y);
+			}
 
-			AddAsteroid(4600f, 4200f);
 		}
 
 		public void AddAsteroid(float x, float y)
@@ -87,8 +93,9 @@ namespace SharpEngine.Library.User.Universe
 			SpriteAsteroid asteroid = UniverseFactory.Instance.CreateAsteroid(x, y, 0f);
 			int mapX = (int)(x / World.Instance.ScreenSize.X);
 			int mapY = (int)(y / World.Instance.ScreenSize.Y);
-			MapData[mapX, mapY].Add(asteroid);
-			DebugObj = asteroid;
+			//MapData[mapX, mapY].Add(asteroid);
+			SceneManager.Instance.Add(asteroid, 4);
+			//DebugObj = asteroid;
 		}
 
 		public System.Drawing.Rectangle CurrentTilePosition

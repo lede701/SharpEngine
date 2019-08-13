@@ -48,10 +48,6 @@ namespace SharpEngine.Library.User.Objects
 		public float TakeDamage(float damage)
 		{
 			_life -= damage;
-			if(Life > 0f)
-			{
-				SpeedEffect.Y += -3f;
-			}
 			return Life;
 		}
 
@@ -83,12 +79,13 @@ namespace SharpEngine.Library.User.Objects
 		public override void Render(IGraphics g)
 		{
 			float lifeLevel = _life / _maxLife;
+			g.Translate(Transform);
 
 			System.Drawing.Rectangle src = Sprite.Frame;
 			System.Drawing.Rectangle dest = new System.Drawing.Rectangle
 			{
-				X = (int)Position.X,
-				Y = (int)Position.Y,
+				X = 0,
+				Y = 0,
 				Width = src.Width,
 				Height = src.Height
 			};
@@ -100,20 +97,20 @@ namespace SharpEngine.Library.User.Objects
 			}
 			System.Drawing.Rectangle rect = Sprite.Frame;
 			float lWidth = (rect.Width / 2f) * lifeLevel;
-			float x = Position.X + (rect.Width / 4f);
+			float x = rect.Width / 4f;
 
-			g.FillRectangle(x, Position.Y, lWidth, 5, BlendColor(_newColor, _dangerColor, lifeLevel, 0.4f));
-			g.DrawRectangle(x, Position.Y, (rect.Width / 2f), 5, BlendColor(_newColor, _dangerColor, lifeLevel, 0.55f));
+			g.FillRectangle(x, 0, lWidth, 5, BlendColor(_newColor, _dangerColor, lifeLevel, 0.4f));
+			g.DrawRectangle(x, 0, (rect.Width / 2f), 5, BlendColor(_newColor, _dangerColor, lifeLevel, 0.55f));
 		}
 
 		private System.Drawing.Color BlendColor(System.Drawing.Color clr1, System.Drawing.Color clr2, float blend, float alpha)
 		{
 			int r, g, b, a;
 			float baseBlend = 1.0f - blend;
-			r = System.Math.Max((int)((clr2.R * baseBlend) + (clr1.R * blend)), 0);
-			g = System.Math.Max((int)((clr2.G * baseBlend) + (clr1.G * blend)), 0);
-			b = System.Math.Max((int)((clr2.B * baseBlend) + (clr1.B * blend)), 0);
-			a = System.Math.Max((int)(255f * alpha), 0);
+			r = System.Math.Min(System.Math.Max((int)((clr2.R * baseBlend) + (clr1.R * blend)), 0), 255);
+			g = System.Math.Min(System.Math.Max((int)((clr2.G * baseBlend) + (clr1.G * blend)), 0), 255);
+			b = System.Math.Min(System.Math.Max((int)((clr2.B * baseBlend) + (clr1.B * blend)), 0), 255);
+			a = System.Math.Min(System.Math.Max((int)(255f * alpha), 0), 255);
 			return System.Drawing.Color.FromArgb(a, r, g, b);
 		}
 

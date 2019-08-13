@@ -18,6 +18,20 @@ namespace SharpEngine.Library.Math.Physics
 				return _key;
 			}
 		}
+
+		private PhysicsWorld _pworld;
+		public PhysicsWorld PWorld
+		{
+			get
+			{
+				return _pworld;
+			}
+			set
+			{
+				_pworld = value;
+			}
+		}
+
 		public Vector2D Position { get; set; }
 		public bool IsActive{
 			get
@@ -63,6 +77,14 @@ namespace SharpEngine.Library.Math.Physics
 		public bool Hit(UObject obj)
 		{
 			return false;
+		}
+
+		public void Dispose()
+		{
+			if (PWorld != null)
+			{
+				PWorld.Remove(this);
+			}
 		}
 	}
 }

@@ -50,7 +50,7 @@ namespace SharpEngine.Library.User.Factories
 			collider.Center.X = 125f / 2f;
 			collider.Center.Y = 125f / 2f;
 
-			sprite.Collider = PhysicsFactory.CreateCircleCollider(sprite.Position, 40);
+			sprite.Collider = collider;
 
 			return sprite;
 		}
@@ -69,6 +69,9 @@ namespace SharpEngine.Library.User.Factories
 			ship.Position.X = x;
 			ship.Position.Y = y;
 			ship.Position.Type = Math.VectorType.WORLD;
+			CircleCollider cc = (CircleCollider)PhysicsFactory.CreateCircleCollider(ship.Position, ship.Width * ship.Scale.X);
+			cc.Center = new Math.Vector2D((ship.Width * ship.Scale.X) / 2f, (ship.Height * ship.Scale.Y) / 2);
+			ship.Collider = cc;
 
 
 			return ship;

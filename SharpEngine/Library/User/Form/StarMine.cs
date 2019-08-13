@@ -34,6 +34,7 @@ namespace SharpEngine.Library.User.Form
 		public StarMine() : base()
 		{
 			InitializeComponent();
+			SingleThread = false;
 		}
 
 		public override void InitializeGame()

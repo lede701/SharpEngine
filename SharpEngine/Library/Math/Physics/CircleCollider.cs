@@ -18,6 +18,20 @@ namespace SharpEngine.Library.Math.Physics
 				return _key;
 			}
 		}
+
+		private PhysicsWorld _pworld;
+		public PhysicsWorld PWorld
+		{
+			get
+			{
+				return _pworld;
+			}
+			set
+			{
+				_pworld = value;
+			}
+		}
+
 		private bool _isActive;
 		public bool IsActive
 		{
@@ -94,28 +108,26 @@ namespace SharpEngine.Library.Math.Physics
 						break;
 				}
 			}
+			if (bRetVal)
+			{
+				CollisionEventArgs ce = new CollisionEventArgs
+				{
+					Who = other.Owner,
+					Source = this.Owner,
+					Points = _hitPoint,
+					Location = _hitLocation,
+					Distance = _circleDistance
+				};
+				CallCollisionEvent(other.Owner, ce);
+				other.CallCollisionEvent(this.Owner, ce);
+			}
 
 			return bRetVal;
 		}
 
 		public bool Hit(UObject obj)
 		{
-			bool bRetVal = Hit(obj.Collider);
-			if(bRetVal)
-			{
-				CollisionEventArgs ce = new CollisionEventArgs
-				{
-					Who = obj,
-					Source = this.Owner,
-					Points = _hitPoint,
-					Location = _hitLocation,
-					Distance = _circleDistance
-				};
-				CallCollisionEvent(obj, ce);
-				obj.Collider.CallCollisionEvent(this.Owner, ce);
-			}
-
-			return bRetVal;
+			return Hit(obj.Collider);
 		}
 
 		// Collision object to return when collision occure
@@ -176,6 +188,7 @@ namespace SharpEngine.Library.Math.Physics
 
 		private bool HitCircle(CircleCollider other)
 		{
+			Vector2D diff = Position - other.Position;
 			float x0 = Position.X + Center.X;
 			float y0 = Position.Y + Center.Y;
 			float x1 = other.Position.X + other.Center.X;
@@ -246,6 +259,14 @@ namespace SharpEngine.Library.Math.Physics
 		private float Square(float v)
 		{
 			return v * v;
+		}
+
+		public void Dispose()
+		{
+			if (PWorld != null)
+			{
+				PWorld.Remove(this);
+			}
 		}
 	}
 }

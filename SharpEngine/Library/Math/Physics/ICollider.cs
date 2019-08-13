@@ -11,6 +11,7 @@ namespace SharpEngine.Library.Math.Physics
 	public interface ICollider
 	{
 		String Key { get; }
+		PhysicsWorld PWorld { get; set; }
 		Vector2D Position { get; set; }
 		bool IsActive { get; set; }
 		UObject Owner { get; set; }
@@ -19,6 +20,7 @@ namespace SharpEngine.Library.Math.Physics
 		bool Hit(UObject obj);
 		event EventHandler CollisionEvent;
 		void CallCollisionEvent(Object obj, CollisionEventArgs e);
+		void Dispose();
 		
 	}
 }

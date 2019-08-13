@@ -19,6 +19,19 @@ namespace SharpEngine.Library.Math.Physics
 			}
 		}
 
+		private PhysicsWorld _pworld;
+		public PhysicsWorld PWorld
+		{
+			get
+			{
+				return _pworld;
+			}
+			set
+			{
+				_pworld = value;
+			}
+		}
+
 		private Vector2D _position;
 		public Vector2D Position
 		{
@@ -115,6 +128,14 @@ namespace SharpEngine.Library.Math.Physics
 			// Find larget x,y
 
 			return bRetVal;
+		}
+
+		public void Dispose()
+		{
+			if (PWorld != null)
+			{
+				PWorld.Remove(this);
+			}
 		}
 	}
 }

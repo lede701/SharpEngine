@@ -29,6 +29,19 @@ namespace SharpEngine.Library.Forms
 
 		#region Public Parameters
 
+		private bool _singleThread;
+		public bool SingleThread
+		{
+			get
+			{
+				return _singleThread;
+			}
+			set
+			{
+				_singleThread = value;
+			}
+		}
+
 		private bool _inDebugMode = false;
 		public bool InDebugMode
 		{
@@ -114,6 +127,7 @@ namespace SharpEngine.Library.Forms
 			};
 
 			InitializeGame();
+			SingleThread = true;
 		}
 
 		public virtual void InitializeGame()
@@ -148,9 +162,12 @@ namespace SharpEngine.Library.Forms
 
 			_physicsWorld = new PhysicsWorld(World.WorldSize);
 			_physicsFactory = new PhysicsFactory(_physicsWorld);
-			// Start the Physics loop now that the world is created
-			_physicsLoop = ThreadManager.CreateThread(PhysicsLoop);
-			_physicsLoop.Start();
+			if (!SingleThread)
+			{
+				// Start the Physics loop now that the world is created
+				_physicsLoop = ThreadManager.CreateThread(PhysicsLoop);
+				_physicsLoop.Start();
+			}
 		}
 
 		#endregion
@@ -180,6 +197,10 @@ namespace SharpEngine.Library.Forms
 				Update(deltaTime);
 				// Render scene
 				Render(_gm);
+				if (SingleThread)
+				{
+					PhysicsWorld.Update(deltaTime);
+				}
 				// Stop timer
 				timer.Stop();
 				// Calculate current deltaTime

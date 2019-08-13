@@ -163,14 +163,18 @@ namespace SharpEngine.Library.User.Objects
 			Vector2D blasterCenter = new Vector2D(1.5f, 1.5f);
 			g.Translate(Transform, blasterCenter);
 			g.FillGradientEllipse(0, 0, 3.0f, 25.0f, 0f, -12f, blasterTexture.ToArray());
+			g.TranslateReset();
 
 			if (Debug)
 			{
+				Transform tran = new Transform(Position, Velocity);
+				tran.Rotation = 0f;
+				g.Translate(tran);
 				CircleCollider cc = (CircleCollider)Collider;
 				RectangleF rect = new RectangleF
 				{
-					X = 0,
-					Y = 0,
+					X = 1.5f,
+					Y = 1.5f,
 					Width = cc.Radius,
 					Height = cc.Radius
 				};
@@ -178,23 +182,30 @@ namespace SharpEngine.Library.User.Objects
 				g.DrawEllipse(rect, Color.FromArgb(120, 0, 200, 0));
 				if(DebugObject != null)
 				{
-					Vector2D dist = Position - DebugObject.Position;
-					int len = (int)dist.Length;
-					Vector2D destPos = Position - DebugObject.Position;
+					Color debugClr = Color.FromArgb(200, 0, 200, 0);
+					CircleCollider acc = (CircleCollider)DebugObject.Collider;
+					Vector2D destPos = (acc.Position - cc.Position) + acc.Center;
+
+					if(destPos.Length < acc.Radius + cc.Radius)
+					{
+						debugClr = Color.FromArgb(200, 255, 0, 0);
+					}
+
+					int len = (int)destPos.Length; 
 					// Draw a line between these two items
-					g.DrawLine(0f, 0f, destPos.X, destPos.Y, Color.FromArgb(200, 0, 200, 0));
+					g.DrawLine(1.5f, 1.5f, destPos.X, destPos.Y, debugClr);
 					g.DrawText(len.ToString(), "Ariel", 10f, Color.White, new Rectangle{
-						X = (int)(dist.X / 2),
-						Y = (int)(dist.Y / 2),
+						X = (int)(destPos.X / 2),
+						Y = (int)(destPos.Y / 2),
 						Width = 50,
 						Height = 25
 					});
 				}
+				g.TranslateReset();
 			}
-			g.TranslateReset();
 		}
 		private float _life = 0f;
-		private float _maxLife = 50f;
+		private float _maxLife = 300f;
 
 		public void Update(float deltaTime)
 		{
@@ -210,7 +221,11 @@ namespace SharpEngine.Library.User.Objects
 
 		public void Dispose()
 		{
-			// Nothing to dispose just yet
+			if (Collider != null)
+			{
+				// Clean up the physics world
+				Collider.Dispose();
+			}
 		}
 	}
 }
