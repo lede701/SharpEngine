@@ -14,7 +14,6 @@ namespace SharpEngine.Library.Objects
 		IController Controller { get; set; }
 		ICollider Collider { get; set; }
 		Transform Transform { get; }
-		Vector2D Position { get; }
 		Vector2D Velocity { get; }
 		Vector2D Scale { get; }
 		float Rotation { get; }

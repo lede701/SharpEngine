@@ -31,7 +31,7 @@ namespace SharpEngine.Library.User.Objects
 				_maxLife = value;
 			}
 		}
-		public SpriteAsteroid(Sprite sprite) : base(sprite, true)
+		public SpriteAsteroid(Sprite sprite) : base(sprite, false)
 		{
 			sprite.Frames.Add(new System.Drawing.Rectangle
 			{
@@ -55,7 +55,7 @@ namespace SharpEngine.Library.User.Objects
 		{
 			// Set to figure out what hit this object
 			CollisionEventArgs ce = (CollisionEventArgs)e;
-			if(ce.Source.Type == ObjectType.PLAYER)
+			if(ce.Source.Type == ObjectType.PLAYER && ce.Source is ITakeDamage)
 			{
 				if(((ITakeDamage)ce.Source).TakeDamage(Life) <= 0f)
 				{

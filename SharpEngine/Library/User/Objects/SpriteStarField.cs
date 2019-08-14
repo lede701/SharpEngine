@@ -31,6 +31,10 @@ namespace SharpEngine.Library.User.Objects
 			{
 				return Transform.Position;
 			}
+			set
+			{
+				Transform.Position = value;
+			}
 		}
 
 		public Vector2D Velocity
@@ -63,6 +67,18 @@ namespace SharpEngine.Library.User.Objects
 			get
 			{
 				return _key;
+			}
+		}
+		private bool _alwaysRender = true;
+		public bool AlwaysRender
+		{
+			get
+			{
+				return _alwaysRender;
+			}
+			set
+			{
+				_alwaysRender = value;
 			}
 		}
 		private class Star

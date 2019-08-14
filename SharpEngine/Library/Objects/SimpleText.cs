@@ -48,6 +48,22 @@ namespace SharpEngine.Library.Objects
 			{
 				return Transform.Position;
 			}
+			set
+			{
+				Transform.Position = value;
+			}
+		}
+		private bool _alwaysRender = true;
+		public bool AlwaysRender
+		{
+			get
+			{
+				return _alwaysRender;
+			}
+			set
+			{
+				_alwaysRender = value;
+			}
 		}
 
 		private Font _font;

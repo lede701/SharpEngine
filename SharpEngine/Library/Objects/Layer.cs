@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,6 +20,31 @@ namespace SharpEngine.Library.Objects
 			}
 		}
 
+		public bool AlwaysRender
+		{
+			get
+			{
+				return true;
+			}
+			set
+			{
+
+			}
+		}
+
+		private Vector2D _position = Vector2D.Zero;
+		public Vector2D Position
+		{
+			get
+			{
+				return _position;
+			}
+			set
+			{
+				_position = value;
+			}
+		}
+
 		private String _key;
 		public String Key
 		{
@@ -34,6 +60,7 @@ namespace SharpEngine.Library.Objects
 			_key = Guid.NewGuid().ToString();
 			// Create new layer objects
 			Clear();
+			_drawObjects = new List<GObject>();
 		}
 
 		public void Clear()
@@ -42,15 +69,29 @@ namespace SharpEngine.Library.Objects
 			_layerObjects = new Dictionary<String, GObject>();
 		}
 
+		private List<GObject> _drawObjects;
+
 		public void Render(IGraphics g)
 		{
+			// Create a list of objects within the current world position
+			Vector2D start = World.Instance.WorldPosition - (World.Instance.ScreenSize * 2f);
+			Vector2D end = World.Instance.WorldPosition + World.Instance.ScreenSize;
+			List<GObject> drawObjects = new List<GObject>();
+
 			// Call the render item for each game object
 			lock (SceneManager.Instance.ObjectLock)
 			{
 				foreach (GObject obj in _layerObjects.Values)
 				{
-					obj.Render(g);
+					if(obj.Position.X > start.X && obj.Position.X < end.X && obj.Position.Y > start.Y && obj.Position.Y < end.Y || obj.AlwaysRender)
+					{
+						drawObjects.Add(obj);
+					}
 				}
+			}
+			foreach (GObject obj in drawObjects)
+			{
+				obj.Render(g);
 			}
 		}
 

@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -12,6 +13,9 @@ namespace SharpEngine.Library.Objects
 	{
 		String Key { get; }
 
+		Vector2D Position { get; set; }
+
+		bool AlwaysRender { get; set; }
 		void Render(IGraphics g);
 		void Update(float deltaTime);
 		void Dispose();

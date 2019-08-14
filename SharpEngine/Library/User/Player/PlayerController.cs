@@ -18,12 +18,37 @@ namespace SharpEngine.Library.User.Player
 		public UObject Player;
 		public UniverseMaster Universe;
 
+		private Vector2D _position = Vector2D.Zero;
+		public Vector2D Position
+		{
+			get
+			{
+				return _position;
+			}
+			set
+			{
+				_position = value;
+			}
+		}
+
 		private String _key = Guid.NewGuid().ToString();
 		public string Key
 		{
 			get
 			{
 				return _key;
+			}
+		}
+
+		public bool AlwaysRender
+		{
+			get
+			{
+				return Player.AlwaysRender;
+			}
+			set
+			{
+				Player.AlwaysRender = value;
 			}
 		}
 

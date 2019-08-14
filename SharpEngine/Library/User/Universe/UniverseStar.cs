@@ -24,6 +24,32 @@ namespace SharpEngine.Library.User.Universe
 			}
 		}
 
+		private bool _alwaysRender = true;
+		public bool AlwaysRender
+		{
+			get
+			{
+				return _alwaysRender;
+			}
+			set
+			{
+				_alwaysRender = value;
+			}
+		}
+
+		private Vector2D _position = Vector2D.Zero;
+		public Vector2D Position
+		{
+			get
+			{
+				return _position;
+			}
+			set
+			{
+				_position = value;
+			}
+		}
+
 		public UniverseStar(System.Drawing.Rectangle range)
 		{
 			starShape = new System.Drawing.Rectangle

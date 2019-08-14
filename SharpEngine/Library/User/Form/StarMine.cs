@@ -53,8 +53,8 @@ namespace SharpEngine.Library.User.Form
 
 			float playerX = (float)RandomManager.Instance.Next(1000, (int)World.WorldSize.X - 1000);
 			float playerY = (float)RandomManager.Instance.Next(1000, (int)World.WorldSize.Y - 1000);
-			playerX = 5000;
-			playerY = 4000;
+			//playerX = 5000;
+			//playerY = 4000;
 
 			SpriteShip player = UniverseFactory.Instance.CreatePlayer(playerX, playerY);
 			player.Controller = KeyboardController.Instance;

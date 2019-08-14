@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using SharpEngine.Library.Threading;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,31 @@ namespace SharpEngine.Library.Objects
 	{
 		private Dictionary<int, Layer> _gameScene;
 		private List<GObject> _gameObjects;
+
+		private Vector2D _position = Vector2D.Zero;
+		public Vector2D Position
+		{
+			get
+			{
+				return _position;
+			}
+			set
+			{
+				_position = value;
+			}
+		}
+
+		public bool AlwaysRender
+		{
+			get
+			{
+				return true;
+			}
+			set
+			{
+
+			}
+		}
 
 		public int DefaultLayer = 5;
 		public Dictionary<int, Layer> GameScene

@@ -1,4 +1,5 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
+using SharpEngine.Library.Math;
 using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,32 @@ namespace SharpEngine.Library.User.Player
 			get
 			{
 				return _key;
+			}
+		}
+
+		private bool _alwaysRender = true;
+		public bool AlwaysRender
+		{
+			get
+			{
+				return _alwaysRender;
+			}
+			set
+			{
+				_alwaysRender = value;
+			}
+		}
+
+		private Vector2D _position = Vector2D.Zero;
+		public Vector2D Position
+		{
+			get
+			{
+				return _position;
+			}
+			set
+			{
+				_position = value;
 			}
 		}
 

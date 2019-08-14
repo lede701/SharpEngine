@@ -24,7 +24,22 @@ namespace SharpEngine.Library.User.Universe
 
 		public UObject DebugObj;
 
-		
+		public Vector2D Position { get; set; }
+
+		private bool _alwaysRender = true;
+		public bool AlwaysRender
+		{
+			get
+			{
+				return _alwaysRender;
+			}
+			set
+			{
+				_alwaysRender = value;
+			}
+		}
+
+
 		public World World
 		{
 			get
@@ -79,7 +94,7 @@ namespace SharpEngine.Library.User.Universe
 					//*/
 				}
 			}
-			for(int i=0; i<50; ++i)
+			for(int i=0; i<1000; ++i)
 			{
 				float x = rm.Next(0, (int)World.WorldSize.X);
 				float y = rm.Next(0, (int)World.WorldSize.Y);

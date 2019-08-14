@@ -111,5 +111,15 @@ namespace SharpEngine.Library.Math
 			Vector2D minus = new Vector2D(v1.X - v2.X, v1.Y - v2.Y);
 			return minus;
 		}
+
+		public static Vector2D operator *(Vector2D vec, int val)
+		{
+			return new Vector2D(vec.X * val, vec.Y * val);
+		}
+
+		public static Vector2D operator *(Vector2D vec, float val)
+		{
+			return new Vector2D(vec.X * val, vec.Y * val);
+		}
 	}
 }

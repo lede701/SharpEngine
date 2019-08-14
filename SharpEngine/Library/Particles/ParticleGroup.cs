@@ -17,6 +17,31 @@ namespace SharpEngine.Library.Particles
 		protected Vector2D _position;
 		protected System.Drawing.Color _color;
 
+		public Vector2D Position
+		{
+			get
+			{
+				return _position;
+			}
+			set
+			{
+				_position = value;
+			}
+		}
+
+		private bool _alwaysRender = true;
+		public bool AlwaysRender
+		{
+			get
+			{
+				return _alwaysRender;
+			}
+			set
+			{
+				_alwaysRender = value;
+			}
+		}
+
 		protected abstract Particle GenerateParticle();
 
 		public abstract void Update(float deltaTime);

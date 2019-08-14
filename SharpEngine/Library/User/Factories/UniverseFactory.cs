@@ -1,6 +1,7 @@
 ﻿using SharpEngine.Library.GraphicsSystem;
 using SharpEngine.Library.Math.Physics;
 using SharpEngine.Library.Objects;
+using SharpEngine.Library.Randomizer;
 using SharpEngine.Library.User.Objects;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace SharpEngine.Library.User.Factories
 			collider.Center.Y = 125f / 2f;
 
 			sprite.Collider = collider;
+			sprite.Life = (float)(RandomManager.Instance.Next(100, 1200) / 100f);
 
 			return sprite;
 		}
@@ -72,6 +74,7 @@ namespace SharpEngine.Library.User.Factories
 			CircleCollider cc = (CircleCollider)PhysicsFactory.CreateCircleCollider(ship.Position, ship.Width * ship.Scale.X);
 			cc.Center = new Math.Vector2D((ship.Width * ship.Scale.X) / 2f, (ship.Height * ship.Scale.Y) / 2);
 			ship.Collider = cc;
+			ship.AlwaysRender = true;
 
 
 			return ship;
