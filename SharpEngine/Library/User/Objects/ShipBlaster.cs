@@ -222,7 +222,7 @@ namespace SharpEngine.Library.User.Objects
 			}
 		}
 		private float _life = 0f;
-		private float _maxLife = 300f;
+		private float _maxLife = 50f;
 
 		public void Update(float deltaTime)
 		{

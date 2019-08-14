@@ -96,5 +96,25 @@ namespace SharpEngine.Library.User.Form
 			base.Render(g);
 		}
 
+		protected override void OnKeyDown(KeyEventArgs e)
+		{
+			base.OnKeyDown(e);
+			switch (e.KeyCode)
+			{
+				case Keys.Escape:
+					{
+						Close();
+					}
+					break;
+				case Keys.Add:
+					{
+						float x = RandomManager.Instance.Next(1000, (int)World.WorldSize.X - 1000);
+						float y = RandomManager.Instance.Next(1000, (int)World.WorldSize.Y - 1000);
+						UniverseFactory.Instance.CreateAsteroid(x, y, 0f);
+					}
+					break;
+			}
+		}
+
 	}
 }

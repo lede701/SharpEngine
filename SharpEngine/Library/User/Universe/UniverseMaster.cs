@@ -94,7 +94,7 @@ namespace SharpEngine.Library.User.Universe
 					//*/
 				}
 			}
-			for(int i=0; i<1000; ++i)
+			for(int i=0; i<10; ++i)
 			{
 				float x = rm.Next(0, (int)World.WorldSize.X);
 				float y = rm.Next(0, (int)World.WorldSize.Y);
@@ -119,15 +119,15 @@ namespace SharpEngine.Library.User.Universe
 			{
 				int tileX = (int)(World.WorldPosition.X / World.Instance.ScreenSize.X);
 				int tileY = (int)(World.WorldPosition.Y / World.Instance.ScreenSize.Y);
-				int width = System.Math.Min(3, _tileMaxX - tileX);
-				int height = System.Math.Min(3, _tileMaxY - tileY);
+				int w = System.Math.Min(3, _tileMaxX - tileX);
+				int h = System.Math.Min(3, _tileMaxY - tileY);
 
 				System.Drawing.Rectangle rect = new System.Drawing.Rectangle
 				{
 					X = System.Math.Max(tileX - 1, 0),
 					Y = System.Math.Max(tileY - 1, 0),
-					Width = 3,
-					Height = 3
+					Width = w,
+					Height = h
 				};
 
 				return rect;

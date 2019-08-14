@@ -213,6 +213,7 @@ namespace SharpEngine.Library.Forms
 					longTimer.Reset();
 					_currentFrameCount = frameCount;
 					frameCount = 0;
+					longTimer.Start();
 				}
 			}
 		}
@@ -250,6 +251,7 @@ namespace SharpEngine.Library.Forms
 					longTimer.Reset();
 					_physicsFrameCount = frameCount;
 					frameCount = 0;
+					longTimer.Start();
 				}
 			}
 		}
