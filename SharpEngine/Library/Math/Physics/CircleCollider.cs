@@ -1,4 +1,5 @@
-﻿using SharpEngine.Library.Events;
+﻿using SharpEngine.Library.Data.Trees;
+using SharpEngine.Library.Events;
 using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;
@@ -66,6 +67,20 @@ namespace SharpEngine.Library.Math.Physics
 			get
 			{
 				return Collider2DType.Circle;
+			}
+		}
+
+		public TRectangle NodeRectangle
+		{
+			get
+			{
+				TRectangle rect = new TRectangle
+				{
+					LeftTop = new Vector2D(Position.X, Position.Y),
+					RightBottom = new Vector2D(Position.X + Radius, Position.Y + Radius)
+				};
+
+				return rect;
 			}
 		}
 

@@ -1,4 +1,5 @@
-﻿using SharpEngine.Library.Events;
+﻿using SharpEngine.Library.Data.Trees;
+using SharpEngine.Library.Events;
 using SharpEngine.Library.Objects;
 using System;
 using System.Collections.Generic;
@@ -82,8 +83,21 @@ namespace SharpEngine.Library.Math.Physics
 		{
 			get
 			{
-				Vector2D min = new Vector2D { X = 0, Y = 0 };
-				return min;
+				return Vector2D.Zero;
+			}
+		}
+
+		public TRectangle NodeRectangle
+		{
+			get
+			{
+				// TODO: Need to update collider so there is a height and width
+				TRectangle rect = new TRectangle
+				{
+					LeftTop = new Vector2D(Position.X, Position.Y),
+					RightBottom = new Vector2D(20f, 20f)
+				};
+				return rect;
 			}
 		}
 
