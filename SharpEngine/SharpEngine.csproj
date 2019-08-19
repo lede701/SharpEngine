@@ -91,6 +91,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Library\Box2D\Collision\b2AABB.cs" />
+    <Compile Include="Library\Box2D\Collision\b2RayCastOutput.cs" />
+    <Compile Include="Library\Box2D\Collision\b2RayCastInput.cs" />
+    <Compile Include="Library\Box2D\Collision\Shapes\b2CircleShape.cs" />
+    <Compile Include="Library\Box2D\Collision\Shapes\b2MassData.cs" />
+    <Compile Include="Library\Box2D\Collision\Shapes\b2IShape.cs" />
+    <Compile Include="Library\Box2D\Common\b2Mat22.cs" />
+    <Compile Include="Library\Box2D\Dynamics\b2Body.cs" />
+    <Compile Include="Library\Box2D\Dynamics\b2BodyDef.cs" />
+    <Compile Include="Library\Box2D\Dynamics\b2Fixture.cs" />
+    <Compile Include="Library\Box2D\Dynamics\b2FixtureDef.cs" />
+    <Compile Include="Library\Box2D\Dynamics\b2World.cs" />
     <Compile Include="Library\Controller\IController.cs" />
     <Compile Include="Library\Controller\Input.cs" />
     <Compile Include="Library\Controller\KeyboardController.cs" />
@@ -121,6 +133,7 @@
     <Compile Include="Library\Math\Physics\PhysicsFactory.cs" />
     <Compile Include="Library\Math\Physics\PhysicsWorld.cs" />
     <Compile Include="Library\Math\Physics\PlaneCollider.cs" />
+    <Compile Include="Library\Math\Rotation.cs" />
     <Compile Include="Library\Math\Transform.cs" />
     <Compile Include="Library\Math\Vector2D.cs" />
     <Compile Include="Library\Math\VectorType.cs" />
@@ -214,6 +227,9 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Library\Box2D\Dynamics\Contacts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

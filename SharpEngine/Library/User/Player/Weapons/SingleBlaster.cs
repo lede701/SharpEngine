@@ -42,7 +42,7 @@ namespace SharpEngine.Library.User.Player.Weapons
 			//bolt.Position.Y = Position.Y - 5.0f;
 
 			float boltSpeed = -12.0f;
-			bolt.Transform.Rotation = rotation;
+			bolt.Transform.Rotation.Angle = rotation;
 			bolt.Velocity.Y = boltSpeed * (float)System.Math.Cos(rotation);
 			bolt.Velocity.X = -boltSpeed * (float)System.Math.Sin(rotation);
 			stats.Score -= 15;

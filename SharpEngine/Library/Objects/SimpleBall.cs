@@ -93,7 +93,7 @@ namespace SharpEngine.Library.Objects
 		{
 			get
 			{
-				return Transform.Rotation;
+				return Transform.Rotation.Angle;
 			}
 		}
 

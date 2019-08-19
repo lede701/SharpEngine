@@ -115,7 +115,7 @@ namespace SharpEngine.Library.User.Objects
 		{
 			get
 			{
-				return Transform.Rotation;
+				return Transform.Rotation.Angle;
 			}
 		}
 
@@ -185,7 +185,7 @@ namespace SharpEngine.Library.User.Objects
 			if (Debug)
 			{
 				Transform tran = new Transform(Position, Velocity);
-				tran.Rotation = 0f;
+				tran.Rotation.Angle = 0f;
 				g.Translate(tran);
 				CircleCollider cc = (CircleCollider)Collider;
 				RectangleF rect = new RectangleF

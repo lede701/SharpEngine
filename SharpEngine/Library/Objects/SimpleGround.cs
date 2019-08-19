@@ -83,7 +83,7 @@ namespace SharpEngine.Library.Objects
 		{
 			get
 			{
-				return _transform.Rotation;
+				return _transform.Rotation.Angle;
 			}
 		}
 

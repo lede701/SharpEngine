@@ -72,7 +72,7 @@ namespace SharpEngine.Library.User.Player
 			float framePer = 1.0f;
 
 			// Change ship rotation
-			Player.Transform.Rotation += Vector2D.Lerp(nextRotSpeed, _prevRotationSpeed, framePer);
+			Player.Transform.Rotation.Angle += Vector2D.Lerp(nextRotSpeed, _prevRotationSpeed, framePer);
 			// Check if the booster is on
 			if (_controller.Get(Input.Up))
 			{

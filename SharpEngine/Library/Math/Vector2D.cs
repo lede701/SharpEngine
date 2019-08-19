@@ -101,6 +101,25 @@ namespace SharpEngine.Library.Math
 			}
 		}
 
+		public float this[int idx]
+		{
+			get
+			{
+				return idx == 0 ? X : Y;
+			}
+			set
+			{
+				if (idx == 0)
+				{
+					X = value;
+				}
+				else if (idx == 1)
+				{
+					Y = value;
+				}
+			}
+		}
+
 		public static Vector2D operator +(Vector2D v1, Vector2D v2)
 		{
 			Vector2D plus = new Vector2D(v1.X + v2.X, v1.Y + v2.Y);
@@ -121,5 +140,26 @@ namespace SharpEngine.Library.Math
 		{
 			return new Vector2D(vec.X * val, vec.Y * val);
 		}
+
+		public static Vector2D Abs(Vector2D v)
+		{
+			return new Vector2D(System.Math.Abs(v.X), System.Math.Abs(v.Y));
+		}
+
+		public static Vector2D Min(Vector2D v1, Vector2D v2)
+		{
+			return new Vector2D(System.Math.Min(v1.X, v2.X), System.Math.Min(v1.Y, v2.Y));
+		}
+
+		public static Vector2D Max(Vector2D v1, Vector2D v2)
+		{
+			return new Vector2D(System.Math.Max(v1.X, v2.X), System.Math.Max(v1.Y, v2.Y));
+		}
+
+		public static float Dot(Vector2D v1, Vector2D v2)
+		{
+			return v1.X * v2.X + v1.Y * v2.Y;
+		}
+
 	}
 }

@@ -450,7 +450,7 @@ namespace SharpEngine.Library.GraphicsSystem
 		{
 			Vector2D pos = World.Instance.ToScreen(transform.Position);
 			Matrix tran = Matrix.Translation(pos.X, pos.Y);
-			Matrix rot = Matrix.Rotation(transform.Rotation, new SharpDX.Vector2(center.X, center.Y));
+			Matrix rot = Matrix.Rotation(transform.Rotation.Angle, new SharpDX.Vector2(center.X, center.Y));
 			Matrix sca = Matrix.Scaling(transform.Scale.X, transform.Scale.Y);
 			d2dRenderTarget.Transform = rot * sca * tran;
 		}

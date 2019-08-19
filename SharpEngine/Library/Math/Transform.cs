@@ -47,8 +47,8 @@ namespace SharpEngine.Library.Math
 			}
 		}
 
-		private float _rotation;
-		public float Rotation
+		private Rotation _rotation;
+		public Rotation Rotation
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace SharpEngine.Library.Math
 			_position = new Vector2D { X = 0, Y = 0 };
 			_velocity = new Vector2D { X = 0, Y = 0 };
 			_scale = new Vector2D { X = 1.0f, Y = 1.0f };
-			_rotation = 0.0f;
+			_rotation = new Rotation(0.0f);
 		}
 
 		public Transform(Vector2D position, Vector2D velocity)
@@ -73,7 +73,7 @@ namespace SharpEngine.Library.Math
 			_position = position;
 			_velocity = velocity;
 			_scale = new Vector2D { X = 1.0f, Y = 1.0f };
-			_rotation = 0.0f;
+			_rotation = new Rotation(0.0f);
 		}
 	}
 }

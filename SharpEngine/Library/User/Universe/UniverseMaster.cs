@@ -94,7 +94,7 @@ namespace SharpEngine.Library.User.Universe
 					//*/
 				}
 			}
-			for(int i=0; i<10; ++i)
+			for(int i=0; i<50; ++i)
 			{
 				float x = rm.Next(0, (int)World.WorldSize.X);
 				float y = rm.Next(0, (int)World.WorldSize.Y);
